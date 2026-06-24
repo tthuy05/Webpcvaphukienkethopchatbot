@@ -1,0 +1,95 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.ProductFilterViewModel
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<h1 class="h3 mb-3">San pham</h1>
+
+<form method="get" class="border rounded p-3 mb-4">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label asp-for="Search" class="form-label">Tu khoa</label>
+            <input asp-for="Search" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="CategoryId" class="form-label">Danh muc</label>
+            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+                <option value="">Tat ca</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label asp-for="BrandId" class="form-label">Hang</label>
+            <select asp-for="BrandId" asp-items="Model.Brands" class="form-select">
+                <option value="">Tat ca</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label asp-for="MinPrice" class="form-label">Gia tu</label>
+            <input asp-for="MinPrice" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="MaxPrice" class="form-label">Gia den</label>
+            <input asp-for="MaxPrice" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Cpu" class="form-label">CPU</label>
+            <input asp-for="Cpu" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Ram" class="form-label">RAM</label>
+            <input asp-for="Ram" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Ssd" class="form-label">SSD</label>
+            <input asp-for="Ssd" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="Gpu" class="form-label">GPU</label>
+            <input asp-for="Gpu" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="UsageNeed" class="form-label">Nhu cau</label>
+            <input asp-for="UsageNeed" class="form-control" />
+        </div>
+        <div class="col-md-2">
+            <label asp-for="SortBy" class="form-label">Sap xep</label>
+            <select asp-for="SortBy" class="form-select">
+                <option value="newest">Moi nhat</option>
+                <option value="price-asc">Gia tang dan</option>
+                <option value="price-desc">Gia giam dan</option>
+                <option value="best-selling">Ban chay</option>
+            </select>
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Tim kiem</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Xoa loc</a>
+        </div>
+    </div>
+</form>
+
+@if (!Model.Products.Any())
+{
+    <div class="alert alert-info">Khong tim thay san pham phu hop.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-3 g-3">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col">
+                <div class="border rounded h-100 p-3">
+                    <img src="@product.MainImageUrl" alt="@product.Name" class="img-fluid mb-3 product-card-image" />
+                    <h2 class="h5">@product.Name</h2>
+                    <div class="text-muted small">@product.BrandName - @product.CategoryName</div>
+                    <div class="fw-bold my-2">@product.Price.ToString("N0") VND</div>
+                    <div class="small">Nhu cau: @product.SuitableNeeds</div>
+                    <div class="small @(product.StockQuantity > 0 ? "text-success" : "text-danger")">
+                        @(product.StockQuantity > 0 ? $"Con {product.StockQuantity} san pham" : "Het hang")
+                    </div>
+                    <a class="btn btn-sm btn-outline-primary mt-3" asp-action="Details" asp-route-id="@product.Id">Chi tiet</a>
+                </div>
+            </div>
+        }
+    </div>
+}

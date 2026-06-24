@@ -1,10 +1,18 @@
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Webpcvaphukienkethopchatbot.Services;
 
 namespace Webpcvaphukienkethopchatbot.Controllers;
 
 public class LanguageController : Controller
 {
+    private readonly IUserPreferenceService _userPreferenceService;
+
+    public LanguageController(IUserPreferenceService userPreferenceService)
+    {
+        _userPreferenceService = userPreferenceService;
+    }
+
     private static readonly HashSet<string> SupportedCultures = new(StringComparer.OrdinalIgnoreCase)
     {
         "vi-VN",
@@ -13,7 +21,7 @@ public class LanguageController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Set(string culture, string returnUrl = "/")
+    public async Task<IActionResult> Set(string culture, string returnUrl = "/")
     {
         if (!SupportedCultures.Contains(culture))
         {
@@ -29,6 +37,8 @@ public class LanguageController : Controller
                 IsEssential = true,
                 SameSite = SameSiteMode.Lax
             });
+
+        await _userPreferenceService.SetLanguageAsync(User, culture, HttpContext.RequestAborted);
 
         if (!Url.IsLocalUrl(returnUrl))
         {

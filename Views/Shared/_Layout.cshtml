@@ -4,7 +4,8 @@
 @inject IHtmlLocalizer<SharedResource> Localizer
 
 @{
-    var selectedTheme = Context.Request.Cookies["preferred-theme"] == "dark" ? "dark" : "light";
+    var preferredTheme = Context.Items["PreferredTheme"] as string;
+    var selectedTheme = preferredTheme == "dark" || Context.Request.Cookies["preferred-theme"] == "dark" ? "dark" : "light";
     var bodyThemeClass = selectedTheme == "dark" ? "theme-dark" : "theme-light";
 }
 
@@ -31,6 +32,12 @@
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">@Localizer["Products"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">@Localizer["Cart"]</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>

@@ -1,0 +1,43 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.ProductDetailViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="row g-4">
+    <div class="col-md-5">
+        <img src="@Model.MainImageUrl" alt="@Model.Name" class="img-fluid border rounded p-3" />
+    </div>
+    <div class="col-md-7">
+        <h1 class="h3">@Model.Name</h1>
+        <div class="text-muted">@Model.BrandName - @Model.CategoryName</div>
+        <div class="display-6 my-3">@Model.Price.ToString("N0") VND</div>
+        <div class="mb-3 @(Model.StockQuantity > 0 ? "text-success" : "text-danger")">
+            @(Model.StockQuantity > 0 ? $"Con {Model.StockQuantity} san pham" : "Het hang")
+        </div>
+        <p>@Model.Description</p>
+        <dl class="row">
+            <dt class="col-sm-4">CPU</dt><dd class="col-sm-8">@Model.Cpu</dd>
+            <dt class="col-sm-4">RAM</dt><dd class="col-sm-8">@Model.Ram</dd>
+            <dt class="col-sm-4">SSD</dt><dd class="col-sm-8">@Model.Ssd</dd>
+            <dt class="col-sm-4">GPU</dt><dd class="col-sm-8">@Model.Gpu</dd>
+            <dt class="col-sm-4">Man hinh</dt><dd class="col-sm-8">@Model.Screen</dd>
+            <dt class="col-sm-4">Pin</dt><dd class="col-sm-8">@Model.Battery</dd>
+            <dt class="col-sm-4">Trong luong</dt><dd class="col-sm-8">@Model.Weight</dd>
+            <dt class="col-sm-4">He dieu hanh</dt><dd class="col-sm-8">@Model.OperatingSystem</dd>
+            <dt class="col-sm-4">Nhu cau</dt><dd class="col-sm-8">@Model.SuitableNeeds</dd>
+        </dl>
+        @if (Model.StockQuantity > 0)
+        {
+            <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex gap-2 align-items-end mb-3">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <div>
+                    <label for="quantity" class="form-label">So luong</label>
+                    <input id="quantity" name="quantity" type="number" min="1" max="@Model.StockQuantity" value="1" class="form-control" style="width: 120px;" />
+                </div>
+                <button type="submit" class="btn btn-primary">Them vao gio</button>
+            </form>
+        }
+        <a class="btn btn-outline-secondary" asp-action="Index">Quay lai</a>
+    </div>
+</div>
