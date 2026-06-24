@@ -33,6 +33,7 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddScoped<IUserPreferenceService, UserPreferenceService>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddHostedService<DatabaseSeedHostedService>();
 
 var app = builder.Build();

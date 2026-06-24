@@ -1,0 +1,80 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h1 class="h3 mb-3">Gio hang</h1>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@if (!Model.Items.Any())
+{
+    <div class="alert alert-info">Gio hang dang trong.</div>
+    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Tiep tuc mua sam</a>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>San pham</th>
+                    <th class="text-end">Don gia</th>
+                    <th class="text-end">So luong</th>
+                    <th class="text-end">Thanh tien</th>
+                    <th class="text-end">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="@item.ImageUrl" alt="@item.ProductName" width="72" height="48" class="object-fit-contain border rounded" />
+                            <div>
+                                <div class="fw-semibold">@item.ProductName</div>
+                                <div class="small @(item.StockQuantity > 0 ? "text-muted" : "text-danger")">Ton kho: @item.StockQuantity</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="text-end">@item.UnitPrice.ToString("N0")</td>
+                    <td class="text-end">
+                        <form asp-action="Update" method="post" class="d-flex justify-content-end gap-2">
+                            <input type="hidden" name="cartItemId" value="@item.Id" />
+                            <input type="number" min="1" max="@item.StockQuantity" name="quantity" value="@item.Quantity" class="form-control form-control-sm" style="width: 90px;" />
+                            <button type="submit" class="btn btn-sm btn-outline-primary">Luu</button>
+                        </form>
+                    </td>
+                    <td class="text-end">@item.LineTotal.ToString("N0")</td>
+                    <td class="text-end">
+                        <form asp-action="Remove" method="post">
+                            <input type="hidden" name="cartItemId" value="@item.Id" />
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Xoa</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" class="text-end">Tong tien</th>
+                    <th class="text-end">@Model.Total.ToString("N0")</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <div class="d-flex justify-content-between">
+        <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">Tiep tuc mua sam</a>
+        <a class="btn btn-primary" asp-controller="Orders" asp-action="Checkout">Thanh toan</a>
+    </div>
+}
