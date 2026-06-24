@@ -1,0 +1,40 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.ViewModels.OrderListItemViewModel>
+
+@{
+    ViewData["Title"] = "Orders";
+}
+
+<h1 class="h3 mb-3">Lich su don hang</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Chua co don hang.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Ma don</th>
+                    <th>Ngay tao</th>
+                    <th>Trang thai</th>
+                    <th class="text-end">Tong tien</th>
+                    <th class="text-end">Thao tac</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.OrderNumber</td>
+                    <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@order.Status</td>
+                    <td class="text-end">@order.TotalAmount.ToString("N0")</td>
+                    <td class="text-end"><a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@order.Id">Chi tiet</a></td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

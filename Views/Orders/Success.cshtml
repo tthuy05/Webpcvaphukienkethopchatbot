@@ -1,0 +1,12 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.OrderDetailViewModel
+
+@{
+    ViewData["Title"] = "Order success";
+}
+
+<div class="alert alert-success">
+    Dat hang thanh cong. Ma don hang: <strong>@Model.OrderNumber</strong>
+</div>
+
+<a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.Id">Xem chi tiet don hang</a>
+<a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">Tiep tuc mua sam</a>
