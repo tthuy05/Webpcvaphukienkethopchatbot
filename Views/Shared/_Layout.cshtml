@@ -3,6 +3,11 @@
 @using Webpcvaphukienkethopchatbot.Resources
 @inject IHtmlLocalizer<SharedResource> Localizer
 
+@{
+    var selectedTheme = Context.Request.Cookies["preferred-theme"] == "dark" ? "dark" : "light";
+    var bodyThemeClass = selectedTheme == "dark" ? "theme-dark" : "theme-light";
+}
+
 <!DOCTYPE html>
 <html lang="@CultureInfo.CurrentUICulture.Name">
 <head>
@@ -13,7 +18,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Webpcvaphukienkethopchatbot.styles.css" asp-append-version="true" />
 </head>
-<body>
+<body class="@bodyThemeClass">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -38,6 +43,13 @@
                             <option value="vi-VN" selected="@(CultureInfo.CurrentUICulture.Name == "vi-VN")">@Localizer["Vietnamese"]</option>
                             <option value="en-US" selected="@(CultureInfo.CurrentUICulture.Name == "en-US")">@Localizer["English"]</option>
                         </select>
+                    </form>
+                    <form class="d-flex align-items-center me-3" asp-area="" asp-controller="Theme" asp-action="Set" method="post">
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                        <input type="hidden" name="theme" value="@(selectedTheme == "dark" ? "light" : "dark")" />
+                        <button type="submit" class="btn btn-sm btn-outline-primary">
+                            @(selectedTheme == "dark" ? Localizer["LightMode"] : Localizer["DarkMode"])
+                        </button>
                     </form>
                     <partial name="_LoginPartial" />
                 </div>

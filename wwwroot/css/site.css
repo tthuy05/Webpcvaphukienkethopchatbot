@@ -2,6 +2,30 @@ html {
   font-size: 14px;
 }
 
+:root {
+  --bg-color: #f8fafc;
+  --text-color: #111827;
+  --card-bg: #ffffff;
+  --border-color: #d1d5db;
+  --primary-color: #2563eb;
+}
+
+body.theme-light {
+  --bg-color: #f8fafc;
+  --text-color: #111827;
+  --card-bg: #ffffff;
+  --border-color: #d1d5db;
+  --primary-color: #2563eb;
+}
+
+body.theme-dark {
+  --bg-color: #111827;
+  --text-color: #f9fafb;
+  --card-bg: #1f2937;
+  --border-color: #374151;
+  --primary-color: #60a5fa;
+}
+
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -19,4 +43,42 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.theme-dark .navbar,
+.theme-dark .footer,
+.theme-dark .border,
+.theme-dark .table,
+.theme-dark .card {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-color);
+}
+
+.theme-dark .text-dark,
+.theme-dark .text-muted,
+.theme-dark .nav-link,
+.theme-dark .navbar-brand,
+.theme-dark a {
+  color: var(--text-color) !important;
+}
+
+.theme-dark .table-light {
+  --bs-table-bg: #243244;
+  --bs-table-color: var(--text-color);
+}
+
+.theme-dark .form-control,
+.theme-dark .form-select,
+.theme-dark textarea {
+  background-color: #0f172a;
+  border-color: var(--border-color);
+  color: var(--text-color);
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
 }
