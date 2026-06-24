@@ -1,9 +1,14 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@using System.Globalization
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
+
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentUICulture.Name">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Webpcvaphukienkethopchatbot</title>
+    <title>@ViewData["Title"] - PC Store</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Webpcvaphukienkethopchatbot.styles.css" asp-append-version="true" />
@@ -12,7 +17,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Webpcvaphukienkethopchatbot</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PC Store</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -20,12 +25,20 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
                         </li>
                     </ul>
+                    <form class="d-flex align-items-center gap-2 me-3" asp-area="" asp-controller="Language" asp-action="Set" method="post">
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                        <label class="visually-hidden" for="culture">@Localizer["ChangeLanguage"]</label>
+                        <select id="culture" name="culture" class="form-select form-select-sm" onchange="this.form.submit()">
+                            <option value="vi-VN" selected="@(CultureInfo.CurrentUICulture.Name == "vi-VN")">@Localizer["Vietnamese"]</option>
+                            <option value="en-US" selected="@(CultureInfo.CurrentUICulture.Name == "en-US")">@Localizer["English"]</option>
+                        </select>
+                    </form>
                     <partial name="_LoginPartial" />
                 </div>
             </div>
@@ -39,7 +52,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2026 - Webpcvaphukienkethopchatbot - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 - PC Store - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
