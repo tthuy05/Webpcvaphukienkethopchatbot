@@ -32,6 +32,7 @@ builder.Services.AddControllersWithViews()
     .AddDataAnnotationsLocalization();
 builder.Services.AddScoped<IUserPreferenceService, UserPreferenceService>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddHostedService<DatabaseSeedHostedService>();
 
 var app = builder.Build();
