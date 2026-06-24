@@ -82,3 +82,9 @@ body {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
 }
+
+.product-card-image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+}

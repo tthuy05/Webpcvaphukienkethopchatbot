@@ -18,4 +18,8 @@ public interface IProductService
     Task HideAsync(int id, CancellationToken cancellationToken = default);
 
     IQueryable<Product> ActiveProductsQuery();
+
+    Task<ProductFilterViewModel> SearchAsync(ProductFilterViewModel filter, CancellationToken cancellationToken = default);
+
+    Task<ProductDetailViewModel?> GetDetailAsync(int id, CancellationToken cancellationToken = default);
 }

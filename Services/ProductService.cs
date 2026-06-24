@@ -205,6 +205,131 @@ public partial class ProductService : IProductService
             .Where(product => product.IsActive);
     }
 
+    public async Task<ProductFilterViewModel> SearchAsync(ProductFilterViewModel filter, CancellationToken cancellationToken = default)
+    {
+        var query = ActiveProductsQuery();
+
+        if (!string.IsNullOrWhiteSpace(filter.Search))
+        {
+            var keyword = filter.Search.Trim();
+            query = query.Where(product =>
+                product.Name.Contains(keyword) ||
+                product.Description.Contains(keyword) ||
+                product.SuitableNeeds.Contains(keyword));
+        }
+
+        if (filter.CategoryId.HasValue)
+        {
+            query = query.Where(product => product.CategoryId == filter.CategoryId.Value);
+        }
+
+        if (filter.BrandId.HasValue)
+        {
+            query = query.Where(product => product.BrandId == filter.BrandId.Value);
+        }
+
+        if (filter.MinPrice.HasValue)
+        {
+            query = query.Where(product => product.Price >= filter.MinPrice.Value);
+        }
+
+        if (filter.MaxPrice.HasValue)
+        {
+            query = query.Where(product => product.Price <= filter.MaxPrice.Value);
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Cpu))
+        {
+            query = query.Where(product => product.Cpu != null && product.Cpu.Contains(filter.Cpu.Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Ram))
+        {
+            query = query.Where(product => product.Ram != null && product.Ram.Contains(filter.Ram.Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Ssd))
+        {
+            query = query.Where(product => product.Ssd != null && product.Ssd.Contains(filter.Ssd.Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.Gpu))
+        {
+            query = query.Where(product => product.Gpu != null && product.Gpu.Contains(filter.Gpu.Trim()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(filter.UsageNeed))
+        {
+            query = query.Where(product => product.SuitableNeeds.Contains(filter.UsageNeed.Trim()));
+        }
+
+        query = filter.SortBy switch
+        {
+            "price-asc" => query.OrderBy(product => product.Price),
+            "price-desc" => query.OrderByDescending(product => product.Price),
+            "best-selling" => query.OrderByDescending(product => product.SoldQuantity),
+            _ => query.OrderByDescending(product => product.CreatedAt)
+        };
+
+        filter.Products = await query
+            .Select(product => new ProductCardViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                BrandName = product.Brand != null ? product.Brand.Name : string.Empty,
+                CategoryName = product.Category != null ? product.Category.Name : string.Empty,
+                Price = product.Price,
+                StockQuantity = product.StockQuantity,
+                SoldQuantity = product.SoldQuantity,
+                MainImageUrl = product.MainImageUrl,
+                SuitableNeeds = product.SuitableNeeds
+            })
+            .ToListAsync(cancellationToken);
+
+        filter.Categories = await _dbContext.Categories
+            .AsNoTracking()
+            .Where(category => category.IsActive)
+            .OrderBy(category => category.Name)
+            .Select(category => new SelectListItem(category.Name, category.Id.ToString(), category.Id == filter.CategoryId))
+            .ToListAsync(cancellationToken);
+
+        filter.Brands = await _dbContext.Brands
+            .AsNoTracking()
+            .Where(brand => brand.IsActive)
+            .OrderBy(brand => brand.Name)
+            .Select(brand => new SelectListItem(brand.Name, brand.Id.ToString(), brand.Id == filter.BrandId))
+            .ToListAsync(cancellationToken);
+
+        return filter;
+    }
+
+    public async Task<ProductDetailViewModel?> GetDetailAsync(int id, CancellationToken cancellationToken = default)
+    {
+        return await ActiveProductsQuery()
+            .Where(product => product.Id == id)
+            .Select(product => new ProductDetailViewModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                BrandName = product.Brand != null ? product.Brand.Name : string.Empty,
+                CategoryName = product.Category != null ? product.Category.Name : string.Empty,
+                Price = product.Price,
+                MainImageUrl = product.MainImageUrl,
+                Cpu = product.Cpu,
+                Ram = product.Ram,
+                Ssd = product.Ssd,
+                Gpu = product.Gpu,
+                Screen = product.Screen,
+                Battery = product.Battery,
+                Weight = product.Weight,
+                OperatingSystem = product.OperatingSystem,
+                StockQuantity = product.StockQuantity,
+                Description = product.Description,
+                SuitableNeeds = product.SuitableNeeds
+            })
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
     private async Task EnsurePrimaryImageAsync(Product product, CancellationToken cancellationToken)
     {
         var image = await _dbContext.ProductImages
