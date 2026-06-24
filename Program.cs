@@ -37,6 +37,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IChatbotService, ChatbotService>();
 builder.Services.AddHostedService<DatabaseSeedHostedService>();
 
 var app = builder.Build();
