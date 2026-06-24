@@ -1,8 +1,49 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="h3 mb-1">PC Store Backend Test</h1>
+        <p class="text-muted mb-0">Website ban laptop va phu kien may tinh tich hop chatbot tu van san pham.</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Xem san pham</a>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-3">
+    <div class="col">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5">Nguoi dung</h2>
+            <div class="d-grid gap-2">
+                <a class="btn btn-outline-primary" asp-area="Identity" asp-page="/Account/Login">Dang nhap</a>
+                <a class="btn btn-outline-primary" asp-area="Identity" asp-page="/Account/Register">Dang ky</a>
+                <a class="btn btn-outline-primary" asp-controller="Profile" asp-action="Index">Ho so</a>
+                <a class="btn btn-outline-primary" asp-controller="Orders" asp-action="Index">Lich su don hang</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5">Ban hang</h2>
+            <div class="d-grid gap-2">
+                <a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index">Tim kiem san pham</a>
+                <a class="btn btn-outline-primary" asp-controller="Cart" asp-action="Index">Gio hang</a>
+                <a class="btn btn-outline-primary" asp-controller="Orders" asp-action="Checkout">Checkout</a>
+                <a class="btn btn-outline-primary" asp-controller="Chatbot" asp-action="Index">Chatbot</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5">Quan tri</h2>
+            <div class="d-grid gap-2">
+                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Products" asp-action="Index">Quan ly san pham</a>
+                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Orders" asp-action="Index">Quan ly don hang</a>
+                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Users" asp-action="Index">Quan ly nguoi dung</a>
+                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Categories" asp-action="Index">Danh muc</a>
+                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Brands" asp-action="Index">Thuong hieu</a>
+            </div>
+        </div>
+    </div>
 </div>
