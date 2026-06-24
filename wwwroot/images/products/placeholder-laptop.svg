@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Laptop placeholder</title>
+  <desc id="desc">Simple local placeholder image for laptop products.</desc>
+  <rect width="800" height="520" fill="#f4f6f8"/>
+  <rect x="150" y="80" width="500" height="300" rx="18" fill="#1f2937"/>
+  <rect x="175" y="105" width="450" height="245" rx="10" fill="#dbeafe"/>
+  <rect x="100" y="385" width="600" height="45" rx="12" fill="#374151"/>
+  <rect x="315" y="400" width="170" height="12" rx="6" fill="#9ca3af"/>
+  <text x="400" y="475" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#111827">Laptop</text>
+</svg>

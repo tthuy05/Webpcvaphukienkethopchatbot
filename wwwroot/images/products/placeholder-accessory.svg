@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Accessory placeholder</title>
+  <desc id="desc">Simple local placeholder image for accessory products.</desc>
+  <rect width="800" height="520" fill="#f7f7f2"/>
+  <circle cx="400" cy="235" r="125" fill="#e0f2fe"/>
+  <rect x="330" y="135" width="140" height="210" rx="58" fill="#0f766e"/>
+  <line x1="400" y1="135" x2="400" y2="205" stroke="#f8fafc" stroke-width="8"/>
+  <rect x="365" y="165" width="70" height="45" rx="16" fill="#115e59"/>
+  <text x="400" y="430" text-anchor="middle" font-family="Arial, sans-serif" font-size="30" fill="#111827">Accessory</text>
+</svg>

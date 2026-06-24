@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="520" viewBox="0 0 800 520" role="img" aria-labelledby="title desc">
+  <title id="title">Product placeholder</title>
+  <desc id="desc">Simple local placeholder image for products.</desc>
+  <rect width="800" height="520" fill="#f3f4f6"/>
+  <rect x="190" y="130" width="420" height="240" rx="26" fill="#cbd5e1"/>
+  <text x="400" y="275" text-anchor="middle" font-family="Arial, sans-serif" font-size="34" fill="#111827">Product</text>
+</svg>

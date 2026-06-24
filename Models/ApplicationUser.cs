@@ -11,4 +11,12 @@ public class ApplicationUser : IdentityUser
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public bool IsActive { get; set; } = true;
+
+    public Cart? Cart { get; set; }
+
+    public UserPreference? Preference { get; set; }
+
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public ICollection<ChatbotLog> ChatbotLogs { get; set; } = new List<ChatbotLog>();
 }
