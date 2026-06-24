@@ -1,9 +1,17 @@
 using Microsoft.AspNetCore.Mvc;
+using Webpcvaphukienkethopchatbot.Services;
 
 namespace Webpcvaphukienkethopchatbot.Controllers;
 
 public class ThemeController : Controller
 {
+    private readonly IUserPreferenceService _userPreferenceService;
+
+    public ThemeController(IUserPreferenceService userPreferenceService)
+    {
+        _userPreferenceService = userPreferenceService;
+    }
+
     private static readonly HashSet<string> SupportedThemes = new(StringComparer.OrdinalIgnoreCase)
     {
         "light",
@@ -12,7 +20,7 @@ public class ThemeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult Set(string theme, string returnUrl = "/")
+    public async Task<IActionResult> Set(string theme, string returnUrl = "/")
     {
         if (!SupportedThemes.Contains(theme))
         {
@@ -28,6 +36,8 @@ public class ThemeController : Controller
                 IsEssential = true,
                 SameSite = SameSiteMode.Lax
             });
+
+        await _userPreferenceService.SetThemeAsync(User, theme, HttpContext.RequestAborted);
 
         if (!Url.IsLocalUrl(returnUrl))
         {

@@ -4,7 +4,8 @@
 @inject IHtmlLocalizer<SharedResource> Localizer
 
 @{
-    var selectedTheme = Context.Request.Cookies["preferred-theme"] == "dark" ? "dark" : "light";
+    var preferredTheme = Context.Items["PreferredTheme"] as string;
+    var selectedTheme = preferredTheme == "dark" || Context.Request.Cookies["preferred-theme"] == "dark" ? "dark" : "light";
     var bodyThemeClass = selectedTheme == "dark" ? "theme-dark" : "theme-light";
 }
 

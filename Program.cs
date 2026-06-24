@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Webpcvaphukienkethopchatbot.Data;
+using Webpcvaphukienkethopchatbot.Middleware;
 using Webpcvaphukienkethopchatbot.Models;
+using Webpcvaphukienkethopchatbot.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +30,7 @@ builder.Services.AddLocalization(options => options.ResourcesPath = "Resources")
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
+builder.Services.AddScoped<IUserPreferenceService, UserPreferenceService>();
 builder.Services.AddHostedService<DatabaseSeedHostedService>();
 
 var app = builder.Build();
@@ -63,6 +66,7 @@ app.UseRequestLocalization(new RequestLocalizationOptions
 });
 
 app.UseAuthentication();
+app.UseMiddleware<UserPreferenceMiddleware>();
 app.UseAuthorization();
 
 app.MapControllerRoute(
