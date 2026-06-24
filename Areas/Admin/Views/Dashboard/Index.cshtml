@@ -1,0 +1,100 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Dashboard</h1>
+    <div class="btn-group">
+        <a class="btn btn-outline-secondary" asp-area="Admin" asp-controller="Products" asp-action="Index">San pham</a>
+        <a class="btn btn-outline-secondary" asp-area="Admin" asp-controller="Orders" asp-action="Index">Don hang</a>
+        <a class="btn btn-outline-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Nguoi dung</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted">Tong doanh thu</div>
+            <div class="h4">@Model.TotalRevenue.ToString("N0")</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted">Tong don hang</div>
+            <div class="h4">@Model.TotalOrders</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted">Don hom nay</div>
+            <div class="h4">@Model.TodayOrders</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="border rounded p-3">
+            <div class="text-muted">Don trong thang</div>
+            <div class="h4">@Model.MonthOrders</div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5">San pham ban chay</h2>
+            <table class="table table-sm align-middle">
+                <thead><tr><th>San pham</th><th class="text-end">SL</th><th class="text-end">Doanh thu</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.BestSellingProducts)
+                {
+                    <tr><td>@item.ProductName</td><td class="text-end">@item.Quantity</td><td class="text-end">@item.Revenue.ToString("N0")</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5">Ton kho thap</h2>
+            <table class="table table-sm align-middle">
+                <thead><tr><th>San pham</th><th class="text-end">Ton kho</th><th class="text-end">Gia</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.LowStockProducts)
+                {
+                    <tr><td>@item.ProductName</td><td class="text-end">@item.Quantity</td><td class="text-end">@item.Revenue.ToString("N0")</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5">Doanh thu theo ngay</h2>
+            <table class="table table-sm align-middle">
+                <thead><tr><th>Ngay</th><th class="text-end">Doanh thu</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.RevenueByDay)
+                {
+                    <tr><td>@item.Label</td><td class="text-end">@item.Revenue.ToString("N0")</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="border rounded p-3 h-100">
+            <h2 class="h5">Don hang theo trang thai</h2>
+            <table class="table table-sm align-middle">
+                <thead><tr><th>Trang thai</th><th class="text-end">So don</th></tr></thead>
+                <tbody>
+                @foreach (var item in Model.OrdersByStatus)
+                {
+                    <tr><td>@item.Label</td><td class="text-end">@item.Value</td></tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
