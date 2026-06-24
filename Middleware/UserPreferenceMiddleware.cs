@@ -21,10 +21,11 @@ public class UserPreferenceMiddleware
 
             if (preference is not null)
             {
-                var culture = new CultureInfo(preference.PreferredLanguage);
+                var cultureName = preference.PreferredLanguage is "vi-VN" or "en-US" ? preference.PreferredLanguage : "vi-VN";
+                var culture = new CultureInfo(cultureName);
                 CultureInfo.CurrentCulture = culture;
                 CultureInfo.CurrentUICulture = culture;
-                context.Items["PreferredTheme"] = preference.PreferredTheme;
+                context.Items["PreferredTheme"] = preference.PreferredTheme == "dark" ? "dark" : "light";
             }
         }
 

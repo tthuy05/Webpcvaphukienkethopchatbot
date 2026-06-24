@@ -26,6 +26,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    options.SlidingExpiration = true;
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
@@ -56,6 +64,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 app.UseRouting();
 
