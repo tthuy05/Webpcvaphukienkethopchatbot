@@ -1,0 +1,75 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1 class="h3 mb-3">Thong tin ca nhan</h1>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <form asp-action="Index" method="post" class="border rounded p-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="mb-3">
+                <label asp-for="FullName" class="form-label">Ho ten</label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="PhoneNumber" class="form-label">So dien thoai</label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Address" class="form-label">Dia chi</label>
+                <textarea asp-for="Address" class="form-control" rows="3"></textarea>
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Cap nhat</button>
+        </form>
+    </div>
+    <div class="col-lg-7">
+        <div class="border rounded p-3">
+            <h2 class="h5">Don hang gan day</h2>
+            @if (!Model.RecentOrders.Any())
+            {
+                <p class="text-muted mb-0">Chua co don hang.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Ma don</th>
+                                <th>Ngay tao</th>
+                                <th>Trang thai</th>
+                                <th class="text-end">Tong tien</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var order in Model.RecentOrders)
+                        {
+                            <tr>
+                                <td>@order.OrderNumber</td>
+                                <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                                <td>@order.Status</td>
+                                <td class="text-end">@order.TotalAmount.ToString("N0")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

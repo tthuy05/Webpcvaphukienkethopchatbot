@@ -1,0 +1,56 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.ViewModels.AdminUserViewModel>
+
+@{
+    ViewData["Title"] = "Admin users";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Quan ly nguoi dung</h1>
+    <a class="btn btn-outline-secondary" asp-area="" asp-controller="Home" asp-action="Index">Ve trang chu</a>
+</div>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+<div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>Email</th>
+                <th>Ho ten</th>
+                <th>Vai tro</th>
+                <th>Trang thai</th>
+                <th class="text-end">Thao tac</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@user.FullName</td>
+                <td>@user.Roles</td>
+                <td>
+                    <span class="badge @(user.IsLocked ? "bg-danger" : "bg-success")">
+                        @(user.IsLocked ? "Bi khoa" : "Dang hoat dong")
+                    </span>
+                </td>
+                <td class="text-end">
+                    <form asp-action="ToggleLock" method="post" class="d-inline">
+                        <input type="hidden" name="id" value="@user.Id" />
+                        <button type="submit" class="btn btn-sm @(user.IsLocked ? "btn-outline-success" : "btn-outline-danger")">
+                            @(user.IsLocked ? "Mo khoa" : "Khoa")
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
