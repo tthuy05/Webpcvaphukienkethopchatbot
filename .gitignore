@@ -13,5 +13,4 @@ wwwroot/uploads/
 publish/
 publish-*/
 deploy*.zip
-database.sql
 stitch_b_pc_ai_ecommerce_ui*/
