@@ -1,65 +1,117 @@
 @using Webpcvaphukienkethopchatbot.Models.Enums
 @model Webpcvaphukienkethopchatbot.ViewModels.CheckoutViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
 
 @{
-    ViewData["Title"] = "Checkout";
+    ViewData["Title"] = Localizer["Thanh toán"].Value;
 }
 
-<h1 class="h3 mb-3">Thanh toan</h1>
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-controller="Home" asp-action="Index">@Localizer["Trang chủ"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <a asp-controller="Cart" asp-action="Index">@Localizer["Giỏ hàng"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@Localizer["Thanh toán"]</span>
+        </nav>
+        <div class="section-kicker">@Localizer["Secure checkout"]</div>
+        <h1 class="hero-title hero-title--page">@Localizer["Thông tin thanh toán"]</h1>
+    </div>
+</section>
 
 @if (!Model.Cart.Items.Any())
 {
-    <div class="alert alert-info">Gio hang dang trong.</div>
-    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Tiep tuc mua sam</a>
+    <div class="surface-panel text-center">
+        <span class="material-symbols-outlined empty-icon">remove_shopping_cart</span>
+        <h2 class="h4 fw-bold mt-3">@Localizer["Giỏ hàng đang trống"]</h2>
+        <p class="muted-text mb-4">@Localizer["Bạn cần có sản phẩm trong giỏ hàng trước khi đặt hàng."]</p>
+        <a class="btn btn-primary" asp-controller="Products" asp-action="Index">@Localizer["Tiếp tục mua sắm"]</a>
+    </div>
 }
 else
 {
-    <form asp-action="Checkout" method="post" class="row g-4">
-        <div class="col-lg-6">
-            <div class="border rounded p-3">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="mb-3">
-                    <label asp-for="ReceiverName" class="form-label">Nguoi nhan</label>
-                    <input asp-for="ReceiverName" class="form-control" />
+    <form asp-action="Checkout" method="post" class="checkout-grid">
+        <section class="surface-panel">
+            <div class="section-kicker">@Localizer["Người nhận"]</div>
+            <h2 class="h4 fw-bold mb-4">@Localizer["Địa chỉ giao hàng"]</h2>
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="ReceiverName" class="form-label">@Localizer["Người nhận"]</label>
+                    <input asp-for="ReceiverName" class="form-control" placeholder="Nguyễn Văn A" />
                     <span asp-validation-for="ReceiverName" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="PhoneNumber" class="form-label">So dien thoai</label>
-                    <input asp-for="PhoneNumber" class="form-control" />
+                <div class="col-md-6">
+                    <label asp-for="PhoneNumber" class="form-label">@Localizer["Số điện thoại"]</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="0901234567" />
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="ShippingAddress" class="form-label">Dia chi giao hang</label>
-                    <textarea asp-for="ShippingAddress" class="form-control" rows="3"></textarea>
+                <div class="col-12">
+                    <label asp-for="ShippingAddress" class="form-label">@Localizer["Địa chỉ giao hàng"]</label>
+                    <textarea asp-for="ShippingAddress" class="form-control" rows="4" placeholder="@Localizer["Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"].Value"></textarea>
                     <span asp-validation-for="ShippingAddress" class="text-danger"></span>
                 </div>
-                <div class="mb-3">
-                    <label asp-for="PaymentMethod" class="form-label">Phuong thuc thanh toan</label>
-                    <select asp-for="PaymentMethod" class="form-select">
-                        <option value="@PaymentMethod.CashOnDelivery">Thanh toan khi nhan hang</option>
-                        <option value="@PaymentMethod.SimulatedBankTransfer">Chuyen khoan gia lap</option>
-                    </select>
+                <div class="col-12">
+                    <label asp-for="PaymentMethod" class="form-label">@Localizer["Phương thức thanh toán"]</label>
+                    <div class="payment-options">
+                        <label class="payment-option">
+                            <input asp-for="PaymentMethod" type="radio" value="@PaymentMethod.CashOnDelivery" />
+                            <span class="material-symbols-outlined">payments</span>
+                            <strong>COD</strong>
+                            <small>@Localizer["Thanh toán khi nhận hàng"]</small>
+                        </label>
+                        <label class="payment-option">
+                            <input asp-for="PaymentMethod" type="radio" value="@PaymentMethod.SimulatedBankTransfer" />
+                            <span class="material-symbols-outlined">account_balance</span>
+                            <strong>@Localizer["Chuyển khoản"]</strong>
+                            <small>@Localizer["Mô phỏng chuyển khoản"]</small>
+                        </label>
+                    </div>
                 </div>
-                <button type="submit" class="btn btn-primary">Dat hang</button>
-                <a class="btn btn-outline-secondary" asp-controller="Cart" asp-action="Index">Quay lai gio hang</a>
             </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="border rounded p-3">
-                <h2 class="h5">Tom tat don hang</h2>
+        </section>
+
+        <aside class="summary-panel">
+            <div class="section-kicker">@Localizer["Đơn hàng"]</div>
+            <h2 class="h4 fw-bold mb-4">@Localizer["Tóm tắt đơn hàng"]</h2>
+            <div class="summary-product-list">
                 @foreach (var item in Model.Cart.Items)
                 {
-                    <div class="d-flex justify-content-between border-bottom py-2">
-                        <span>@item.ProductName x @item.Quantity</span>
-                        <span>@item.LineTotal.ToString("N0")</span>
+                    <div class="summary-product">
+                        <img src="@item.ImageUrl" alt="@item.ProductName" />
+                        <div>
+                            <strong>@item.ProductName</strong>
+                            <span>@item.Quantity x @item.UnitPrice.ToString("N0") VND</span>
+                        </div>
+                        <b>@item.LineTotal.ToString("N0")</b>
                     </div>
                 }
-                <div class="d-flex justify-content-between fw-bold pt-3">
-                    <span>Tong tien</span>
-                    <span>@Model.Cart.Total.ToString("N0")</span>
+            </div>
+            <div class="summary-lines">
+                <div>
+                    <span>@Localizer["Tạm tính"]</span>
+                    <strong>@Model.Cart.Total.ToString("N0") VND</strong>
+                </div>
+                <div>
+                    <span>@Localizer["Phí vận chuyển"]</span>
+                    <strong>0 VND</strong>
                 </div>
             </div>
-        </div>
+            <div class="summary-total">
+                <span>@Localizer["Tổng tiền"]</span>
+                <strong>@Model.Cart.Total.ToString("N0") VND</strong>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+                <span class="material-symbols-outlined align-middle me-1">lock</span>
+                @Localizer["Đặt hàng"]
+            </button>
+            <a class="btn btn-outline-secondary w-100 mt-2" asp-controller="Cart" asp-action="Index">@Localizer["Quay lại giỏ hàng"]</a>
+            <p class="muted-text small text-center mt-3 mb-0">@Localizer["Thông tin đặt hàng sẽ được xử lý theo quy trình hiện có của hệ thống."]</p>
+        </aside>
     </form>
 }
 

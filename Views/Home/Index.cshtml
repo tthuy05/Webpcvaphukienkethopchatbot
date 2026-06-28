@@ -1,49 +1,140 @@
+@using Webpcvaphukienkethopchatbot.Services
+@using Webpcvaphukienkethopchatbot.ViewModels
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IProductService ProductService
+@inject IHtmlLocalizer<SharedResource> Localizer
+
 @{
-    ViewData["Title"] = "Home";
+    ViewData["Title"] = Localizer["Trang chủ"].Value;
+    var featuredModel = await ProductService.SearchAsync(new ProductFilterViewModel { SortBy = "best-selling" }, Context.RequestAborted);
+    var featuredProducts = featuredModel.Products.Take(3).ToList();
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
+<section class="hero-grid">
     <div>
-        <h1 class="h3 mb-1">PC Store Backend Test</h1>
-        <p class="text-muted mb-0">Website ban laptop va phu kien may tinh tich hop chatbot tu van san pham.</p>
+        <div class="section-kicker">@Localizer["AI powered PC store"]</div>
+        <h1 class="hero-title">@Localizer["Tự build bộ máy đúng nhu cầu với"] <span>@Localizer["Tư vấn AI"]</span>.</h1>
+        <p class="hero-copy">
+            @Localizer["Tìm laptop, PC và phụ kiện theo ngân sách, cấu hình, mục đích học tập, làm việc hoặc gaming. Chatbot sẽ gợi ý nhanh những lựa chọn phù hợp nhất."]
+        </p>
+        <div class="hero-actions">
+            <a class="btn btn-primary" asp-controller="Chatbot" asp-action="Index">
+                <span class="material-symbols-outlined align-middle me-1">psychology</span>
+                @Localizer["Hỏi AI tư vấn"]
+            </a>
+            <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">
+                <span class="material-symbols-outlined align-middle me-1">grid_view</span>
+                @Localizer["Xem sản phẩm"]
+            </a>
+        </div>
+        <div class="chip-row mt-4">
+            <span class="chip">@Localizer["Laptop văn phòng"]</span>
+            <span class="chip">@Localizer["PC gaming"]</span>
+            <span class="chip">@Localizer["Đồ họa - render"]</span>
+            <span class="chip">@Localizer["Phụ kiện setup"]</span>
+        </div>
     </div>
-    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Xem san pham</a>
-</div>
+    <div class="hero-media" aria-label="@Localizer["Laptop và phụ kiện công nghệ"]">
+        <img src="~/images/products/placeholder-laptop.svg" asp-append-version="true" alt="@Localizer["Laptop và phụ kiện công nghệ"]" />
+    </div>
+</section>
 
-<div class="row row-cols-1 row-cols-md-3 g-3">
-    <div class="col">
-        <div class="border rounded p-3 h-100">
-            <h2 class="h5">Nguoi dung</h2>
-            <div class="d-grid gap-2">
-                <a class="btn btn-outline-primary" asp-area="Identity" asp-page="/Account/Login">Dang nhap</a>
-                <a class="btn btn-outline-primary" asp-area="Identity" asp-page="/Account/Register">Dang ky</a>
-                <a class="btn btn-outline-primary" asp-controller="Profile" asp-action="Index">Ho so</a>
-                <a class="btn btn-outline-primary" asp-controller="Orders" asp-action="Index">Lich su don hang</a>
-            </div>
+<section class="surface-panel mb-5">
+    <div class="d-flex flex-wrap justify-content-between gap-3 align-items-end mb-4">
+        <div>
+            <div class="section-kicker">@Localizer["Danh mục nổi bật"]</div>
+            <h2 class="h3 fw-bold mb-0">@Localizer["Mua nhanh theo nhu cầu"]</h2>
         </div>
+        <a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index">@Localizer["Tất cả sản phẩm"]</a>
     </div>
-    <div class="col">
-        <div class="border rounded p-3 h-100">
-            <h2 class="h5">Ban hang</h2>
-            <div class="d-grid gap-2">
-                <a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index">Tim kiem san pham</a>
-                <a class="btn btn-outline-primary" asp-controller="Cart" asp-action="Index">Gio hang</a>
-                <a class="btn btn-outline-primary" asp-controller="Orders" asp-action="Checkout">Checkout</a>
-                <a class="btn btn-outline-primary" asp-controller="Chatbot" asp-action="Index">Chatbot</a>
-            </div>
+    <div class="category-grid">
+        <a class="category-tile" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="hoc tap">
+            <span class="material-symbols-outlined">school</span>
+            <strong>@Localizer["Học tập"]</strong>
+            <small>@Localizer["Laptop gọn nhẹ, pin tốt"]</small>
+        </a>
+        <a class="category-tile" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="gaming">
+            <span class="material-symbols-outlined">sports_esports</span>
+            <strong>Gaming</strong>
+            <small>@Localizer["GPU mạnh, tản nhiệt ổn định"]</small>
+        </a>
+        <a class="category-tile" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="do hoa">
+            <span class="material-symbols-outlined">architecture</span>
+            <strong>@Localizer["Đồ họa"]</strong>
+            <small>@Localizer["Màn hình đẹp, RAM cao"]</small>
+        </a>
+        <a class="category-tile" asp-controller="Products" asp-action="Index">
+            <span class="material-symbols-outlined">keyboard</span>
+            <strong>@Localizer["Phụ kiện"]</strong>
+            <small>@Localizer["Hoàn thiện góc làm việc"]</small>
+        </a>
+    </div>
+</section>
+
+<section class="mb-5">
+    <div class="d-flex flex-wrap justify-content-between gap-3 align-items-end mb-4">
+        <div>
+            <div class="section-kicker">@Localizer["Sản phẩm gợi ý"]</div>
+            <h2 class="h3 fw-bold mb-0">@Localizer["Lựa chọn phù hợp mỗi ngày"]</h2>
         </div>
+        <a class="btn btn-outline-secondary" asp-controller="Chatbot" asp-action="Index">@Localizer["Nhận gợi ý riêng"]</a>
     </div>
-    <div class="col">
-        <div class="border rounded p-3 h-100">
-            <h2 class="h5">Quan tri</h2>
-            <div class="d-grid gap-2">
-                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
-                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Products" asp-action="Index">Quan ly san pham</a>
-                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Orders" asp-action="Index">Quan ly don hang</a>
-                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Users" asp-action="Index">Quan ly nguoi dung</a>
-                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Categories" asp-action="Index">Danh muc</a>
-                <a class="btn btn-outline-primary" asp-area="Admin" asp-controller="Brands" asp-action="Index">Thuong hieu</a>
-            </div>
+    @if (featuredProducts.Any())
+    {
+        <div class="product-grid">
+            @foreach (var product in featuredProducts)
+            {
+                <article class="tech-card product-card">
+                    <a class="product-card-media" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">
+                        <img src="@product.MainImageUrl" alt="@product.Name" />
+                    </a>
+                    <div class="product-card-body">
+                        <div class="chip-row mb-3">
+                            <span class="chip">@product.BrandName</span>
+                            <span class="chip">@product.CategoryName</span>
+                        </div>
+                        <h3 class="h5 fw-bold">
+                            <a class="text-reset text-decoration-none" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">@product.Name</a>
+                        </h3>
+                        <p class="muted-text mb-3">@product.SuitableNeeds</p>
+                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-auto">
+                            <div>
+                                <div class="price-text">@product.Price.ToString("N0") VND</div>
+                                <div class="small @(product.StockQuantity > 0 ? "text-success" : "text-danger")">
+                                    @(product.StockQuantity > 0 ? Localizer["Còn {0} sản phẩm", product.StockQuantity] : Localizer["Hết hàng"])
+                                </div>
+                            </div>
+                            <a class="btn btn-sm btn-outline-primary" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">@Localizer["Chi tiết"]</a>
+                        </div>
+                    </div>
+                </article>
+            }
         </div>
+    }
+    else
+    {
+        <div class="surface-panel text-center">
+            <span class="material-symbols-outlined empty-icon">inventory_2</span>
+            <h3 class="h5 fw-bold mt-3">@Localizer["Chưa có sản phẩm hiển thị"]</h3>
+            <p class="muted-text mb-4">@Localizer["Hãy thêm sản phẩm trong khu vực admin để các card trên trang chủ tự động lấy dữ liệu thật."]</p>
+            <a class="btn btn-primary" asp-controller="Products" asp-action="Index">@Localizer["Mở catalog"]</a>
+        </div>
+    }
+</section>
+
+<section class="feature-band">
+    <div>
+        <div class="section-kicker">@Localizer["Chatbot tư vấn"]</div>
+        <h2 class="h3 fw-bold mb-3">@Localizer["Nói ngân sách và mục đích, hệ thống sẽ lọc sản phẩm phù hợp."]</h2>
+        <p class="muted-text mb-0">@Localizer["HomeChatbotExamples"]</p>
     </div>
-</div>
+    <a class="btn btn-primary" asp-controller="Chatbot" asp-action="Index">
+        <span class="material-symbols-outlined align-middle me-1">smart_toy</span>
+        @Localizer["Bắt đầu tư vấn"]
+    </a>
+</section>
+
+<a class="floating-chat" asp-controller="Chatbot" asp-action="Index" title="@Localizer["Chatbot AI"]">
+    <span class="material-symbols-outlined">chat</span>
+</a>

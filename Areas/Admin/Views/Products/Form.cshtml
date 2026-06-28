@@ -76,7 +76,7 @@
         </div>
         <div class="col-md-8">
             <label asp-for="ImageFile" class="form-label">Anh san pham</label>
-            <input asp-for="ImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif,.svg" />
+            <input asp-for="ImageFile" type="file" class="form-control" accept=".jpg,.jpeg,.png,.webp,.gif" />
         </div>
         <div class="col-md-4">
             @if (!string.IsNullOrWhiteSpace(Model.ExistingImageUrl))

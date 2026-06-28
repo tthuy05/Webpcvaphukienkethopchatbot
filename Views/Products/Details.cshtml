@@ -1,43 +1,125 @@
 @model Webpcvaphukienkethopchatbot.ViewModels.ProductDetailViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
 
 @{
     ViewData["Title"] = Model.Name;
+    var specs = new[]
+    {
+        new { Label = "CPU", Value = Model.Cpu },
+        new { Label = "RAM", Value = Model.Ram },
+        new { Label = "SSD", Value = Model.Ssd },
+        new { Label = "GPU", Value = Model.Gpu },
+        new { Label = Localizer["Màn hình"].Value, Value = Model.Screen },
+        new { Label = "Pin", Value = Model.Battery },
+        new { Label = Localizer["Trọng lượng"].Value, Value = Model.Weight },
+        new { Label = Localizer["Hệ điều hành"].Value, Value = Model.OperatingSystem },
+        new { Label = Localizer["Nhu cầu"].Value, Value = (string?)Model.SuitableNeeds }
+    };
 }
 
-<div class="row g-4">
-    <div class="col-md-5">
-        <img src="@Model.MainImageUrl" alt="@Model.Name" class="img-fluid border rounded p-3" />
-    </div>
-    <div class="col-md-7">
-        <h1 class="h3">@Model.Name</h1>
-        <div class="text-muted">@Model.BrandName - @Model.CategoryName</div>
-        <div class="display-6 my-3">@Model.Price.ToString("N0") VND</div>
-        <div class="mb-3 @(Model.StockQuantity > 0 ? "text-success" : "text-danger")">
-            @(Model.StockQuantity > 0 ? $"Con {Model.StockQuantity} san pham" : "Het hang")
+<nav class="breadcrumb-line mb-4" aria-label="breadcrumb">
+    <a asp-controller="Home" asp-action="Index">@Localizer["Trang chủ"]</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <a asp-action="Index">@Localizer["Sản phẩm"]</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span>@Model.Name</span>
+</nav>
+
+<div class="detail-grid">
+    <section class="detail-gallery">
+        <img src="@Model.MainImageUrl" alt="@Model.Name" />
+        <div class="detail-thumb-grid mt-3">
+            <button class="detail-thumb is-active" type="button">
+                <img src="@Model.MainImageUrl" alt="@Model.Name" />
+            </button>
+            <button class="detail-thumb" type="button" aria-label="Thong so CPU">
+                <span class="material-symbols-outlined">memory</span>
+            </button>
+            <button class="detail-thumb" type="button" aria-label="Hieu nang">
+                <span class="material-symbols-outlined">developer_board</span>
+            </button>
+            <button class="detail-thumb" type="button" aria-label="Bao hanh">
+                <span class="material-symbols-outlined">verified</span>
+            </button>
         </div>
-        <p>@Model.Description</p>
-        <dl class="row">
-            <dt class="col-sm-4">CPU</dt><dd class="col-sm-8">@Model.Cpu</dd>
-            <dt class="col-sm-4">RAM</dt><dd class="col-sm-8">@Model.Ram</dd>
-            <dt class="col-sm-4">SSD</dt><dd class="col-sm-8">@Model.Ssd</dd>
-            <dt class="col-sm-4">GPU</dt><dd class="col-sm-8">@Model.Gpu</dd>
-            <dt class="col-sm-4">Man hinh</dt><dd class="col-sm-8">@Model.Screen</dd>
-            <dt class="col-sm-4">Pin</dt><dd class="col-sm-8">@Model.Battery</dd>
-            <dt class="col-sm-4">Trong luong</dt><dd class="col-sm-8">@Model.Weight</dd>
-            <dt class="col-sm-4">He dieu hanh</dt><dd class="col-sm-8">@Model.OperatingSystem</dd>
-            <dt class="col-sm-4">Nhu cau</dt><dd class="col-sm-8">@Model.SuitableNeeds</dd>
-        </dl>
+    </section>
+
+    <aside class="summary-panel product-buy-panel">
+        <div class="chip-row mb-3">
+            <span class="chip">@Model.BrandName</span>
+            <span class="chip">@Model.CategoryName</span>
+        </div>
+        <h1 class="h2 fw-black mb-3">@Model.Name</h1>
+        <div class="price-text mb-2">@Model.Price.ToString("N0") VND</div>
+        <div class="d-flex align-items-center gap-2 mb-4 @(Model.StockQuantity > 0 ? "text-success" : "text-danger")">
+            <span class="status-dot"></span>
+            <span>@(Model.StockQuantity > 0 ? Localizer["Còn hàng: {0} sản phẩm", Model.StockQuantity] : Localizer["Hết hàng"])</span>
+        </div>
+        <p class="muted-text">@Model.Description</p>
+
+        <div class="chip-row my-4">
+            @foreach (var spec in specs.Take(4).Where(item => !string.IsNullOrWhiteSpace(item.Value)))
+            {
+                <span class="chip chip--large">
+                    <span class="material-symbols-outlined">bolt</span>
+                    @spec.Value
+                </span>
+            }
+        </div>
+
         @if (Model.StockQuantity > 0)
         {
-            <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex gap-2 align-items-end mb-3">
+            <form asp-controller="Cart" asp-action="Add" method="post" class="purchase-form">
                 <input type="hidden" name="productId" value="@Model.Id" />
                 <div>
-                    <label for="quantity" class="form-label">So luong</label>
-                    <input id="quantity" name="quantity" type="number" min="1" max="@Model.StockQuantity" value="1" class="form-control" style="width: 120px;" />
+                    <label for="quantity" class="form-label">@Localizer["Số lượng"]</label>
+                    <input id="quantity" name="quantity" type="number" min="1" max="@Model.StockQuantity" value="1" class="form-control" />
                 </div>
-                <button type="submit" class="btn btn-primary">Them vao gio</button>
+                <button type="submit" class="btn btn-primary">
+                    <span class="material-symbols-outlined align-middle me-1">shopping_cart</span>
+                    @Localizer["Thêm vào giỏ"]
+                </button>
             </form>
         }
-        <a class="btn btn-outline-secondary" asp-action="Index">Quay lai</a>
-    </div>
+        else
+        {
+            <button class="btn btn-outline-secondary w-100" type="button" disabled>@Localizer["Sản phẩm tạm hết hàng"]</button>
+        }
+
+        <div class="service-list mt-4">
+            <div>
+                <span class="material-symbols-outlined">local_shipping</span>
+                <span>@Localizer["Giao hàng toàn quốc"]</span>
+            </div>
+            <div>
+                <span class="material-symbols-outlined">verified_user</span>
+                <span>@Localizer["Bảo hành theo chính sách sản phẩm"]</span>
+            </div>
+            <div>
+                <span class="material-symbols-outlined">psychology</span>
+                <span>@Localizer["Có thể hỏi chatbot để so sánh trước khi mua"]</span>
+            </div>
+        </div>
+    </aside>
 </div>
+
+<section class="surface-panel mt-5">
+    <div class="d-flex flex-wrap justify-content-between gap-3 align-items-end mb-4">
+        <div>
+            <div class="section-kicker">@Localizer["Thông số kỹ thuật"]</div>
+            <h2 class="h3 fw-bold mb-0">@Localizer["Cấu hình chi tiết"]</h2>
+        </div>
+        <a class="btn btn-outline-secondary" asp-action="Index">@Localizer["Quay lại catalog"]</a>
+    </div>
+    <dl class="spec-grid">
+        @foreach (var spec in specs)
+        {
+            <div class="spec-row">
+                <dt>@spec.Label</dt>
+                <dd>@(string.IsNullOrWhiteSpace(spec.Value) ? "-" : spec.Value)</dd>
+            </div>
+        }
+    </dl>
+</section>

@@ -7,6 +7,8 @@
     var preferredTheme = Context.Items["PreferredTheme"] as string;
     var selectedTheme = preferredTheme == "dark" || Context.Request.Cookies["preferred-theme"] == "dark" ? "dark" : "light";
     var bodyThemeClass = selectedTheme == "dark" ? "theme-dark" : "theme-light";
+    var currentPath = Context.Request.Path.Value ?? "/";
+    var returnUrl = $"{Context.Request.Path}{Context.Request.QueryString}";
 }
 
 <!DOCTYPE html>
@@ -14,72 +16,109 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - PC Store</title>
+    <title>@ViewData["Title"] - @Localizer["Bộ PC"]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Material+Symbols+Outlined:wght@300..600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Webpcvaphukienkethopchatbot.styles.css" asp-append-version="true" />
 </head>
 <body class="@bodyThemeClass">
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">PC Store</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Products" asp-action="Index">@Localizer["Products"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">@Localizer["Cart"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Orders"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Chatbot" asp-action="Index">@Localizer["Chatbot"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
-                        </li>
-                    </ul>
-                    <form class="d-flex align-items-center gap-2 me-3" asp-area="" asp-controller="Language" asp-action="Set" method="post">
-                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                        <label class="visually-hidden" for="culture">@Localizer["ChangeLanguage"]</label>
-                        <select id="culture" name="culture" class="form-select form-select-sm" onchange="this.form.submit()">
-                            <option value="vi-VN" selected="@(CultureInfo.CurrentUICulture.Name == "vi-VN")">@Localizer["Vietnamese"]</option>
-                            <option value="en-US" selected="@(CultureInfo.CurrentUICulture.Name == "en-US")">@Localizer["English"]</option>
-                        </select>
-                    </form>
-                    <form class="d-flex align-items-center me-3" asp-area="" asp-controller="Theme" asp-action="Set" method="post">
-                        <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
-                        <input type="hidden" name="theme" value="@(selectedTheme == "dark" ? "light" : "dark")" />
-                        <button type="submit" class="btn btn-sm btn-outline-primary">
-                            @(selectedTheme == "dark" ? Localizer["LightMode"] : Localizer["DarkMode"])
-                        </button>
-                    </form>
-                    <partial name="_LoginPartial" />
-                </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+    <header class="app-topbar">
+        <div class="app-topbar__inner">
+            <a class="brand-mark" asp-area="" asp-controller="Home" asp-action="Index">
+                <span class="brand-mark__icon material-symbols-outlined">memory</span>
+                <span>@Localizer["Bộ PC"]</span>
+            </a>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - PC Store - <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
+            <button class="nav-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+
+            <nav id="mainNav" class="collapse app-nav-collapse">
+                <ul class="app-nav">
+                    <li><a class="app-nav__link @(currentPath == "/" ? "is-active" : "")" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a></li>
+                    <li><a class="app-nav__link @(currentPath.StartsWith("/Products") ? "is-active" : "")" asp-area="" asp-controller="Products" asp-action="Index">@Localizer["Products"]</a></li>
+                    <li><a class="app-nav__link @(currentPath.StartsWith("/Cart") ? "is-active" : "")" asp-area="" asp-controller="Cart" asp-action="Index">@Localizer["Cart"]</a></li>
+                    <li><a class="app-nav__link @(currentPath.StartsWith("/Orders") ? "is-active" : "")" asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Orders"]</a></li>
+                    <li><a class="app-nav__link @(currentPath.StartsWith("/Chatbot") ? "is-active" : "")" asp-area="" asp-controller="Chatbot" asp-action="Index">@Localizer["Chatbot"]</a></li>
+                </ul>
+            </nav>
+
+            <div class="app-actions">
+                <form asp-area="" asp-controller="Language" asp-action="Set" method="post" class="app-action-form">
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <input type="hidden" name="culture" value="@(CultureInfo.CurrentUICulture.Name == "vi-VN" ? "en-US" : "vi-VN")" />
+                    <button class="icon-action" type="submit" title="@Localizer["ChangeLanguage"]">
+                        <span class="material-symbols-outlined">translate</span>
+                    </button>
+                </form>
+                <form asp-area="" asp-controller="Theme" asp-action="Set" method="post" class="app-action-form">
+                    <input type="hidden" name="returnUrl" value="@returnUrl" />
+                    <input type="hidden" name="theme" value="@(selectedTheme == "dark" ? "light" : "dark")" />
+                    <button class="icon-action" type="submit" title="@(selectedTheme == "dark" ? Localizer["LightMode"] : Localizer["DarkMode"])">
+                        <span class="material-symbols-outlined">@(selectedTheme == "dark" ? "light_mode" : "dark_mode")</span>
+                    </button>
+                </form>
+                <a class="icon-action position-relative" asp-area="" asp-controller="Cart" asp-action="Index" title="@Localizer["Cart"]">
+                    <span class="material-symbols-outlined">shopping_cart</span>
+                </a>
+                <partial name="_LoginPartial" />
+            </div>
         </div>
+    </header>
+
+    <aside class="utility-rail">
+        <a class="utility-rail__item" asp-area="" asp-controller="Chatbot" asp-action="Index" title="@Localizer["AI tư vấn"]">
+            <span class="material-symbols-outlined">psychology</span>
+            <span>@Localizer["AI tư vấn"]</span>
+        </a>
+        <a class="utility-rail__item" asp-area="" asp-controller="Products" asp-action="Index" title="@Localizer["Giao toàn quốc"]">
+            <span class="material-symbols-outlined">local_shipping</span>
+            <span>@Localizer["Giao toàn quốc"]</span>
+        </a>
+        <a class="utility-rail__item" asp-area="" asp-controller="Home" asp-action="Privacy" title="@Localizer["Bảo hành"]">
+            <span class="material-symbols-outlined">verified</span>
+            <span>@Localizer["Bảo hành"]</span>
+        </a>
+    </aside>
+
+    <main class="app-shell" role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="app-footer">
+        <div class="app-footer__grid">
+            <div>
+                <div class="brand-mark brand-mark--footer">
+                    <span class="brand-mark__icon material-symbols-outlined">memory</span>
+                    <span>@Localizer["Bộ PC"]</span>
+                </div>
+                <p class="app-footer__copy">@Localizer["Hệ thống bán laptop, phụ kiện và tư vấn cấu hình bằng chatbot AI cho nhu cầu học tập, làm việc và giải trí."]</p>
+            </div>
+            <div>
+                <h2>@Localizer["Sản phẩm"]</h2>
+                <a asp-area="" asp-controller="Products" asp-action="Index">Laptop</a>
+                <a asp-area="" asp-controller="Products" asp-action="Index">@Localizer["Phụ kiện"]</a>
+                <a asp-area="" asp-controller="Chatbot" asp-action="Index">@Localizer["Tư vấn AI"]</a>
+            </div>
+            <div>
+                <h2>@Localizer["Hỗ trợ"]</h2>
+                <a asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Đơn hàng"]</a>
+                <a asp-area="" asp-controller="Cart" asp-action="Index">@Localizer["Giỏ hàng"]</a>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Privacy"]</a>
+            </div>
+            <div>
+                <h2>@Localizer["Liên hệ"]</h2>
+                <p>123 Tech Avenue, TP. HCM</p>
+                <p>1900 8888</p>
+                <p>support@bopc.vn</p>
+            </div>
+        </div>
+        <div class="app-footer__bottom">&copy; 2026 @Localizer["Bộ PC"]. Premium Tech Experience.</div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

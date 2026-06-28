@@ -17,8 +17,7 @@ public partial class ProductService : IProductService
         ".jpeg",
         ".png",
         ".webp",
-        ".gif",
-        ".svg"
+        ".gif"
     };
 
     private readonly ApplicationDbContext _dbContext;

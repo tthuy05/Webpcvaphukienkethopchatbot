@@ -1,95 +1,195 @@
 @model Webpcvaphukienkethopchatbot.ViewModels.ProductFilterViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
 
 @{
-    ViewData["Title"] = "Products";
+    ViewData["Title"] = Localizer["Sản phẩm"].Value;
 }
 
-<h1 class="h3 mb-3">San pham</h1>
-
-<form method="get" class="border rounded p-3 mb-4">
-    <div class="row g-3">
-        <div class="col-md-4">
-            <label asp-for="Search" class="form-label">Tu khoa</label>
-            <input asp-for="Search" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="CategoryId" class="form-label">Danh muc</label>
-            <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
-                <option value="">Tat ca</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <label asp-for="BrandId" class="form-label">Hang</label>
-            <select asp-for="BrandId" asp-items="Model.Brands" class="form-select">
-                <option value="">Tat ca</option>
-            </select>
-        </div>
-        <div class="col-md-2">
-            <label asp-for="MinPrice" class="form-label">Gia tu</label>
-            <input asp-for="MinPrice" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="MaxPrice" class="form-label">Gia den</label>
-            <input asp-for="MaxPrice" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="Cpu" class="form-label">CPU</label>
-            <input asp-for="Cpu" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="Ram" class="form-label">RAM</label>
-            <input asp-for="Ram" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="Ssd" class="form-label">SSD</label>
-            <input asp-for="Ssd" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="Gpu" class="form-label">GPU</label>
-            <input asp-for="Gpu" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="UsageNeed" class="form-label">Nhu cau</label>
-            <input asp-for="UsageNeed" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="SortBy" class="form-label">Sap xep</label>
-            <select asp-for="SortBy" class="form-select">
-                <option value="newest">Moi nhat</option>
-                <option value="price-asc">Gia tang dan</option>
-                <option value="price-desc">Gia giam dan</option>
-                <option value="best-selling">Ban chay</option>
-            </select>
-        </div>
-        <div class="col-12">
-            <button type="submit" class="btn btn-primary">Tim kiem</button>
-            <a class="btn btn-outline-secondary" asp-action="Index">Xoa loc</a>
-        </div>
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-controller="Home" asp-action="Index">@Localizer["Trang chủ"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@Localizer["Sản phẩm"]</span>
+        </nav>
+        <div class="section-kicker">@Localizer["Premium catalog"]</div>
+        <h1 class="hero-title hero-title--page">@Localizer["Bộ PC, laptop và phụ kiện"]</h1>
+        <p class="hero-copy">@Localizer["Lọc nhanh theo hãng, mức giá và cấu hình để tìm đúng sản phẩm từ database hiện có."]</p>
     </div>
-</form>
+    <form method="get" class="catalog-search">
+        <input name="Search" value="@Model.Search" class="form-control" placeholder="@Localizer["Tìm kiếm linh kiện, laptop, phụ kiện..."].Value" />
+        <input type="hidden" name="CategoryId" value="@Model.CategoryId" />
+        <input type="hidden" name="BrandId" value="@Model.BrandId" />
+        <input type="hidden" name="MinPrice" value="@Model.MinPrice" />
+        <input type="hidden" name="MaxPrice" value="@Model.MaxPrice" />
+        <input type="hidden" name="Cpu" value="@Model.Cpu" />
+        <input type="hidden" name="Ram" value="@Model.Ram" />
+        <input type="hidden" name="Ssd" value="@Model.Ssd" />
+        <input type="hidden" name="Gpu" value="@Model.Gpu" />
+        <input type="hidden" name="UsageNeed" value="@Model.UsageNeed" />
+        <input type="hidden" name="SortBy" value="@Model.SortBy" />
+        <button class="btn btn-primary" type="submit">
+            <span class="material-symbols-outlined align-middle me-1">search</span>
+            @Localizer["Tìm"]
+        </button>
+    </form>
+</section>
 
-@if (!Model.Products.Any())
-{
-    <div class="alert alert-info">Khong tim thay san pham phu hop.</div>
-}
-else
-{
-    <div class="row row-cols-1 row-cols-md-3 g-3">
-        @foreach (var product in Model.Products)
-        {
-            <div class="col">
-                <div class="border rounded h-100 p-3">
-                    <img src="@product.MainImageUrl" alt="@product.Name" class="img-fluid mb-3 product-card-image" />
-                    <h2 class="h5">@product.Name</h2>
-                    <div class="text-muted small">@product.BrandName - @product.CategoryName</div>
-                    <div class="fw-bold my-2">@product.Price.ToString("N0") VND</div>
-                    <div class="small">Nhu cau: @product.SuitableNeeds</div>
-                    <div class="small @(product.StockQuantity > 0 ? "text-success" : "text-danger")">
-                        @(product.StockQuantity > 0 ? $"Con {product.StockQuantity} san pham" : "Het hang")
-                    </div>
-                    <a class="btn btn-sm btn-outline-primary mt-3" asp-action="Details" asp-route-id="@product.Id">Chi tiet</a>
+<div class="catalog-grid">
+    <aside>
+        <form method="get" class="filter-panel p-4">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div>
+                    <div class="section-kicker">@Localizer["Bộ lọc"]</div>
+                    <h2 class="h5 fw-bold mb-0">@Localizer["Tinh chỉnh cấu hình"]</h2>
+                </div>
+                <a class="icon-action" asp-action="Index" title="@Localizer["Xóa lọc"]">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                </a>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Search" class="form-label">@Localizer["Từ khóa"]</label>
+                <input asp-for="Search" class="form-control" placeholder="@Localizer["Tên sản phẩm"].Value" />
+            </div>
+            <div class="mb-3">
+                <label asp-for="CategoryId" class="form-label">@Localizer["Danh mục"]</label>
+                <select asp-for="CategoryId" asp-items="Model.Categories" class="form-select">
+                    <option value="">@Localizer["Tất cả"]</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="BrandId" class="form-label">@Localizer["Thương hiệu"]</label>
+                <select asp-for="BrandId" asp-items="Model.Brands" class="form-select">
+                    <option value="">@Localizer["Tất cả"]</option>
+                </select>
+            </div>
+            <div class="row g-2 mb-3">
+                <div class="col-6">
+                    <label asp-for="MinPrice" class="form-label">@Localizer["Giá từ"]</label>
+                    <input asp-for="MinPrice" class="form-control" placeholder="0" />
+                </div>
+                <div class="col-6">
+                    <label asp-for="MaxPrice" class="form-label">@Localizer["Giá đến"]</label>
+                    <input asp-for="MaxPrice" class="form-control" placeholder="50000000" />
                 </div>
             </div>
+
+            <div class="filter-stack">
+                <div>
+                    <label asp-for="Cpu" class="form-label">CPU</label>
+                    <input asp-for="Cpu" class="form-control" placeholder="i5, Ryzen 7..." />
+                </div>
+                <div>
+                    <label asp-for="Ram" class="form-label">RAM</label>
+                    <input asp-for="Ram" class="form-control" placeholder="16GB, 32GB..." />
+                </div>
+                <div>
+                    <label asp-for="Ssd" class="form-label">SSD</label>
+                    <input asp-for="Ssd" class="form-control" placeholder="512GB, 1TB..." />
+                </div>
+                <div>
+                    <label asp-for="Gpu" class="form-label">GPU</label>
+                    <input asp-for="Gpu" class="form-control" placeholder="RTX, Radeon..." />
+                </div>
+                <div>
+                    <label asp-for="UsageNeed" class="form-label">@Localizer["Nhu cầu"]</label>
+                    <input asp-for="UsageNeed" class="form-control" placeholder="@Localizer["gaming, học tập..."].Value" />
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <label asp-for="SortBy" class="form-label">@Localizer["Sắp xếp"]</label>
+                <select asp-for="SortBy" class="form-select">
+                    <option value="newest">@Localizer["Mới nhất"]</option>
+                    <option value="price-asc">@Localizer["Giá tăng dần"]</option>
+                    <option value="price-desc">@Localizer["Giá giảm dần"]</option>
+                    <option value="best-selling">@Localizer["Bán chạy"]</option>
+                </select>
+            </div>
+
+            <div class="button-row mt-4">
+                <button class="btn btn-primary flex-grow-1" type="submit">@Localizer["Áp dụng"]</button>
+                <a class="btn btn-outline-secondary" asp-action="Index">@Localizer["Xóa"]</a>
+            </div>
+        </form>
+    </aside>
+
+    <section>
+        <div class="catalog-toolbar">
+            <div>
+                <div class="section-kicker">@Localizer["Kết quả"]</div>
+                <h2 class="h4 fw-bold mb-0">@Localizer["{0} sản phẩm", Model.Products.Count]</h2>
+            </div>
+            <div class="chip-row">
+                @if (!string.IsNullOrWhiteSpace(Model.Search))
+                {
+                    <span class="chip">@Localizer["Từ khóa"]: @Model.Search</span>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.UsageNeed))
+                {
+                    <span class="chip">@Localizer["Nhu cầu"]: @Model.UsageNeed</span>
+                }
+                <span class="chip">@(Model.SortBy switch { "price-asc" => Localizer["Giá tăng dần"], "price-desc" => Localizer["Giá giảm dần"], "best-selling" => Localizer["Bán chạy"], _ => Localizer["Mới nhất"] })</span>
+            </div>
+        </div>
+
+        @if (!Model.Products.Any())
+        {
+            <div class="surface-panel text-center">
+                <span class="material-symbols-outlined empty-icon">search_off</span>
+                <h3 class="h5 fw-bold mt-3">@Localizer["Không tìm thấy sản phẩm phù hợp"]</h3>
+                <p class="muted-text mb-4">@Localizer["Thử bỏ bớt điều kiện lọc hoặc hỏi chatbot để được gợi ý theo ngân sách."]</p>
+                <a class="btn btn-primary" asp-controller="Chatbot" asp-action="Index">@Localizer["Hỏi chatbot"]</a>
+            </div>
         }
-    </div>
-}
+        else
+        {
+            <div class="product-grid">
+                @foreach (var product in Model.Products)
+                {
+                    <article class="tech-card product-card">
+                        <a class="product-card-media" asp-action="Details" asp-route-id="@product.Id">
+                            <img src="@product.MainImageUrl" alt="@product.Name" />
+                            @if (product.SoldQuantity > 0)
+                            {
+                                <span class="product-badge">@Localizer["Đã bán {0}", product.SoldQuantity]</span>
+                            }
+                        </a>
+                        <div class="product-card-body">
+                            <div class="chip-row mb-3">
+                                <span class="chip">@product.BrandName</span>
+                                <span class="chip">@product.CategoryName</span>
+                            </div>
+                            <h3 class="h5 fw-bold">
+                                <a class="text-reset text-decoration-none" asp-action="Details" asp-route-id="@product.Id">@product.Name</a>
+                            </h3>
+                            <p class="muted-text product-card-desc">@product.SuitableNeeds</p>
+                            <div class="mt-auto">
+                                <div class="price-text">@product.Price.ToString("N0") VND</div>
+                                <div class="small mb-3 @(product.StockQuantity > 0 ? "text-success" : "text-danger")">
+                                    @(product.StockQuantity > 0 ? Localizer["Còn {0} sản phẩm", product.StockQuantity] : Localizer["Hết hàng"])
+                                </div>
+                                <div class="button-row mt-0">
+                                    <a class="btn btn-sm btn-outline-primary flex-grow-1" asp-action="Details" asp-route-id="@product.Id">@Localizer["Chi tiết"]</a>
+                                    @if (product.StockQuantity > 0)
+                                    {
+                                        <form asp-controller="Cart" asp-action="Add" method="post">
+                                            <input type="hidden" name="productId" value="@product.Id" />
+                                            <input type="hidden" name="quantity" value="1" />
+                                            <button class="btn btn-sm btn-primary icon-button" type="submit" title="@Localizer["Thêm vào giỏ"]">
+                                                <span class="material-symbols-outlined">shopping_basket</span>
+                                            </button>
+                                        </form>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                }
+            </div>
+        }
+    </section>
+</div>
