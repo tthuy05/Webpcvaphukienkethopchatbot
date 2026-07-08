@@ -65,18 +65,18 @@ public class AdminOrderService : IAdminOrderService
     {
         if (!Enum.IsDefined(status))
         {
-            throw new InvalidOperationException("Trang thai don hang khong hop le.");
+            throw new InvalidOperationException("Trạng thái đơn hàng không hợp lệ.");
         }
 
         var order = await _dbContext.Orders.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
         if (order is null)
         {
-            throw new KeyNotFoundException("Khong tim thay don hang.");
+            throw new KeyNotFoundException("Không tìm thấy đơn hàng.");
         }
 
         if (order.Status == OrderStatus.Completed && status != OrderStatus.Completed)
         {
-            throw new InvalidOperationException("Khong the sua don hang da hoan thanh.");
+            throw new InvalidOperationException("Không thể sửa đơn hàng đã hoàn thành.");
         }
 
         order.Status = status;

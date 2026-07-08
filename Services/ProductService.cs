@@ -120,19 +120,19 @@ public partial class ProductService : IProductService
     {
         if (model.Price < 0)
         {
-            throw new InvalidOperationException("Gia san pham khong duoc am.");
+            throw new InvalidOperationException("Giá sản phẩm không được âm.");
         }
 
         if (model.StockQuantity < 0)
         {
-            throw new InvalidOperationException("Ton kho khong duoc am.");
+            throw new InvalidOperationException("Tồn kho không được âm.");
         }
 
         var categoryExists = await _dbContext.Categories.AnyAsync(category => category.Id == model.CategoryId, cancellationToken);
         var brandExists = await _dbContext.Brands.AnyAsync(brand => brand.Id == model.BrandId, cancellationToken);
         if (!categoryExists || !brandExists)
         {
-            throw new InvalidOperationException("Danh muc hoac thuong hieu khong hop le.");
+            throw new InvalidOperationException("Danh mục hoặc thương hiệu không hợp lệ.");
         }
 
         var slug = await CreateUniqueSlugAsync(model.Name, model.Id, cancellationToken);
@@ -148,7 +148,7 @@ public partial class ProductService : IProductService
 
         if (product is null)
         {
-            throw new KeyNotFoundException("Khong tim thay san pham.");
+            throw new KeyNotFoundException("Không tìm thấy sản phẩm.");
         }
 
         product.Name = model.Name.Trim();
@@ -184,13 +184,18 @@ public partial class ProductService : IProductService
 
     public async Task HideAsync(int id, CancellationToken cancellationToken = default)
     {
+        await SetActiveAsync(id, false, cancellationToken);
+    }
+
+    public async Task SetActiveAsync(int id, bool isActive, CancellationToken cancellationToken = default)
+    {
         var product = await _dbContext.Products.FirstOrDefaultAsync(item => item.Id == id, cancellationToken);
         if (product is null)
         {
             return;
         }
 
-        product.IsActive = false;
+        product.IsActive = isActive;
         product.UpdatedAt = DateTime.UtcNow;
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
@@ -359,7 +364,7 @@ public partial class ProductService : IProductService
         var extension = Path.GetExtension(imageFile.FileName);
         if (!AllowedImageExtensions.Contains(extension))
         {
-            throw new InvalidOperationException("Dinh dang anh khong hop le.");
+            throw new InvalidOperationException("Định dạng ảnh không hợp lệ.");
         }
 
         var imagesDirectory = Path.Combine(_environment.WebRootPath, "images", "products");

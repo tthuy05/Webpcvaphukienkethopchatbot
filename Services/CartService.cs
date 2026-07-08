@@ -44,18 +44,18 @@ public class CartService : ICartService
     {
         if (quantity <= 0)
         {
-            throw new InvalidOperationException("So luong phai lon hon 0.");
+            throw new InvalidOperationException("Số lượng phải lớn hơn 0.");
         }
 
         var product = await _dbContext.Products.FirstOrDefaultAsync(item => item.Id == productId, cancellationToken);
         if (product is null || !product.IsActive)
         {
-            throw new InvalidOperationException("San pham khong kha dung.");
+            throw new InvalidOperationException("Sản phẩm không khả dụng.");
         }
 
         if (product.StockQuantity < quantity)
         {
-            throw new InvalidOperationException("So luong vuot qua ton kho.");
+            throw new InvalidOperationException("Số lượng vượt quá tồn kho.");
         }
 
         var cart = await GetOrCreateCartAsync(GetUserId(user), cancellationToken);
@@ -76,7 +76,7 @@ public class CartService : ICartService
             var nextQuantity = item.Quantity + quantity;
             if (nextQuantity > product.StockQuantity)
             {
-                throw new InvalidOperationException("So luong vuot qua ton kho.");
+                throw new InvalidOperationException("Số lượng vượt quá tồn kho.");
             }
 
             item.Quantity = nextQuantity;
@@ -91,7 +91,7 @@ public class CartService : ICartService
     {
         if (quantity <= 0)
         {
-            throw new InvalidOperationException("So luong phai lon hon 0.");
+            throw new InvalidOperationException("Số lượng phải lớn hơn 0.");
         }
 
         var userId = GetUserId(user);
@@ -102,12 +102,12 @@ public class CartService : ICartService
 
         if (item is null || item.Product is null)
         {
-            throw new InvalidOperationException("Khong tim thay san pham trong gio hang.");
+            throw new InvalidOperationException("Không tìm thấy sản phẩm trong giỏ hàng.");
         }
 
         if (!item.Product.IsActive || quantity > item.Product.StockQuantity)
         {
-            throw new InvalidOperationException("So luong khong hop le hoac vuot ton kho.");
+            throw new InvalidOperationException("Số lượng không hợp lệ hoặc vượt tồn kho.");
         }
 
         item.Quantity = quantity;
@@ -156,13 +156,13 @@ public class CartService : ICartService
     {
         if (user.Identity?.IsAuthenticated != true)
         {
-            throw new UnauthorizedAccessException("Can dang nhap de su dung gio hang.");
+            throw new UnauthorizedAccessException("Cần đăng nhập để sử dụng giỏ hàng.");
         }
 
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(userId))
         {
-            throw new UnauthorizedAccessException("Khong xac dinh duoc nguoi dung.");
+            throw new UnauthorizedAccessException("Không xác định được người dùng.");
         }
 
         return userId;

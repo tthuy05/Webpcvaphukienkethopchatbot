@@ -56,7 +56,7 @@ public class UsersController : Controller
 
         if (user.Id == _userManager.GetUserId(User))
         {
-            TempData["ErrorMessage"] = "Admin khong the tu khoa tai khoan dang su dung.";
+            TempData["ErrorMessage"] = "Admin không thể tự khóa tài khoản đang sử dụng.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -67,7 +67,7 @@ public class UsersController : Controller
         user.IsActive = isLocked;
         await _userManager.UpdateAsync(user);
 
-        TempData["SuccessMessage"] = isLocked ? "Da mo khoa tai khoan." : "Da khoa tai khoan.";
+        TempData["SuccessMessage"] = isLocked ? "Đã mở khóa tài khoản." : "Đã khóa tài khoản.";
         return RedirectToAction(nameof(Index));
     }
 }

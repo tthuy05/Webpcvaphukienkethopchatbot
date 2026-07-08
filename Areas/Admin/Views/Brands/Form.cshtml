@@ -1,30 +1,53 @@
 @model Webpcvaphukienkethopchatbot.ViewModels.CatalogFormViewModel
 
 @{
-    ViewData["Title"] = Model.Id == 0 ? "Create brand" : "Edit brand";
+    var isNew = Model.Id == 0;
+    ViewData["Title"] = isNew ? "Create brand" : "Edit brand";
 }
 
-<h1 class="h3 mb-3">@(Model.Id == 0 ? "Them thuong hieu" : "Sua thuong hieu")</h1>
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <a asp-action="Index">Thương hiệu</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@(isNew ? "Thêm mới" : "Chỉnh sửa")</span>
+        </nav>
+        <div class="section-kicker">Brand form</div>
+        <h1 class="hero-title hero-title--page">@(isNew ? "Thêm thương hiệu" : "Sửa thương hiệu")</h1>
+        <p class="hero-copy">Tên thương hiệu sẽ tự động tạo slug dùng cho dữ liệu sản phẩm và bộ lọc.</p>
+    </div>
+</section>
 
-<form asp-action="Save" method="post" class="border rounded p-3">
+<form asp-action="Save" method="post" class="form-card">
     <input type="hidden" asp-for="Id" />
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+    <div class="form-section-title">
+        <span class="material-symbols-outlined">sell</span>
+        <span>Thông tin thương hiệu</span>
+    </div>
     <div class="mb-3">
-        <label asp-for="Name" class="form-label">Ten</label>
+        <label asp-for="Name" class="form-label">Tên</label>
         <input asp-for="Name" class="form-control" />
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label asp-for="Description" class="form-label">Mo ta</label>
-        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <label asp-for="Description" class="form-label">Mô tả</label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
         <span asp-validation-for="Description" class="text-danger"></span>
     </div>
-    <div class="form-check mb-3">
+    <div class="form-check mb-4">
         <input asp-for="IsActive" class="form-check-input" />
-        <label asp-for="IsActive" class="form-check-label">Hien thi</label>
+        <label asp-for="IsActive" class="form-check-label">Hiển thị trong catalog</label>
     </div>
-    <button type="submit" class="btn btn-primary">Luu</button>
-    <a class="btn btn-outline-secondary" asp-action="Index">Huy</a>
+    <div class="button-row">
+        <button type="submit" class="btn btn-primary">
+            <span class="material-symbols-outlined align-middle me-1">save</span>
+            Lưu
+        </button>
+        <a class="btn btn-outline-secondary" asp-action="Index">Hủy</a>
+    </div>
 </form>
 
 @section Scripts {

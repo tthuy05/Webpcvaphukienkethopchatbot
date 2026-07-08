@@ -40,9 +40,10 @@
                 <ul class="app-nav">
                     <li><a class="app-nav__link @(currentPath == "/" ? "is-active" : "")" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a></li>
                     <li><a class="app-nav__link @(currentPath.StartsWith("/Products") ? "is-active" : "")" asp-area="" asp-controller="Products" asp-action="Index">@Localizer["Products"]</a></li>
-                    <li><a class="app-nav__link @(currentPath.StartsWith("/Cart") ? "is-active" : "")" asp-area="" asp-controller="Cart" asp-action="Index">@Localizer["Cart"]</a></li>
+                    <li><a class="app-nav__link @(currentPath.StartsWith("/Chatbot") ? "is-active" : "")" asp-area="" asp-controller="Chatbot" asp-action="Index">@Localizer["AI Advisor"]</a></li>
+                    <li><a class="app-nav__link" asp-area="" asp-controller="Products" asp-action="Index" asp-route-SortBy="best-selling">@Localizer["Deals"]</a></li>
+                    <li><a class="app-nav__link @(currentPath.StartsWith("/Home/Privacy") ? "is-active" : "")" asp-area="" asp-controller="Home" asp-action="Privacy">@Localizer["Support"]</a></li>
                     <li><a class="app-nav__link @(currentPath.StartsWith("/Orders") ? "is-active" : "")" asp-area="" asp-controller="Orders" asp-action="Index">@Localizer["Orders"]</a></li>
-                    <li><a class="app-nav__link @(currentPath.StartsWith("/Chatbot") ? "is-active" : "")" asp-area="" asp-controller="Chatbot" asp-action="Index">@Localizer["Chatbot"]</a></li>
                 </ul>
             </nav>
 

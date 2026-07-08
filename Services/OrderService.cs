@@ -44,7 +44,7 @@ public class OrderService : IOrderService
 
         if (cart is null || !cart.Items.Any())
         {
-            throw new InvalidOperationException("Gio hang dang trong.");
+            throw new InvalidOperationException("Giỏ hàng đang trống.");
         }
 
         var order = new Order
@@ -62,12 +62,12 @@ public class OrderService : IOrderService
         {
             if (item.Product is null || !item.Product.IsActive)
             {
-                throw new InvalidOperationException("Gio hang co san pham khong kha dung.");
+                throw new InvalidOperationException("Giỏ hàng có sản phẩm không khả dụng.");
             }
 
             if (item.Quantity <= 0 || item.Quantity > item.Product.StockQuantity)
             {
-                throw new InvalidOperationException("So luong trong gio hang khong hop le.");
+                throw new InvalidOperationException("Số lượng trong giỏ hàng không hợp lệ.");
             }
 
             item.Product.StockQuantity -= item.Quantity;
@@ -155,7 +155,7 @@ public class OrderService : IOrderService
         var userId = user.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrWhiteSpace(userId))
         {
-            throw new UnauthorizedAccessException("Can dang nhap de dat hang.");
+            throw new UnauthorizedAccessException("Cần đăng nhập để đặt hàng.");
         }
 
         return userId;

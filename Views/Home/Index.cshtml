@@ -8,104 +8,147 @@
 @{
     ViewData["Title"] = Localizer["Trang chủ"].Value;
     var featuredModel = await ProductService.SearchAsync(new ProductFilterViewModel { SortBy = "best-selling" }, Context.RequestAborted);
-    var featuredProducts = featuredModel.Products.Take(3).ToList();
+    var featuredProducts = featuredModel.Products.Take(4).ToList();
+    var heroProduct = featuredProducts.FirstOrDefault();
+    var heroImage = heroProduct?.MainImageUrl ?? Url.Content("~/images/products/real/asus-rog-zephyrus-g14.jpg");
+    var heroProductName = heroProduct?.Name ?? "Asus ROG Zephyrus G14";
+    var heroProductPrice = heroProduct?.Price.ToString("N0") ?? "32,990,000";
 }
 
-<section class="hero-grid">
-    <div>
-        <div class="section-kicker">@Localizer["AI powered PC store"]</div>
-        <h1 class="hero-title">@Localizer["Tự build bộ máy đúng nhu cầu với"] <span>@Localizer["Tư vấn AI"]</span>.</h1>
-        <p class="hero-copy">
+<section class="home-hero">
+    <div class="home-hero__content">
+        <div class="premium-eyebrow">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            @Localizer["AI powered PC store"]
+        </div>
+        <h1 class="home-hero__title">@Localizer["Tự build bộ máy đúng nhu cầu với"] <span>@Localizer["Tư vấn AI"]</span>.</h1>
+        <p class="home-hero__copy">
             @Localizer["Tìm laptop, PC và phụ kiện theo ngân sách, cấu hình, mục đích học tập, làm việc hoặc gaming. Chatbot sẽ gợi ý nhanh những lựa chọn phù hợp nhất."]
         </p>
         <div class="hero-actions">
-            <a class="btn btn-primary" asp-controller="Chatbot" asp-action="Index">
+            <a class="btn btn-primary btn-lg" asp-controller="Chatbot" asp-action="Index">
                 <span class="material-symbols-outlined align-middle me-1">psychology</span>
                 @Localizer["Hỏi AI tư vấn"]
             </a>
-            <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">
+            <a class="btn btn-outline-secondary btn-lg" asp-controller="Products" asp-action="Index">
                 <span class="material-symbols-outlined align-middle me-1">grid_view</span>
                 @Localizer["Xem sản phẩm"]
             </a>
         </div>
-        <div class="chip-row mt-4">
-            <span class="chip">@Localizer["Laptop văn phòng"]</span>
-            <span class="chip">@Localizer["PC gaming"]</span>
-            <span class="chip">@Localizer["Đồ họa - render"]</span>
-            <span class="chip">@Localizer["Phụ kiện setup"]</span>
+        <div class="home-hero__stats" aria-label="@Localizer["Cam kết"]">
+            <div>
+                <strong>30+</strong>
+                <span>@Localizer["Sản phẩm chọn lọc"]</span>
+            </div>
+            <div>
+                <strong>24/7</strong>
+                <span>@Localizer["AI tư vấn"]</span>
+            </div>
+            <div>
+                <strong>0đ</strong>
+                <span>@Localizer["Hỗ trợ AI"]</span>
+            </div>
         </div>
     </div>
-    <div class="hero-media" aria-label="@Localizer["Laptop và phụ kiện công nghệ"]">
-        <img src="~/images/products/placeholder-laptop.svg" asp-append-version="true" alt="@Localizer["Laptop và phụ kiện công nghệ"]" />
+
+    <div class="home-hero__visual" aria-label="@Localizer["Laptop và phụ kiện công nghệ"]">
+        <div class="showcase-stage">
+            <div class="showcase-glow"></div>
+            <div class="showcase-product">
+                <div class="showcase-product__header">
+                    <span class="state-badge state-badge--info">@Localizer["AI match"]</span>
+                    <span class="showcase-rating">
+                        <span class="material-symbols-outlined">star</span>
+                        4.9
+                    </span>
+                </div>
+                <img src="@heroImage" alt="@heroProductName" />
+                <div class="showcase-product__footer">
+                    <div>
+                        <span>@Localizer["Featured setup"]</span>
+                        <strong>@heroProductName</strong>
+                    </div>
+                    <b>@heroProductPrice VND</b>
+                </div>
+            </div>
+            <div class="showcase-chip showcase-chip--top">
+                <span class="material-symbols-outlined">bolt</span>
+                <span>@Localizer["Gaming / AI ready"]</span>
+            </div>
+            <div class="showcase-chip showcase-chip--bottom">
+                <span class="material-symbols-outlined">verified</span>
+                <span>@Localizer["Tồn kho thật"]</span>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="surface-panel mb-5">
-    <div class="d-flex flex-wrap justify-content-between gap-3 align-items-end mb-4">
+<section class="home-section" id="featured-categories">
+    <div class="home-section__header">
         <div>
             <div class="section-kicker">@Localizer["Danh mục nổi bật"]</div>
-            <h2 class="h3 fw-bold mb-0">@Localizer["Mua nhanh theo nhu cầu"]</h2>
+            <h2>@Localizer["Mua nhanh theo nhu cầu"]</h2>
         </div>
         <a class="btn btn-outline-primary" asp-controller="Products" asp-action="Index">@Localizer["Tất cả sản phẩm"]</a>
     </div>
-    <div class="category-grid">
-        <a class="category-tile" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="hoc tap">
-            <span class="material-symbols-outlined">school</span>
-            <strong>@Localizer["Học tập"]</strong>
+    <div class="premium-category-grid">
+        <a class="premium-category-card" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="van phong">
+            <span class="material-symbols-outlined">business_center</span>
+            <strong>@Localizer["Office Laptop"]</strong>
             <small>@Localizer["Laptop gọn nhẹ, pin tốt"]</small>
         </a>
-        <a class="category-tile" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="gaming">
+        <a class="premium-category-card" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="gaming">
             <span class="material-symbols-outlined">sports_esports</span>
-            <strong>Gaming</strong>
+            <strong>@Localizer["Gaming PC"]</strong>
             <small>@Localizer["GPU mạnh, tản nhiệt ổn định"]</small>
         </a>
-        <a class="category-tile" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="do hoa">
+        <a class="premium-category-card" asp-controller="Products" asp-action="Index" asp-route-UsageNeed="do hoa">
             <span class="material-symbols-outlined">architecture</span>
-            <strong>@Localizer["Đồ họa"]</strong>
+            <strong>@Localizer["Graphics / Render"]</strong>
             <small>@Localizer["Màn hình đẹp, RAM cao"]</small>
         </a>
-        <a class="category-tile" asp-controller="Products" asp-action="Index">
-            <span class="material-symbols-outlined">keyboard</span>
-            <strong>@Localizer["Phụ kiện"]</strong>
+        <a class="premium-category-card" asp-controller="Products" asp-action="Index">
+            <span class="material-symbols-outlined">keyboard_command_key</span>
+            <strong>@Localizer["Setup Accessories"]</strong>
             <small>@Localizer["Hoàn thiện góc làm việc"]</small>
         </a>
     </div>
 </section>
 
-<section class="mb-5">
-    <div class="d-flex flex-wrap justify-content-between gap-3 align-items-end mb-4">
+<section class="home-section" id="featured-deals">
+    <div class="home-section__header">
         <div>
             <div class="section-kicker">@Localizer["Sản phẩm gợi ý"]</div>
-            <h2 class="h3 fw-bold mb-0">@Localizer["Lựa chọn phù hợp mỗi ngày"]</h2>
+            <h2>@Localizer["Lựa chọn phù hợp mỗi ngày"]</h2>
         </div>
         <a class="btn btn-outline-secondary" asp-controller="Chatbot" asp-action="Index">@Localizer["Nhận gợi ý riêng"]</a>
     </div>
     @if (featuredProducts.Any())
     {
-        <div class="product-grid">
+        <div class="premium-product-grid">
             @foreach (var product in featuredProducts)
             {
-                <article class="tech-card product-card">
-                    <a class="product-card-media" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">
+                <article class="premium-product-card">
+                    <a class="premium-product-card__media" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">
                         <img src="@product.MainImageUrl" alt="@product.Name" />
+                        <span class="product-badge">@Localizer["Đã bán {0}", product.SoldQuantity]</span>
                     </a>
-                    <div class="product-card-body">
-                        <div class="chip-row mb-3">
+                    <div class="premium-product-card__body">
+                        <div class="chip-row">
                             <span class="chip">@product.BrandName</span>
                             <span class="chip">@product.CategoryName</span>
                         </div>
-                        <h3 class="h5 fw-bold">
-                            <a class="text-reset text-decoration-none" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">@product.Name</a>
+                        <h3>
+                            <a asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">@product.Name</a>
                         </h3>
-                        <p class="muted-text mb-3">@product.SuitableNeeds</p>
-                        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-auto">
-                            <div>
-                                <div class="price-text">@product.Price.ToString("N0") VND</div>
-                                <div class="small @(product.StockQuantity > 0 ? "text-success" : "text-danger")">
-                                    @(product.StockQuantity > 0 ? Localizer["Còn {0} sản phẩm", product.StockQuantity] : Localizer["Hết hàng"])
-                                </div>
-                            </div>
-                            <a class="btn btn-sm btn-outline-primary" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">@Localizer["Chi tiết"]</a>
+                        <p>@product.SuitableNeeds</p>
+                        <div class="premium-product-card__meta">
+                            <span><span class="material-symbols-outlined">star</span> 4.8</span>
+                            <span>@(product.StockQuantity > 0 ? Localizer["Còn {0} sản phẩm", product.StockQuantity] : Localizer["Hết hàng"])</span>
+                        </div>
+                        <div class="premium-product-card__footer">
+                            <strong>@product.Price.ToString("N0") VND</strong>
+                            <a class="btn btn-sm btn-primary" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">@Localizer["Chi tiết"]</a>
                         </div>
                     </div>
                 </article>
@@ -123,16 +166,54 @@
     }
 </section>
 
-<section class="feature-band">
-    <div>
-        <div class="section-kicker">@Localizer["Chatbot tư vấn"]</div>
-        <h2 class="h3 fw-bold mb-3">@Localizer["Nói ngân sách và mục đích, hệ thống sẽ lọc sản phẩm phù hợp."]</h2>
-        <p class="muted-text mb-0">@Localizer["HomeChatbotExamples"]</p>
+<section class="home-section why-section">
+    <div class="home-section__header">
+        <div>
+            <div class="section-kicker">@Localizer["Why choose Bo PC"]</div>
+            <h2>@Localizer["Mua công nghệ dễ hơn, chắc hơn"]</h2>
+        </div>
     </div>
-    <a class="btn btn-primary" asp-controller="Chatbot" asp-action="Index">
-        <span class="material-symbols-outlined align-middle me-1">smart_toy</span>
-        @Localizer["Bắt đầu tư vấn"]
-    </a>
+    <div class="trust-grid">
+        <div class="trust-card">
+            <span class="material-symbols-outlined">psychology</span>
+            <strong>@Localizer["AI tư vấn theo nhu cầu"]</strong>
+            <p>@Localizer["Nhập ngân sách và mục đích, chatbot lọc sản phẩm phù hợp từ dữ liệu hiện có."]</p>
+        </div>
+        <div class="trust-card">
+            <span class="material-symbols-outlined">inventory</span>
+            <strong>@Localizer["Tồn kho minh bạch"]</strong>
+            <p>@Localizer["Giá, tồn kho và trạng thái sản phẩm được hiển thị rõ trước khi mua."]</p>
+        </div>
+        <div class="trust-card">
+            <span class="material-symbols-outlined">local_shipping</span>
+            <strong>@Localizer["Giao hàng toàn quốc"]</strong>
+            <p>@Localizer["Checkout gọn, lưu thông tin nhận hàng và theo dõi lịch sử đơn hàng."]</p>
+        </div>
+        <div class="trust-card">
+            <span class="material-symbols-outlined">verified_user</span>
+            <strong>@Localizer["Bảo hành rõ ràng"]</strong>
+            <p>@Localizer["Thông tin hỗ trợ và chính sách được đặt ngay trong luồng mua hàng."]</p>
+        </div>
+    </div>
+</section>
+
+<section class="advisor-preview">
+    <div class="advisor-preview__content">
+        <div class="section-kicker">@Localizer["Chatbot tư vấn"]</div>
+        <h2>@Localizer["Nói ngân sách và mục đích, hệ thống sẽ lọc sản phẩm phù hợp."]</h2>
+        <p>@Localizer["HomeChatbotExamples"]</p>
+        <a class="btn btn-primary" asp-controller="Chatbot" asp-action="Index">
+            <span class="material-symbols-outlined align-middle me-1">smart_toy</span>
+            @Localizer["Bắt đầu tư vấn"]
+        </a>
+    </div>
+    <div class="advisor-chat-card" aria-label="@Localizer["Chatbot AI"]">
+        <div class="advisor-chat-card__row advisor-chat-card__row--user">@Localizer["Tôi có 20 triệu, học lập trình và cần máy gọn nhẹ."]</div>
+        <div class="advisor-chat-card__row advisor-chat-card__row--bot">
+            <span class="material-symbols-outlined">auto_awesome</span>
+            <span>@Localizer["Bo PC AI sẽ lọc ngân sách, nhu cầu và gợi ý tối đa 3 sản phẩm phù hợp."]</span>
+        </div>
+    </div>
 </section>
 
 <a class="floating-chat" asp-controller="Chatbot" asp-action="Index" title="@Localizer["Chatbot AI"]">

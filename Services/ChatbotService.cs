@@ -22,7 +22,7 @@ public partial class ChatbotService : IChatbotService
     {
         if (string.IsNullOrWhiteSpace(question))
         {
-            throw new InvalidOperationException("Vui long nhap cau hoi.");
+            throw new InvalidOperationException("Vui lòng nhập câu hỏi.");
         }
 
         var normalizedQuestion = Normalize(question);
@@ -91,18 +91,30 @@ public partial class ChatbotService : IChatbotService
 
     private static decimal? DetectBudget(string question)
     {
-        var match = BudgetRegex().Match(question);
-        if (!match.Success)
+        var millionMatch = MillionBudgetRegex().Match(question);
+        if (millionMatch.Success && TryParseBudgetValue(millionMatch.Groups["value"].Value, out var millionValue))
         {
-            return null;
+            return millionValue * 1_000_000;
         }
 
-        if (!decimal.TryParse(match.Groups["value"].Value, NumberStyles.Number, CultureInfo.InvariantCulture, out var value))
+        var directMatch = DirectBudgetRegex().Match(question);
+        if (directMatch.Success && TryParseBudgetValue(directMatch.Groups["value"].Value, out var directValue))
         {
-            return null;
+            return directValue;
         }
 
-        return value * 1_000_000;
+        return null;
+    }
+
+    private static bool TryParseBudgetValue(string value, out decimal budget)
+    {
+        var normalized = value.Replace(" ", string.Empty).Replace(",", ".", StringComparison.Ordinal);
+        if (normalized.Count(character => character == '.') > 1)
+        {
+            normalized = normalized.Replace(".", string.Empty, StringComparison.Ordinal);
+        }
+
+        return decimal.TryParse(normalized, NumberStyles.Number, CultureInfo.InvariantCulture, out budget);
     }
 
     private static string? DetectUsage(string question)
@@ -183,12 +195,12 @@ public partial class ChatbotService : IChatbotService
 
         if (budget.HasValue)
         {
-            parts.Add(product.Price <= budget.Value ? "nam trong ngan sach" : "gan ngan sach");
+            parts.Add(product.Price <= budget.Value ? "nằm trong ngân sách" : "gần ngân sách");
         }
 
         if (!string.IsNullOrWhiteSpace(usage) && product.SuitableNeeds.Contains(usage, StringComparison.OrdinalIgnoreCase))
         {
-            parts.Add($"phu hop nhu cau {usage}");
+            parts.Add($"phù hợp nhu cầu {usage}");
         }
 
         if (!string.IsNullOrWhiteSpace(product.Cpu))
@@ -213,18 +225,18 @@ public partial class ChatbotService : IChatbotService
     {
         if (!suggestions.Any())
         {
-            return "Chua tim thay laptop phu hop. Ban co the tang ngan sach hoac noi ro hon ve nhu cau su dung.";
+            return "Chưa tìm thấy laptop phù hợp. Bạn có thể tăng ngân sách hoặc nói rõ hơn về nhu cầu sử dụng.";
         }
 
         var builder = new StringBuilder();
-        builder.Append("Minh goi y cac mau laptop phu hop");
+        builder.Append("Mình gợi ý các mẫu laptop phù hợp");
         if (budget.HasValue)
         {
-            builder.Append($" trong tam {budget.Value:N0} VND");
+            builder.Append($" trong tầm {budget.Value:N0} VND");
         }
         if (!string.IsNullOrWhiteSpace(usage))
         {
-            builder.Append($" cho nhu cau {usage}");
+            builder.Append($" cho nhu cầu {usage}");
         }
         builder.Append('.');
 
@@ -252,6 +264,9 @@ public partial class ChatbotService : IChatbotService
         return user.Identity?.IsAuthenticated == true ? user.FindFirstValue(ClaimTypes.NameIdentifier) : null;
     }
 
-    [GeneratedRegex(@"(?<value>\d{1,3})(\s*)(tr|trieu|triệu|million)", RegexOptions.IgnoreCase)]
-    private static partial Regex BudgetRegex();
+    [GeneratedRegex(@"\b(?<value>\d+(?:[\.,]\d+)?)\s*(trieu|tr|million)\b", RegexOptions.IgnoreCase)]
+    private static partial Regex MillionBudgetRegex();
+
+    [GeneratedRegex(@"\b(?<value>(?:\d{1,3}(?:[\.,\s]\d{3}){2,3})|\d{7,9})\s*(vnd|dong|d)?\b", RegexOptions.IgnoreCase)]
+    private static partial Regex DirectBudgetRegex();
 }

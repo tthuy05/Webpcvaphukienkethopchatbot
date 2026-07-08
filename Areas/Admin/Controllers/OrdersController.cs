@@ -34,7 +34,7 @@ public class OrdersController : Controller
         try
         {
             await _adminOrderService.UpdateStatusAsync(id, status, HttpContext.RequestAborted);
-            TempData["SuccessMessage"] = "Da cap nhat trang thai don hang.";
+            TempData["SuccessMessage"] = "Đã cập nhật trạng thái đơn hàng.";
         }
         catch (InvalidOperationException exception)
         {

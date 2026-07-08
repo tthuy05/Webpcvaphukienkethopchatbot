@@ -78,7 +78,7 @@ public class ProfileController : Controller
             return View(model);
         }
 
-        TempData["SuccessMessage"] = "Da cap nhat thong tin ca nhan.";
+        TempData["SuccessMessage"] = "Đã cập nhật thông tin cá nhân.";
         return RedirectToAction(nameof(Index));
     }
 }

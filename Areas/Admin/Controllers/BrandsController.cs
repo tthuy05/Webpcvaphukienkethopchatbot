@@ -44,7 +44,7 @@ public class BrandsController : Controller
         try
         {
             await _catalogService.SaveBrandAsync(model, HttpContext.RequestAborted);
-            TempData["SuccessMessage"] = "Da luu thuong hieu.";
+            TempData["SuccessMessage"] = "Đã lưu thương hiệu.";
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException exception)
@@ -59,7 +59,7 @@ public class BrandsController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         await _catalogService.HideOrDeleteBrandAsync(id, HttpContext.RequestAborted);
-        TempData["SuccessMessage"] = "Da an hoac xoa thuong hieu.";
+        TempData["SuccessMessage"] = "Đã ẩn hoặc xóa thương hiệu.";
         return RedirectToAction(nameof(Index));
     }
 }

@@ -46,7 +46,7 @@ public class ProductsController : Controller
         try
         {
             await _productService.SaveAsync(model, HttpContext.RequestAborted);
-            TempData["SuccessMessage"] = "Da luu san pham.";
+            TempData["SuccessMessage"] = "Đã lưu sản phẩm.";
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException exception)
@@ -61,8 +61,17 @@ public class ProductsController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Hide(int id)
     {
-        await _productService.HideAsync(id, HttpContext.RequestAborted);
-        TempData["SuccessMessage"] = "Da an san pham.";
+        await _productService.SetActiveAsync(id, false, HttpContext.RequestAborted);
+        TempData["SuccessMessage"] = "Đã ẩn sản phẩm.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SetActive(int id, bool isActive)
+    {
+        await _productService.SetActiveAsync(id, isActive, HttpContext.RequestAborted);
+        TempData["SuccessMessage"] = isActive ? "Đã hiển thị lại sản phẩm." : "Đã ẩn sản phẩm.";
         return RedirectToAction(nameof(Index));
     }
 }

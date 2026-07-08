@@ -44,7 +44,7 @@ public class CategoriesController : Controller
         try
         {
             await _catalogService.SaveCategoryAsync(model, HttpContext.RequestAborted);
-            TempData["SuccessMessage"] = "Da luu danh muc.";
+            TempData["SuccessMessage"] = "Đã lưu danh mục.";
             return RedirectToAction(nameof(Index));
         }
         catch (InvalidOperationException exception)
@@ -59,7 +59,7 @@ public class CategoriesController : Controller
     public async Task<IActionResult> Delete(int id)
     {
         await _catalogService.HideOrDeleteCategoryAsync(id, HttpContext.RequestAborted);
-        TempData["SuccessMessage"] = "Da an hoac xoa danh muc.";
+        TempData["SuccessMessage"] = "Đã ẩn hoặc xóa danh mục.";
         return RedirectToAction(nameof(Index));
     }
 }

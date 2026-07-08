@@ -531,4 +531,214 @@
   <data name="Tự build bộ máy đúng nhu cầu với" xml:space="preserve">
     <value>Build the right machine with</value>
   </data>
+  <data name="Purchase history" xml:space="preserve">
+    <value>Purchase history</value>
+  </data>
+  <data name="Lịch sử đơn hàng" xml:space="preserve">
+    <value>Order history</value>
+  </data>
+  <data name="Theo dõi trạng thái xử lý, thanh toán và tổng tiền của các đơn hàng đã đặt." xml:space="preserve">
+    <value>Track processing status, payment, and totals for orders you have placed.</value>
+  </data>
+  <data name="Bạn chưa có đơn hàng" xml:space="preserve">
+    <value>You have no orders yet</value>
+  </data>
+  <data name="Khi hoàn tất thanh toán, đơn hàng sẽ xuất hiện tại đây để bạn theo dõi." xml:space="preserve">
+    <value>After checkout, your orders will appear here for tracking.</value>
+  </data>
+  <data name="Tổng quan" xml:space="preserve">
+    <value>Overview</value>
+  </data>
+  <data name="{0} đơn hàng" xml:space="preserve">
+    <value>{0} orders</value>
+  </data>
+  <data name="Mã đơn" xml:space="preserve">
+    <value>Order ID</value>
+  </data>
+  <data name="Ngày tạo" xml:space="preserve">
+    <value>Created at</value>
+  </data>
+  <data name="Trạng thái" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="Thao tác" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Order detail" xml:space="preserve">
+    <value>Order detail</value>
+  </data>
+  <data name="Thông tin giao hàng" xml:space="preserve">
+    <value>Shipping information</value>
+  </data>
+  <data name="Tên" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Địa chỉ" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Chi tiết xử lý" xml:space="preserve">
+    <value>Processing details</value>
+  </data>
+  <data name="Phương thức" xml:space="preserve">
+    <value>Method</value>
+  </data>
+  <data name="Danh sách đã mua" xml:space="preserve">
+    <value>Purchased items</value>
+  </data>
+  <data name="Thành tiền" xml:space="preserve">
+    <value>Line total</value>
+  </data>
+  <data name="Đặt hàng thành công" xml:space="preserve">
+    <value>Order placed successfully</value>
+  </data>
+  <data name="Order placed" xml:space="preserve">
+    <value>Order placed</value>
+  </data>
+  <data name="Mã đơn hàng của bạn là" xml:space="preserve">
+    <value>Your order number is</value>
+  </data>
+  <data name="Bạn có thể theo dõi trạng thái xử lý trong lịch sử đơn hàng." xml:space="preserve">
+    <value>You can track processing status in your order history.</value>
+  </data>
+  <data name="Xem chi tiết đơn hàng" xml:space="preserve">
+    <value>View order detail</value>
+  </data>
+  <data name="Account center" xml:space="preserve">
+    <value>Account center</value>
+  </data>
+  <data name="Thông tin cá nhân" xml:space="preserve">
+    <value>Personal information</value>
+  </data>
+  <data name="Cập nhật thông tin nhận hàng để checkout nhanh hơn trong các lần mua tiếp theo." xml:space="preserve">
+    <value>Update shipping details so future checkouts are faster.</value>
+  </data>
+  <data name="Hồ sơ giao hàng" xml:space="preserve">
+    <value>Shipping profile</value>
+  </data>
+  <data name="Họ tên" xml:space="preserve">
+    <value>Full name</value>
+  </data>
+  <data name="Gần đây" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="Đơn hàng gần đây" xml:space="preserve">
+    <value>Recent orders</value>
+  </data>
+  <data name="Xem tất cả" xml:space="preserve">
+    <value>View all</value>
+  </data>
+  <data name="Chưa có đơn hàng" xml:space="preserve">
+    <value>No orders yet</value>
+  </data>
+  <data name="Các đơn hàng mới sẽ xuất hiện ở đây sau khi bạn checkout thành công." xml:space="preserve">
+    <value>New orders will appear here after a successful checkout.</value>
+  </data>
+  <data name="Chính sách &amp; bảo hành" xml:space="preserve">
+    <value>Policy &amp; warranty</value>
+  </data>
+  <data name="Support policy" xml:space="preserve">
+    <value>Support policy</value>
+  </data>
+  <data name="Mua hàng rõ ràng, hỗ trợ minh bạch" xml:space="preserve">
+    <value>Clear shopping, transparent support</value>
+  </data>
+  <data name="Các thông tin dưới đây tóm tắt cách hệ thống xử lý đơn hàng, bảo hành và dữ liệu người dùng trong phạm vi đồ án." xml:space="preserve">
+    <value>The information below summarizes how the system handles orders, warranty, and user data within this project scope.</value>
+  </data>
+  <data name="Cam kết" xml:space="preserve">
+    <value>Commitment</value>
+  </data>
+  <data name="Tư vấn đúng nhu cầu, sản phẩm từ dữ liệu thật" xml:space="preserve">
+    <value>Need-based advice from real product data</value>
+  </data>
+  <data name="Chatbot gợi ý dựa trên ngân sách và mục đích sử dụng, còn quyết định mua hàng luôn hiển thị giá, tồn kho và cấu hình rõ ràng." xml:space="preserve">
+    <value>The chatbot suggests products by budget and usage, while every purchase decision shows clear price, stock, and specs.</value>
+  </data>
+  <data name="Hỏi tư vấn" xml:space="preserve">
+    <value>Ask for advice</value>
+  </data>
+  <data name="Sản phẩm được hiển thị cùng thông tin cấu hình và trạng thái tồn kho. Chính sách bảo hành có thể được cập nhật theo từng nhà cung cấp khi triển khai thực tế." xml:space="preserve">
+    <value>Products show specs and stock status. Warranty policy can be updated by supplier in a real deployment.</value>
+  </data>
+  <data name="Giao hàng" xml:space="preserve">
+    <value>Delivery</value>
+  </data>
+  <data name="Checkout lưu địa chỉ nhận hàng, số điện thoại và phương thức thanh toán để tạo đơn hàng trong hệ thống." xml:space="preserve">
+    <value>Checkout stores shipping address, phone number, and payment method to create orders in the system.</value>
+  </data>
+  <data name="Dữ liệu" xml:space="preserve">
+    <value>Data</value>
+  </data>
+  <data name="Tài khoản dùng ASP.NET Identity. Thông tin hồ sơ, giỏ hàng và đơn hàng chỉ dùng cho các luồng mua hàng của ứng dụng." xml:space="preserve">
+    <value>Accounts use ASP.NET Identity. Profile, cart, and order data are used only for the app's shopping flows.</value>
+  </data>
+  <data name="AI Advisor" xml:space="preserve">
+    <value>AI Advisor</value>
+  </data>
+  <data name="Deals" xml:space="preserve">
+    <value>Deals</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Support</value>
+  </data>
+  <data name="Sản phẩm chọn lọc" xml:space="preserve">
+    <value>Curated products</value>
+  </data>
+  <data name="AI match" xml:space="preserve">
+    <value>AI match</value>
+  </data>
+  <data name="Featured setup" xml:space="preserve">
+    <value>Featured setup</value>
+  </data>
+  <data name="Gaming / AI ready" xml:space="preserve">
+    <value>Gaming / AI ready</value>
+  </data>
+  <data name="Tồn kho thật" xml:space="preserve">
+    <value>Live stock</value>
+  </data>
+  <data name="Office Laptop" xml:space="preserve">
+    <value>Office Laptop</value>
+  </data>
+  <data name="Gaming PC" xml:space="preserve">
+    <value>Gaming PC</value>
+  </data>
+  <data name="Graphics / Render" xml:space="preserve">
+    <value>Graphics / Render</value>
+  </data>
+  <data name="Setup Accessories" xml:space="preserve">
+    <value>Setup Accessories</value>
+  </data>
+  <data name="Why choose Bo PC" xml:space="preserve">
+    <value>Why choose Bo PC</value>
+  </data>
+  <data name="Mua công nghệ dễ hơn, chắc hơn" xml:space="preserve">
+    <value>Buy tech with more clarity and confidence</value>
+  </data>
+  <data name="AI tư vấn theo nhu cầu" xml:space="preserve">
+    <value>Need-based AI advice</value>
+  </data>
+  <data name="Nhập ngân sách và mục đích, chatbot lọc sản phẩm phù hợp từ dữ liệu hiện có." xml:space="preserve">
+    <value>Enter your budget and purpose, and the chatbot filters suitable products from current data.</value>
+  </data>
+  <data name="Tồn kho minh bạch" xml:space="preserve">
+    <value>Transparent stock</value>
+  </data>
+  <data name="Giá, tồn kho và trạng thái sản phẩm được hiển thị rõ trước khi mua." xml:space="preserve">
+    <value>Price, inventory, and product status are clear before purchase.</value>
+  </data>
+  <data name="Checkout gọn, lưu thông tin nhận hàng và theo dõi lịch sử đơn hàng." xml:space="preserve">
+    <value>Simple checkout, saved shipping details, and order history tracking.</value>
+  </data>
+  <data name="Bảo hành rõ ràng" xml:space="preserve">
+    <value>Clear warranty</value>
+  </data>
+  <data name="Thông tin hỗ trợ và chính sách được đặt ngay trong luồng mua hàng." xml:space="preserve">
+    <value>Support and policy information stay close to the shopping flow.</value>
+  </data>
+  <data name="Tôi có 20 triệu, học lập trình và cần máy gọn nhẹ." xml:space="preserve">
+    <value>I have 20 million, study programming, and need a lightweight laptop.</value>
+  </data>
+  <data name="Bo PC AI sẽ lọc ngân sách, nhu cầu và gợi ý tối đa 3 sản phẩm phù hợp." xml:space="preserve">
+    <value>Bo PC AI filters budget and needs, then suggests up to 3 suitable products.</value>
+  </data>
 </root>

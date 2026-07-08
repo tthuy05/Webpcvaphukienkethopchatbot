@@ -1,13 +1,46 @@
 @model Webpcvaphukienkethopchatbot.ViewModels.AdminOrderDetailViewModel
+@using Webpcvaphukienkethopchatbot.Models.Enums
 
 @{
     ViewData["Title"] = Model.OrderNumber;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Don hang @Model.OrderNumber</h1>
-    <a class="btn btn-outline-secondary" asp-action="Index">Danh sach don hang</a>
-</div>
+@functions {
+    private static string StatusClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Completed => "state-badge--success",
+        OrderStatus.Cancelled => "state-badge--danger",
+        OrderStatus.Shipping => "state-badge--info",
+        OrderStatus.Confirmed => "state-badge--warning",
+        _ => "state-badge--neutral"
+    };
+
+    private static string PaymentClass(PaymentStatus status) => status switch
+    {
+        PaymentStatus.Paid or PaymentStatus.Simulated => "state-badge--success",
+        PaymentStatus.Failed => "state-badge--danger",
+        PaymentStatus.Unpaid => "state-badge--warning",
+        _ => "state-badge--neutral"
+    };
+}
+
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <a asp-action="Index">Đơn hàng</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@Model.OrderNumber</span>
+        </nav>
+        <div class="section-kicker">Order detail</div>
+        <h1 class="hero-title hero-title--page">Đơn hàng @Model.OrderNumber</h1>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">
+        <span class="material-symbols-outlined align-middle me-1">arrow_back</span>
+        Danh sách đơn hàng
+    </a>
+</section>
 
 @if (TempData["SuccessMessage"] is string successMessage)
 {
@@ -18,20 +51,37 @@
     <div class="alert alert-danger">@errorMessage</div>
 }
 
-<div class="row g-4 mb-4">
-    <div class="col-md-6">
-        <div class="border rounded p-3">
-            <h2 class="h5">Khach hang</h2>
-            <div>@Model.CustomerEmail</div>
-            <div>@Model.ReceiverName</div>
-            <div>@Model.PhoneNumber</div>
-            <div>@Model.ShippingAddress</div>
+<div class="content-stack">
+    <section class="order-summary-grid">
+        <div class="order-summary-card">
+            <span>Trạng thái</span>
+            <strong><span class="state-badge @StatusClass(Model.Status)">@Model.Status</span></strong>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="border rounded p-3">
-            <h2 class="h5">Cap nhat trang thai</h2>
-            <form asp-action="UpdateStatus" method="post" class="d-flex gap-2">
+        <div class="order-summary-card">
+            <span>Thanh toán</span>
+            <strong><span class="state-badge @PaymentClass(Model.PaymentStatus)">@Model.PaymentStatus</span></strong>
+        </div>
+        <div class="order-summary-card">
+            <span>Tổng tiền</span>
+            <strong>@Model.TotalAmount.ToString("N0") VND</strong>
+        </div>
+    </section>
+
+    <section class="checkout-grid">
+        <div class="data-panel">
+            <div class="section-kicker">Khách hàng</div>
+            <h2 class="h4 fw-bold mb-4">Thông tin nhận hàng</h2>
+            <div class="info-list">
+                <div class="info-row"><span>Email</span><strong>@Model.CustomerEmail</strong></div>
+                <div class="info-row"><span>Người nhận</span><strong>@Model.ReceiverName</strong></div>
+                <div class="info-row"><span>Số điện thoại</span><strong>@Model.PhoneNumber</strong></div>
+                <div class="info-row"><span>Địa chỉ</span><strong>@Model.ShippingAddress</strong></div>
+            </div>
+        </div>
+        <aside class="data-panel">
+            <div class="section-kicker">Workflow</div>
+            <h2 class="h4 fw-bold mb-4">Cập nhật trạng thái</h2>
+            <form asp-action="UpdateStatus" method="post" class="filter-stack">
                 <input type="hidden" name="id" value="@Model.Id" />
                 <select name="status" class="form-select">
                     @foreach (var status in Model.StatusOptions)
@@ -39,39 +89,53 @@
                         <option value="@status" selected="@(status == Model.Status)">@status</option>
                     }
                 </select>
-                <button type="submit" class="btn btn-primary">Luu</button>
+                <button type="submit" class="btn btn-primary">
+                    <span class="material-symbols-outlined align-middle me-1">save</span>
+                    Lưu trạng thái
+                </button>
             </form>
-            <div class="mt-3 small">Thanh toan: @Model.PaymentStatus - @Model.PaymentMethod</div>
-        </div>
-    </div>
-</div>
+            <div class="info-list mt-4">
+                <div class="info-row"><span>Phương thức</span><strong>@Model.PaymentMethod</strong></div>
+                <div class="info-row"><span>Ngày tạo</span><strong>@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</strong></div>
+            </div>
+        </aside>
+    </section>
 
-<div class="table-responsive">
-    <table class="table table-bordered align-middle">
-        <thead class="table-light">
-            <tr>
-                <th>San pham</th>
-                <th class="text-end">Don gia</th>
-                <th class="text-end">So luong</th>
-                <th class="text-end">Thanh tien</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Items)
-        {
-            <tr>
-                <td>@item.ProductName</td>
-                <td class="text-end">@item.UnitPrice.ToString("N0")</td>
-                <td class="text-end">@item.Quantity</td>
-                <td class="text-end">@item.LineTotal.ToString("N0")</td>
-            </tr>
-        }
-        </tbody>
-        <tfoot>
-            <tr>
-                <th colspan="3" class="text-end">Tong tien</th>
-                <th class="text-end">@Model.TotalAmount.ToString("N0")</th>
-            </tr>
-        </tfoot>
-    </table>
+    <section class="data-panel">
+        <div class="data-panel__header">
+            <div>
+                <div class="section-kicker">Sản phẩm</div>
+                <h2 class="h4 fw-bold mb-0">Chi tiết đơn hàng</h2>
+            </div>
+        </div>
+        <div class="table-shell">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th class="text-end">Đơn giá</th>
+                        <th class="text-end">Số lượng</th>
+                        <th class="text-end">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td><strong>@item.ProductName</strong></td>
+                        <td class="text-end">@item.UnitPrice.ToString("N0")</td>
+                        <td class="text-end">@item.Quantity</td>
+                        <td class="text-end fw-bold">@item.LineTotal.ToString("N0")</td>
+                    </tr>
+                }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3" class="text-end">Tổng tiền</th>
+                        <th class="text-end">@Model.TotalAmount.ToString("N0")</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </section>
 </div>
