@@ -10,3 +10,7 @@ obj/
 appsettings.Local.json
 secrets.json
 wwwroot/uploads/
+publish/
+publish-*/
+deploy*.zip
+stitch_b_pc_ai_ecommerce_ui*/

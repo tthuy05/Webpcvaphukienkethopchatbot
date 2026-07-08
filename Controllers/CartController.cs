@@ -26,7 +26,7 @@ public class CartController : Controller
         try
         {
             await _cartService.AddToCartAsync(User, productId, quantity, HttpContext.RequestAborted);
-            TempData["SuccessMessage"] = "Da them san pham vao gio hang.";
+            TempData["SuccessMessage"] = "Đã thêm sản phẩm vào giỏ hàng.";
         }
         catch (InvalidOperationException exception)
         {
@@ -43,7 +43,7 @@ public class CartController : Controller
         try
         {
             await _cartService.UpdateQuantityAsync(User, cartItemId, quantity, HttpContext.RequestAborted);
-            TempData["SuccessMessage"] = "Da cap nhat gio hang.";
+            TempData["SuccessMessage"] = "Đã cập nhật giỏ hàng.";
         }
         catch (InvalidOperationException exception)
         {
@@ -58,7 +58,7 @@ public class CartController : Controller
     public async Task<IActionResult> Remove(int cartItemId)
     {
         await _cartService.RemoveItemAsync(User, cartItemId, HttpContext.RequestAborted);
-        TempData["SuccessMessage"] = "Da xoa san pham khoi gio hang.";
+        TempData["SuccessMessage"] = "Đã xóa sản phẩm khỏi giỏ hàng.";
         return RedirectToAction(nameof(Index));
     }
 }

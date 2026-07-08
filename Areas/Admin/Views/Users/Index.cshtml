@@ -4,10 +4,22 @@
     ViewData["Title"] = "Admin users";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="h3 mb-0">Quan ly nguoi dung</h1>
-    <a class="btn btn-outline-secondary" asp-area="" asp-controller="Home" asp-action="Index">Ve trang chu</a>
-</div>
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>Người dùng</span>
+        </nav>
+        <div class="section-kicker">Identity management</div>
+        <h1 class="hero-title hero-title--page">Quản lý người dùng</h1>
+        <p class="hero-copy">Theo dõi vai trò và khóa/mở khóa tài khoản khi cần xử lý vận hành.</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-area="" asp-controller="Home" asp-action="Index">
+        <span class="material-symbols-outlined align-middle me-1">home</span>
+        Về trang chủ
+    </a>
+</section>
 
 @if (TempData["SuccessMessage"] is string successMessage)
 {
@@ -18,39 +30,59 @@
     <div class="alert alert-danger">@errorMessage</div>
 }
 
-<div class="table-responsive">
-    <table class="table table-bordered table-hover align-middle">
-        <thead class="table-light">
-            <tr>
-                <th>Email</th>
-                <th>Ho ten</th>
-                <th>Vai tro</th>
-                <th>Trang thai</th>
-                <th class="text-end">Thao tac</th>
-            </tr>
-        </thead>
-        <tbody>
-        @foreach (var user in Model)
-        {
-            <tr>
-                <td>@user.Email</td>
-                <td>@user.FullName</td>
-                <td>@user.Roles</td>
-                <td>
-                    <span class="badge @(user.IsLocked ? "bg-danger" : "bg-success")">
-                        @(user.IsLocked ? "Bi khoa" : "Dang hoat dong")
-                    </span>
-                </td>
-                <td class="text-end">
-                    <form asp-action="ToggleLock" method="post" class="d-inline">
-                        <input type="hidden" name="id" value="@user.Id" />
-                        <button type="submit" class="btn btn-sm @(user.IsLocked ? "btn-outline-success" : "btn-outline-danger")">
-                            @(user.IsLocked ? "Mo khoa" : "Khoa")
-                        </button>
-                    </form>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
+<section class="data-panel">
+    <div class="data-panel__header">
+        <div>
+            <div class="section-kicker">Danh sách</div>
+            <h2 class="h4 fw-bold mb-0">@Model.Count tài khoản</h2>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <span class="material-symbols-outlined empty-icon">group_off</span>
+            <h3 class="h5 fw-bold mb-0">Chưa có người dùng</h3>
+            <p class="muted-text mb-0">Tài khoản mới sẽ xuất hiện sau khi người dùng đăng ký hoặc seeder tạo dữ liệu mẫu.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-shell">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Email</th>
+                        <th>Họ tên</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td><strong>@user.Email</strong></td>
+                        <td>@(string.IsNullOrWhiteSpace(user.FullName) ? "Chưa cập nhật" : user.FullName)</td>
+                        <td><span class="chip">@(!string.IsNullOrWhiteSpace(user.Roles) ? user.Roles : "User")</span></td>
+                        <td>
+                            <span class="state-badge @(user.IsLocked ? "state-badge--danger" : "state-badge--success")">
+                                @(user.IsLocked ? "Bị khóa" : "Đang hoạt động")
+                            </span>
+                        </td>
+                        <td class="text-end">
+                            <form asp-action="ToggleLock" method="post" class="inline-action-form">
+                                <input type="hidden" name="id" value="@user.Id" />
+                                <button type="submit" class="btn btn-sm @(user.IsLocked ? "btn-outline-success" : "btn-outline-danger")">
+                                    @(user.IsLocked ? "Mở khóa" : "Khóa")
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

@@ -1,0 +1,80 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.ViewModels.AdminOrderListItemViewModel>
+@using Webpcvaphukienkethopchatbot.Models.Enums
+
+@{
+    ViewData["Title"] = "Admin orders";
+}
+
+@functions {
+    private static string StatusClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Completed => "state-badge--success",
+        OrderStatus.Cancelled => "state-badge--danger",
+        OrderStatus.Shipping => "state-badge--info",
+        OrderStatus.Confirmed => "state-badge--warning",
+        _ => "state-badge--neutral"
+    };
+}
+
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>Đơn hàng</span>
+        </nav>
+        <div class="section-kicker">Order operations</div>
+        <h1 class="hero-title hero-title--page">Quản lý đơn hàng</h1>
+        <p class="hero-copy">Theo dõi khách hàng, trạng thái xử lý và tổng tiền của toàn bộ đơn hàng.</p>
+    </div>
+</section>
+
+<section class="data-panel">
+    <div class="data-panel__header">
+        <div>
+            <div class="section-kicker">Danh sách</div>
+            <h2 class="h4 fw-bold mb-0">@Model.Count đơn hàng</h2>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="empty-state">
+            <span class="material-symbols-outlined empty-icon">receipt_long</span>
+            <h3 class="h5 fw-bold mb-0">Chưa có đơn hàng</h3>
+            <p class="muted-text mb-0">Khi khách hàng checkout thành công, đơn hàng sẽ xuất hiện tại đây.</p>
+        </div>
+    }
+    else
+    {
+        <div class="table-shell">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Mã đơn</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày tạo</th>
+                        <th>Trạng thái</th>
+                        <th class="text-end">Tổng tiền</th>
+                        <th class="text-end">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td><strong>@order.OrderNumber</strong></td>
+                        <td>@order.CustomerEmail</td>
+                        <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="state-badge @StatusClass(order.Status)">@order.Status</span></td>
+                        <td class="text-end fw-bold">@order.TotalAmount.ToString("N0")</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@order.Id">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

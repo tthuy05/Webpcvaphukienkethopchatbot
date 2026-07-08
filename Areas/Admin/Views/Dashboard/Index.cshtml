@@ -1,0 +1,180 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-area="" asp-controller="Home" asp-action="Index">Trang chủ</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>Admin</span>
+        </nav>
+        <div class="section-kicker">Operations overview</div>
+        <h1 class="hero-title hero-title--page">Dashboard quản trị</h1>
+        <p class="hero-copy">Theo dõi doanh thu, đơn hàng, tồn kho và các khu vực quản trị chính của cửa hàng.</p>
+    </div>
+    <div class="admin-nav">
+        <a class="btn btn-outline-secondary" asp-area="Admin" asp-controller="Products" asp-action="Index">Sản phẩm</a>
+        <a class="btn btn-outline-secondary" asp-area="Admin" asp-controller="Orders" asp-action="Index">Đơn hàng</a>
+        <a class="btn btn-outline-secondary" asp-area="Admin" asp-controller="Users" asp-action="Index">Người dùng</a>
+    </div>
+</section>
+
+<section class="metric-grid mb-4">
+    <article class="metric-card">
+        <span class="metric-card__icon material-symbols-outlined">payments</span>
+        <div>
+            <div class="metric-card__label">Tổng doanh thu</div>
+            <div class="metric-card__value">@Model.TotalRevenue.ToString("N0")</div>
+        </div>
+    </article>
+    <article class="metric-card">
+        <span class="metric-card__icon material-symbols-outlined">receipt_long</span>
+        <div>
+            <div class="metric-card__label">Tổng đơn hàng</div>
+            <div class="metric-card__value">@Model.TotalOrders</div>
+        </div>
+    </article>
+    <article class="metric-card">
+        <span class="metric-card__icon material-symbols-outlined">today</span>
+        <div>
+            <div class="metric-card__label">Đơn hôm nay</div>
+            <div class="metric-card__value">@Model.TodayOrders</div>
+        </div>
+    </article>
+    <article class="metric-card">
+        <span class="metric-card__icon material-symbols-outlined">calendar_month</span>
+        <div>
+            <div class="metric-card__label">Đơn trong tháng</div>
+            <div class="metric-card__value">@Model.MonthOrders</div>
+        </div>
+    </article>
+</section>
+
+<section class="admin-quick-grid mb-4">
+    <a class="admin-quick-link" asp-area="Admin" asp-controller="Products" asp-action="Index">
+        <span class="material-symbols-outlined">inventory_2</span>
+        <span>Sản phẩm</span>
+    </a>
+    <a class="admin-quick-link" asp-area="Admin" asp-controller="Categories" asp-action="Index">
+        <span class="material-symbols-outlined">category</span>
+        <span>Danh mục</span>
+    </a>
+    <a class="admin-quick-link" asp-area="Admin" asp-controller="Brands" asp-action="Index">
+        <span class="material-symbols-outlined">sell</span>
+        <span>Thương hiệu</span>
+    </a>
+    <a class="admin-quick-link" asp-area="Admin" asp-controller="Orders" asp-action="Index">
+        <span class="material-symbols-outlined">local_shipping</span>
+        <span>Đơn hàng</span>
+    </a>
+    <a class="admin-quick-link" asp-area="Admin" asp-controller="Users" asp-action="Index">
+        <span class="material-symbols-outlined">group</span>
+        <span>Người dùng</span>
+    </a>
+</section>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <section class="data-panel h-100">
+            <div class="data-panel__header">
+                <div>
+                    <div class="section-kicker">Sales</div>
+                    <h2 class="h5 fw-bold mb-0">Sản phẩm bán chạy</h2>
+                </div>
+            </div>
+            <div class="table-shell">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light"><tr><th>Sản phẩm</th><th class="text-end">SL</th><th class="text-end">Doanh thu</th></tr></thead>
+                    <tbody>
+                    @if (!Model.BestSellingProducts.Any())
+                    {
+                        <tr><td colspan="3" class="text-center muted-text py-4">Chưa có dữ liệu bán hàng.</td></tr>
+                    }
+                    @foreach (var item in Model.BestSellingProducts)
+                    {
+                        <tr><td><strong>@item.ProductName</strong></td><td class="text-end">@item.Quantity</td><td class="text-end fw-bold">@item.Revenue.ToString("N0")</td></tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="data-panel h-100">
+            <div class="data-panel__header">
+                <div>
+                    <div class="section-kicker">Inventory</div>
+                    <h2 class="h5 fw-bold mb-0">Tồn kho thấp</h2>
+                </div>
+            </div>
+            <div class="table-shell">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light"><tr><th>Sản phẩm</th><th class="text-end">Tồn kho</th><th class="text-end">Giá</th></tr></thead>
+                    <tbody>
+                    @if (!Model.LowStockProducts.Any())
+                    {
+                        <tr><td colspan="3" class="text-center muted-text py-4">Không có sản phẩm tồn kho thấp.</td></tr>
+                    }
+                    @foreach (var item in Model.LowStockProducts)
+                    {
+                        <tr><td><strong>@item.ProductName</strong></td><td class="text-end">@item.Quantity</td><td class="text-end fw-bold">@item.Revenue.ToString("N0")</td></tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="data-panel h-100">
+            <div class="data-panel__header">
+                <div>
+                    <div class="section-kicker">Revenue</div>
+                    <h2 class="h5 fw-bold mb-0">Doanh thu theo ngày</h2>
+                </div>
+            </div>
+            <div class="table-shell">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light"><tr><th>Ngày</th><th class="text-end">Doanh thu</th></tr></thead>
+                    <tbody>
+                    @if (!Model.RevenueByDay.Any())
+                    {
+                        <tr><td colspan="2" class="text-center muted-text py-4">Chưa có doanh thu hoàn tất.</td></tr>
+                    }
+                    @foreach (var item in Model.RevenueByDay)
+                    {
+                        <tr><td>@item.Label</td><td class="text-end fw-bold">@item.Revenue.ToString("N0")</td></tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="data-panel h-100">
+            <div class="data-panel__header">
+                <div>
+                    <div class="section-kicker">Workflow</div>
+                    <h2 class="h5 fw-bold mb-0">Đơn hàng theo trạng thái</h2>
+                </div>
+            </div>
+            <div class="table-shell">
+                <table class="table table-sm align-middle">
+                    <thead class="table-light"><tr><th>Trạng thái</th><th class="text-end">Số đơn</th></tr></thead>
+                    <tbody>
+                    @if (!Model.OrdersByStatus.Any())
+                    {
+                        <tr><td colspan="2" class="text-center muted-text py-4">Chưa có đơn hàng.</td></tr>
+                    }
+                    @foreach (var item in Model.OrdersByStatus)
+                    {
+                        <tr><td>@item.Label</td><td class="text-end fw-bold">@item.Value</td></tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>

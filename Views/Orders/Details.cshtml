@@ -1,0 +1,122 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.OrderDetailViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
+
+@{
+    ViewData["Title"] = Model.OrderNumber;
+}
+
+@functions {
+    private static string StatusClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Completed => "state-badge--success",
+        OrderStatus.Cancelled => "state-badge--danger",
+        OrderStatus.Shipping => "state-badge--info",
+        OrderStatus.Confirmed => "state-badge--warning",
+        _ => "state-badge--neutral"
+    };
+
+    private static string PaymentClass(PaymentStatus status) => status switch
+    {
+        PaymentStatus.Paid or PaymentStatus.Simulated => "state-badge--success",
+        PaymentStatus.Failed => "state-badge--danger",
+        PaymentStatus.Unpaid => "state-badge--warning",
+        _ => "state-badge--neutral"
+    };
+}
+
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-controller="Home" asp-action="Index">@Localizer["Trang chủ"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <a asp-action="Index">@Localizer["Đơn hàng"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@Model.OrderNumber</span>
+        </nav>
+        <div class="section-kicker">@Localizer["Order detail"]</div>
+        <h1 class="hero-title hero-title--page">@Localizer["Đơn hàng"] @Model.OrderNumber</h1>
+    </div>
+    <a class="btn btn-outline-secondary" asp-action="Index">
+        <span class="material-symbols-outlined align-middle me-1">arrow_back</span>
+        @Localizer["Lịch sử đơn hàng"]
+    </a>
+</section>
+
+<div class="content-stack">
+    <section class="order-summary-grid">
+        <div class="order-summary-card">
+            <span>@Localizer["Trạng thái"]</span>
+            <strong><span class="state-badge @StatusClass(Model.Status)">@Model.Status</span></strong>
+        </div>
+        <div class="order-summary-card">
+            <span>@Localizer["Thanh toán"]</span>
+            <strong><span class="state-badge @PaymentClass(Model.PaymentStatus)">@Model.PaymentStatus</span></strong>
+        </div>
+        <div class="order-summary-card">
+            <span>@Localizer["Tổng tiền"]</span>
+            <strong>@Model.TotalAmount.ToString("N0") VND</strong>
+        </div>
+    </section>
+
+    <section class="checkout-grid">
+        <div class="data-panel">
+            <div class="section-kicker">@Localizer["Người nhận"]</div>
+            <h2 class="h4 fw-bold mb-4">@Localizer["Thông tin giao hàng"]</h2>
+            <div class="info-list">
+                <div class="info-row"><span>@Localizer["Tên"]</span><strong>@Model.ReceiverName</strong></div>
+                <div class="info-row"><span>@Localizer["Số điện thoại"]</span><strong>@Model.PhoneNumber</strong></div>
+                <div class="info-row"><span>@Localizer["Địa chỉ"]</span><strong>@Model.ShippingAddress</strong></div>
+            </div>
+        </div>
+        <aside class="data-panel">
+            <div class="section-kicker">@Localizer["Thanh toán"]</div>
+            <h2 class="h4 fw-bold mb-4">@Localizer["Chi tiết xử lý"]</h2>
+            <div class="info-list">
+                <div class="info-row"><span>@Localizer["Ngày tạo"]</span><strong>@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</strong></div>
+                <div class="info-row"><span>@Localizer["Phương thức"]</span><strong>@Model.PaymentMethod</strong></div>
+                <div class="info-row"><span>@Localizer["Mã đơn"]</span><strong>@Model.OrderNumber</strong></div>
+            </div>
+        </aside>
+    </section>
+
+    <section class="data-panel">
+        <div class="data-panel__header">
+            <div>
+                <div class="section-kicker">@Localizer["Sản phẩm"]</div>
+                <h2 class="h4 fw-bold mb-0">@Localizer["Danh sách đã mua"]</h2>
+            </div>
+        </div>
+        <div class="table-shell">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Localizer["Sản phẩm"]</th>
+                        <th class="text-end">@Localizer["Đơn giá"]</th>
+                        <th class="text-end">@Localizer["Số lượng"]</th>
+                        <th class="text-end">@Localizer["Thành tiền"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td><strong>@item.ProductName</strong></td>
+                        <td class="text-end">@item.UnitPrice.ToString("N0") VND</td>
+                        <td class="text-end">@item.Quantity</td>
+                        <td class="text-end fw-bold">@item.LineTotal.ToString("N0") VND</td>
+                    </tr>
+                }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3" class="text-end">@Localizer["Tổng tiền"]</th>
+                        <th class="text-end">@Model.TotalAmount.ToString("N0") VND</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </section>
+</div>

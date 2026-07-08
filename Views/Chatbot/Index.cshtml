@@ -1,0 +1,101 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.ChatbotResponseViewModel?
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
+
+@{
+    ViewData["Title"] = Localizer["Chatbot"].Value;
+}
+
+<section class="ai-hero">
+    <div>
+        <div class="section-kicker">@Localizer["AI shopping advisor"]</div>
+        <h1 class="hero-title hero-title--page">@Localizer["Hỏi chatbot để tìm cấu hình phù hợp"]</h1>
+        <p class="hero-copy">@Localizer["Nhập ngân sách, mục đích sử dụng, yêu cầu cấu hình hoặc thương hiệu yêu thích. Hệ thống sẽ phân tích và gợi ý sản phẩm từ database."]</p>
+        <div class="chip-row mt-4">
+            <span class="chip">@Localizer["15 triệu học lập trình"]</span>
+            <span class="chip">@Localizer["Gaming dưới 30 triệu"]</span>
+            <span class="chip">@Localizer["Laptop đồ họa"]</span>
+        </div>
+    </div>
+    <div class="ai-orb">
+        <span class="material-symbols-outlined">psychology</span>
+    </div>
+</section>
+
+<form asp-action="Index" method="post" class="chat-panel">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <label for="question" class="form-label">@Localizer["Câu hỏi"]</label>
+    <div class="chat-input-row">
+        <textarea id="question" name="question" rows="3" class="form-control" placeholder="@Localizer["Ví dụ: Tôi có 20 triệu, cần laptop học lập trình và thiết kế nhẹ..."].Value">@Model?.Question</textarea>
+        <button type="submit" class="btn btn-primary">
+            <span class="material-symbols-outlined align-middle me-1">send</span>
+            @Localizer["Gửi"]
+        </button>
+    </div>
+</form>
+
+@if (Model is not null)
+{
+    <section class="surface-panel mt-4">
+        <div class="section-kicker">@Localizer["Phân tích yêu cầu"]</div>
+        <div class="ai-analysis-grid">
+            <div>
+                <span class="material-symbols-outlined">payments</span>
+                <small>@Localizer["Ngân sách"]</small>
+                <strong>@(Model.DetectedBudget.HasValue ? $"{Model.DetectedBudget.Value:N0} VND" : Localizer["Chưa rõ"].Value)</strong>
+            </div>
+            <div>
+                <span class="material-symbols-outlined">target</span>
+                <small>@Localizer["Nhu cầu"]</small>
+                <strong>@(Model.DetectedUsageNeed ?? Localizer["Chưa rõ"].Value)</strong>
+            </div>
+        </div>
+        <div class="chat-answer mt-4">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <p>@Model.Answer</p>
+        </div>
+    </section>
+
+    @if (Model.Suggestions.Any())
+    {
+        <section class="mt-5">
+            <div class="d-flex flex-wrap justify-content-between gap-3 align-items-end mb-4">
+                <div>
+                    <div class="section-kicker">@Localizer["Gợi ý từ database"]</div>
+                    <h2 class="h3 fw-bold mb-0">@Localizer["Sản phẩm phù hợp"]</h2>
+                </div>
+                <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">@Localizer["Mở catalog"]</a>
+            </div>
+            <div class="product-grid">
+                @foreach (var item in Model.Suggestions)
+                {
+                    <article class="tech-card product-card">
+                        <a class="product-card-media" asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">
+                            <img src="@item.ImageUrl" alt="@item.ProductName" />
+                        </a>
+                        <div class="product-card-body">
+                            <div class="chip-row mb-3">
+                                <span class="chip">AI match</span>
+                            </div>
+                            <h3 class="h5 fw-bold">
+                                <a class="text-reset text-decoration-none" asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@item.ProductName</a>
+                            </h3>
+                            <div class="price-text">@item.Price.ToString("N0") VND</div>
+                            <p class="muted-text mt-3">@item.Reason</p>
+                            <a class="btn btn-sm btn-outline-primary mt-auto" asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@Localizer["Xem sản phẩm"]</a>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+    }
+    else
+    {
+        <div class="surface-panel text-center mt-4">
+            <span class="material-symbols-outlined empty-icon">inventory_2</span>
+            <h2 class="h5 fw-bold mt-3">@Localizer["Chưa có gợi ý sản phẩm"]</h2>
+            <p class="muted-text mb-0">@Localizer["Hãy thử mô tả ngân sách rõ hơn hoặc thêm sản phẩm phù hợp trong admin."]</p>
+        </div>
+    }
+}

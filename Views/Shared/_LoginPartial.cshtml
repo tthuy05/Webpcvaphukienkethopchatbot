@@ -6,31 +6,30 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
     @if (User.IsInRole("Admin"))
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">@Localizer["Admin"]</a>
-        </li>
+        <a class="icon-action" asp-area="Admin" asp-controller="Dashboard" asp-action="Index" title="@Localizer["Admin"]">
+            <span class="material-symbols-outlined">dashboard</span>
+        </a>
     }
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index" title="@Localizer["Profile"]">@Localizer["Hello"] @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="nav-link btn btn-link text-dark">@Localizer["Logout"]</button>
-        </form>
-    </li>
+    <a class="icon-action" asp-area="" asp-controller="Profile" asp-action="Index" title="@Localizer["Profile"]">
+        <span class="material-symbols-outlined">account_circle</span>
+    </a>
+    <form class="app-action-form" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+        <button type="submit" class="icon-action" title="@Localizer["Logout"]">
+            <span class="material-symbols-outlined">logout</span>
+        </button>
+    </form>
 }
 else
 {
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">@Localizer["Register"]</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">@Localizer["Login"]</a>
-    </li>
+    <a class="auth-pill auth-pill--premium" asp-area="Identity" asp-page="/Account/Login">
+        <span class="material-symbols-outlined">login</span>
+        <span>@Localizer["Login"]</span>
+    </a>
+    <a class="icon-action d-none d-md-inline-flex" asp-area="Identity" asp-page="/Account/Register" title="@Localizer["Register"]">
+        <span class="material-symbols-outlined">person_add</span>
+    </a>
 }
-</ul>

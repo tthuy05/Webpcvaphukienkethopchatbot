@@ -1,40 +1,180 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
-  <resheader name="version"><value>2.0</value></resheader>
-  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
-  <data name="Home" xml:space="preserve"><value>Trang chủ</value></data>
-  <data name="Products" xml:space="preserve"><value>Sản phẩm</value></data>
-  <data name="Cart" xml:space="preserve"><value>Giỏ hàng</value></data>
-  <data name="Orders" xml:space="preserve"><value>Đơn hàng</value></data>
-  <data name="Login" xml:space="preserve"><value>Đăng nhập</value></data>
-  <data name="Register" xml:space="preserve"><value>Đăng ký</value></data>
-  <data name="Logout" xml:space="preserve"><value>Đăng xuất</value></data>
-  <data name="Admin" xml:space="preserve"><value>Quản trị</value></data>
-  <data name="Dashboard" xml:space="preserve"><value>Bảng điều khiển</value></data>
-  <data name="Search" xml:space="preserve"><value>Tìm kiếm</value></data>
-  <data name="Filter" xml:space="preserve"><value>Lọc</value></data>
-  <data name="AddToCart" xml:space="preserve"><value>Thêm vào giỏ</value></data>
-  <data name="Checkout" xml:space="preserve"><value>Thanh toán</value></data>
-  <data name="Total" xml:space="preserve"><value>Tổng tiền</value></data>
-  <data name="Price" xml:space="preserve"><value>Giá</value></data>
-  <data name="Brand" xml:space="preserve"><value>Thương hiệu</value></data>
-  <data name="Category" xml:space="preserve"><value>Danh mục</value></data>
-  <data name="OrderStatus" xml:space="preserve"><value>Trạng thái đơn hàng</value></data>
-  <data name="Pending" xml:space="preserve"><value>Chờ xác nhận</value></data>
-  <data name="Confirmed" xml:space="preserve"><value>Đã xác nhận</value></data>
-  <data name="Shipping" xml:space="preserve"><value>Đang giao</value></data>
-  <data name="Completed" xml:space="preserve"><value>Hoàn thành</value></data>
-  <data name="Cancelled" xml:space="preserve"><value>Đã hủy</value></data>
-  <data name="Chatbot" xml:space="preserve"><value>Chatbot</value></data>
-  <data name="Send" xml:space="preserve"><value>Gửi</value></data>
-  <data name="ChangeLanguage" xml:space="preserve"><value>Đổi ngôn ngữ</value></data>
-  <data name="Vietnamese" xml:space="preserve"><value>Tiếng Việt</value></data>
-  <data name="English" xml:space="preserve"><value>Tiếng Anh</value></data>
-  <data name="LightMode" xml:space="preserve"><value>Chế độ sáng</value></data>
-  <data name="DarkMode" xml:space="preserve"><value>Chế độ tối</value></data>
-  <data name="Privacy" xml:space="preserve"><value>Riêng tư</value></data>
-  <data name="Profile" xml:space="preserve"><value>Hồ sơ</value></data>
-  <data name="Hello" xml:space="preserve"><value>Xin chào</value></data>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Home" xml:space="preserve">
+    <value>Trang chủ</value>
+  </data>
+  <data name="Products" xml:space="preserve">
+    <value>Sản phẩm</value>
+  </data>
+  <data name="Cart" xml:space="preserve">
+    <value>Giỏ hàng</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Đơn hàng</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Đăng ký</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Đăng xuất</value>
+  </data>
+  <data name="Admin" xml:space="preserve">
+    <value>Quản trị</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Bảng điều khiển</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Tìm kiếm</value>
+  </data>
+  <data name="Filter" xml:space="preserve">
+    <value>Lọc</value>
+  </data>
+  <data name="AddToCart" xml:space="preserve">
+    <value>Thêm vào giỏ</value>
+  </data>
+  <data name="Checkout" xml:space="preserve">
+    <value>Thanh toán</value>
+  </data>
+  <data name="Total" xml:space="preserve">
+    <value>Tổng tiền</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Giá</value>
+  </data>
+  <data name="Brand" xml:space="preserve">
+    <value>Thương hiệu</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Danh mục</value>
+  </data>
+  <data name="OrderStatus" xml:space="preserve">
+    <value>Trạng thái đơn hàng</value>
+  </data>
+  <data name="Pending" xml:space="preserve">
+    <value>Chờ xác nhận</value>
+  </data>
+  <data name="Confirmed" xml:space="preserve">
+    <value>Đã xác nhận</value>
+  </data>
+  <data name="Shipping" xml:space="preserve">
+    <value>Đang giao</value>
+  </data>
+  <data name="Completed" xml:space="preserve">
+    <value>Hoàn thành</value>
+  </data>
+  <data name="Cancelled" xml:space="preserve">
+    <value>Đã hủy</value>
+  </data>
+  <data name="Chatbot" xml:space="preserve">
+    <value>Chatbot</value>
+  </data>
+  <data name="Send" xml:space="preserve">
+    <value>Gửi</value>
+  </data>
+  <data name="ChangeLanguage" xml:space="preserve">
+    <value>Đổi ngôn ngữ</value>
+  </data>
+  <data name="Vietnamese" xml:space="preserve">
+    <value>Tiếng Việt</value>
+  </data>
+  <data name="English" xml:space="preserve">
+    <value>Tiếng Anh</value>
+  </data>
+  <data name="LightMode" xml:space="preserve">
+    <value>Chế độ sáng</value>
+  </data>
+  <data name="DarkMode" xml:space="preserve">
+    <value>Chế độ tối</value>
+  </data>
+  <data name="Privacy" xml:space="preserve">
+    <value>Riêng tư</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Hồ sơ</value>
+  </data>
+  <data name="Hello" xml:space="preserve">
+    <value>Xin chào</value>
+  </data>
+  <data name="AI powered PC store" xml:space="preserve">
+    <value>Cửa hàng PC tích hợp AI</value>
+  </data>
+  <data name="Premium catalog" xml:space="preserve">
+    <value>Catalog cao cấp</value>
+  </data>
+  <data name="AI shopping advisor" xml:space="preserve">
+    <value>Cố vấn mua sắm AI</value>
+  </data>
+  <data name="Checkout workspace" xml:space="preserve">
+    <value>Khu vực thanh toán</value>
+  </data>
+  <data name="Secure checkout" xml:space="preserve">
+    <value>Thanh toán bảo mật</value>
+  </data>
+  <data name="HomeChatbotExamples" xml:space="preserve">
+    <value>Thử các câu hỏi như "15 triệu học lập trình", "laptop đồ họa dưới 25 triệu" hoặc "phụ kiện cho setup làm việc tại nhà".</value>
+  </data>
+  <data name="Purchase history" xml:space="preserve">
+    <value>Lịch sử mua hàng</value>
+  </data>
+  <data name="Order detail" xml:space="preserve">
+    <value>Chi tiết đơn hàng</value>
+  </data>
+  <data name="Order placed" xml:space="preserve">
+    <value>Đặt hàng thành công</value>
+  </data>
+  <data name="Account center" xml:space="preserve">
+    <value>Trung tâm tài khoản</value>
+  </data>
+  <data name="Support policy" xml:space="preserve">
+    <value>Chính sách hỗ trợ</value>
+  </data>
+  <data name="AI Advisor" xml:space="preserve">
+    <value>Tư vấn AI</value>
+  </data>
+  <data name="Deals" xml:space="preserve">
+    <value>Ưu đãi</value>
+  </data>
+  <data name="Support" xml:space="preserve">
+    <value>Hỗ trợ</value>
+  </data>
+  <data name="Office Laptop" xml:space="preserve">
+    <value>Laptop văn phòng</value>
+  </data>
+  <data name="Gaming PC" xml:space="preserve">
+    <value>PC gaming</value>
+  </data>
+  <data name="Graphics / Render" xml:space="preserve">
+    <value>Đồ họa / render</value>
+  </data>
+  <data name="Setup Accessories" xml:space="preserve">
+    <value>Phụ kiện setup</value>
+  </data>
+  <data name="Why choose Bo PC" xml:space="preserve">
+    <value>Vì sao chọn Bo PC</value>
+  </data>
+  <data name="AI match" xml:space="preserve">
+    <value>AI phù hợp</value>
+  </data>
+  <data name="Featured setup" xml:space="preserve">
+    <value>Setup nổi bật</value>
+  </data>
+  <data name="Gaming / AI ready" xml:space="preserve">
+    <value>Sẵn sàng gaming / AI</value>
+  </data>
 </root>

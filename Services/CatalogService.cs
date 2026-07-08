@@ -82,7 +82,7 @@ public partial class CatalogService : ICatalogService
         var slug = CreateSlug(model.Name);
         if (await _dbContext.Categories.AnyAsync(category => category.Slug == slug && category.Id != model.Id, cancellationToken))
         {
-            throw new InvalidOperationException("Danh muc da ton tai.");
+            throw new InvalidOperationException("Danh mục đã tồn tại.");
         }
 
         var category = model.Id == 0
@@ -91,7 +91,7 @@ public partial class CatalogService : ICatalogService
 
         if (category is null)
         {
-            throw new KeyNotFoundException("Khong tim thay danh muc.");
+            throw new KeyNotFoundException("Không tìm thấy danh mục.");
         }
 
         category.Name = model.Name.Trim();
@@ -112,7 +112,7 @@ public partial class CatalogService : ICatalogService
         var slug = CreateSlug(model.Name);
         if (await _dbContext.Brands.AnyAsync(brand => brand.Slug == slug && brand.Id != model.Id, cancellationToken))
         {
-            throw new InvalidOperationException("Thuong hieu da ton tai.");
+            throw new InvalidOperationException("Thương hiệu đã tồn tại.");
         }
 
         var brand = model.Id == 0
@@ -121,7 +121,7 @@ public partial class CatalogService : ICatalogService
 
         if (brand is null)
         {
-            throw new KeyNotFoundException("Khong tim thay thuong hieu.");
+            throw new KeyNotFoundException("Không tìm thấy thương hiệu.");
         }
 
         brand.Name = model.Name.Trim();

@@ -1,0 +1,27 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.OrderDetailViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
+
+@{
+    ViewData["Title"] = Localizer["Đặt hàng thành công"].Value;
+}
+
+<section class="success-panel">
+    <span class="material-symbols-outlined">check_circle</span>
+    <div>
+        <div class="section-kicker">@Localizer["Order placed"]</div>
+        <h1 class="hero-title hero-title--page mb-3">@Localizer["Đặt hàng thành công"]</h1>
+        <p class="hero-copy mx-auto mb-0">@Localizer["Mã đơn hàng của bạn là"] <strong>@Model.OrderNumber</strong>. @Localizer["Bạn có thể theo dõi trạng thái xử lý trong lịch sử đơn hàng."]</p>
+    </div>
+    <div class="button-row justify-content-center mt-0">
+        <a class="btn btn-primary" asp-action="Details" asp-route-id="@Model.Id">
+            <span class="material-symbols-outlined align-middle me-1">receipt_long</span>
+            @Localizer["Xem chi tiết đơn hàng"]
+        </a>
+        <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">
+            <span class="material-symbols-outlined align-middle me-1">storefront</span>
+            @Localizer["Tiếp tục mua sắm"]
+        </a>
+    </div>
+</section>

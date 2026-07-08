@@ -26,6 +26,16 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
     })
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = builder.Environment.IsDevelopment()
+        ? CookieSecurePolicy.SameAsRequest
+        : CookieSecurePolicy.Always;
+    options.SlidingExpiration = true;
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
@@ -34,6 +44,10 @@ builder.Services.AddScoped<IUserPreferenceService, UserPreferenceService>();
 builder.Services.AddScoped<ICatalogService, CatalogService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
+builder.Services.AddScoped<IChatbotService, ChatbotService>();
 builder.Services.AddHostedService<DatabaseSeedHostedService>();
 
 var app = builder.Build();
@@ -52,6 +66,7 @@ else
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.UseMiddleware<SecurityHeadersMiddleware>();
 
 app.UseRouting();
 

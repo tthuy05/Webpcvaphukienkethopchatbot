@@ -1,0 +1,91 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.ViewModels.OrderListItemViewModel>
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
+
+@{
+    ViewData["Title"] = Localizer["Đơn hàng"].Value;
+}
+
+@functions {
+    private static string StatusClass(OrderStatus status) => status switch
+    {
+        OrderStatus.Completed => "state-badge--success",
+        OrderStatus.Cancelled => "state-badge--danger",
+        OrderStatus.Shipping => "state-badge--info",
+        OrderStatus.Confirmed => "state-badge--warning",
+        _ => "state-badge--neutral"
+    };
+}
+
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-controller="Home" asp-action="Index">@Localizer["Trang chủ"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@Localizer["Đơn hàng"]</span>
+        </nav>
+        <div class="section-kicker">@Localizer["Purchase history"]</div>
+        <h1 class="hero-title hero-title--page">@Localizer["Lịch sử đơn hàng"]</h1>
+        <p class="hero-copy">@Localizer["Theo dõi trạng thái xử lý, thanh toán và tổng tiền của các đơn hàng đã đặt."]</p>
+    </div>
+    <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">
+        <span class="material-symbols-outlined align-middle me-1">storefront</span>
+        @Localizer["Tiếp tục mua sắm"]
+    </a>
+</section>
+
+@if (!Model.Any())
+{
+    <section class="surface-panel empty-state">
+        <span class="material-symbols-outlined empty-icon">receipt_long</span>
+        <h2 class="h4 fw-bold mb-0">@Localizer["Bạn chưa có đơn hàng"]</h2>
+        <p class="muted-text mb-2">@Localizer["Khi hoàn tất thanh toán, đơn hàng sẽ xuất hiện tại đây để bạn theo dõi."]</p>
+        <div class="button-row justify-content-center mt-0">
+            <a class="btn btn-primary" asp-controller="Products" asp-action="Index">@Localizer["Xem sản phẩm"]</a>
+            <a class="btn btn-outline-secondary" asp-controller="Chatbot" asp-action="Index">@Localizer["Hỏi chatbot"]</a>
+        </div>
+    </section>
+}
+else
+{
+    <section class="data-panel">
+        <div class="data-panel__header">
+            <div>
+                <div class="section-kicker">@Localizer["Tổng quan"]</div>
+                <h2 class="h4 fw-bold mb-0">@Localizer["{0} đơn hàng", Model.Count]</h2>
+            </div>
+        </div>
+        <div class="table-shell">
+            <table class="table align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>@Localizer["Mã đơn"]</th>
+                        <th>@Localizer["Ngày tạo"]</th>
+                        <th>@Localizer["Trạng thái"]</th>
+                        <th class="text-end">@Localizer["Tổng tiền"]</th>
+                        <th class="text-end">@Localizer["Thao tác"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td><strong>@order.OrderNumber</strong></td>
+                        <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                        <td><span class="state-badge @StatusClass(order.Status)">@order.Status</span></td>
+                        <td class="text-end fw-bold">@order.TotalAmount.ToString("N0") VND</td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Details" asp-route-id="@order.Id">
+                                <span class="material-symbols-outlined align-middle me-1">visibility</span>
+                                @Localizer["Chi tiết"]
+                            </a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </section>
+}

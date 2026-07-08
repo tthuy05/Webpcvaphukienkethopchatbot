@@ -1,10 +1,27 @@
 @model Webpcvaphukienkethopchatbot.ViewModels.CartViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
 
 @{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = Localizer["Giỏ hàng"].Value;
 }
 
-<h1 class="h3 mb-3">Gio hang</h1>
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-controller="Home" asp-action="Index">@Localizer["Trang chủ"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@Localizer["Giỏ hàng"]</span>
+        </nav>
+        <div class="section-kicker">@Localizer["Checkout workspace"]</div>
+        <h1 class="hero-title hero-title--page">@Localizer["Giỏ hàng của bạn"]</h1>
+    </div>
+    <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">
+        <span class="material-symbols-outlined align-middle me-1">arrow_back</span>
+        @Localizer["Tiếp tục mua sắm"]
+    </a>
+</section>
 
 @if (TempData["SuccessMessage"] is string successMessage)
 {
@@ -17,64 +34,99 @@
 
 @if (!Model.Items.Any())
 {
-    <div class="alert alert-info">Gio hang dang trong.</div>
-    <a class="btn btn-primary" asp-controller="Products" asp-action="Index">Tiep tuc mua sam</a>
+    <div class="surface-panel text-center">
+        <span class="material-symbols-outlined empty-icon">shopping_cart_off</span>
+        <h2 class="h4 fw-bold mt-3">@Localizer["Giỏ hàng đang trống"]</h2>
+        <p class="muted-text mb-4">@Localizer["Thêm sản phẩm từ catalog hoặc để chatbot gợi ý cấu hình theo ngân sách của bạn."]</p>
+        <div class="button-row justify-content-center">
+            <a class="btn btn-primary" asp-controller="Products" asp-action="Index">@Localizer["Xem sản phẩm"]</a>
+            <a class="btn btn-outline-secondary" asp-controller="Chatbot" asp-action="Index">@Localizer["Hỏi chatbot"]</a>
+        </div>
+    </div>
 }
 else
 {
-    <div class="table-responsive">
-        <table class="table table-bordered align-middle">
-            <thead class="table-light">
-                <tr>
-                    <th>San pham</th>
-                    <th class="text-end">Don gia</th>
-                    <th class="text-end">So luong</th>
-                    <th class="text-end">Thanh tien</th>
-                    <th class="text-end">Thao tac</th>
-                </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-                    <td>
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="@item.ImageUrl" alt="@item.ProductName" width="72" height="48" class="object-fit-contain border rounded" />
-                            <div>
-                                <div class="fw-semibold">@item.ProductName</div>
-                                <div class="small @(item.StockQuantity > 0 ? "text-muted" : "text-danger")">Ton kho: @item.StockQuantity</div>
+    <div class="checkout-grid">
+        <section class="surface-panel">
+            <div class="d-flex align-items-center justify-content-between gap-3 mb-4">
+                <div>
+                    <div class="section-kicker">@Localizer["Danh sách sản phẩm"]</div>
+                    <h2 class="h4 fw-bold mb-0">@Localizer["{0} sản phẩm", Model.Items.Count]</h2>
+                </div>
+            </div>
+
+            <div class="cart-list">
+                @foreach (var item in Model.Items)
+                {
+                    <article class="cart-line">
+                        <a asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">
+                            <img src="@item.ImageUrl" alt="@item.ProductName" />
+                        </a>
+                        <div class="cart-line__body">
+                            <h3 class="h5 fw-bold mb-1">
+                                <a class="text-reset text-decoration-none" asp-controller="Products" asp-action="Details" asp-route-id="@item.ProductId">@item.ProductName</a>
+                            </h3>
+                            <div class="chip-row mb-3">
+                                <span class="chip">@Localizer["Tồn kho"]: @item.StockQuantity</span>
+                                <span class="chip">@Localizer["Đơn giá"]: @item.UnitPrice.ToString("N0") VND</span>
                             </div>
+                            <div class="price-text price-text--small">@item.LineTotal.ToString("N0") VND</div>
                         </div>
-                    </td>
-                    <td class="text-end">@item.UnitPrice.ToString("N0")</td>
-                    <td class="text-end">
-                        <form asp-action="Update" method="post" class="d-flex justify-content-end gap-2">
-                            <input type="hidden" name="cartItemId" value="@item.Id" />
-                            <input type="number" min="1" max="@item.StockQuantity" name="quantity" value="@item.Quantity" class="form-control form-control-sm" style="width: 90px;" />
-                            <button type="submit" class="btn btn-sm btn-outline-primary">Luu</button>
-                        </form>
-                    </td>
-                    <td class="text-end">@item.LineTotal.ToString("N0")</td>
-                    <td class="text-end">
-                        <form asp-action="Remove" method="post">
-                            <input type="hidden" name="cartItemId" value="@item.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Xoa</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="3" class="text-end">Tong tien</th>
-                    <th class="text-end">@Model.Total.ToString("N0")</th>
-                    <th></th>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-    <div class="d-flex justify-content-between">
-        <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">Tiep tuc mua sam</a>
-        <a class="btn btn-primary" asp-controller="Orders" asp-action="Checkout">Thanh toan</a>
+                        <div class="cart-line__actions">
+                            <form asp-action="Update" method="post" class="quantity-form">
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <input type="number" min="1" max="@item.StockQuantity" name="quantity" value="@item.Quantity" class="form-control" aria-label="@Localizer["Số lượng"] @item.ProductName" />
+                                <button type="submit" class="btn btn-outline-primary icon-button" title="@Localizer["Cập nhật"]">
+                                    <span class="material-symbols-outlined">check</span>
+                                </button>
+                            </form>
+                            <form asp-action="Remove" method="post">
+                                <input type="hidden" name="cartItemId" value="@item.Id" />
+                                <button type="submit" class="btn btn-outline-danger icon-button" title="@Localizer["Xóa"]">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </article>
+                }
+            </div>
+        </section>
+
+        <aside class="summary-panel">
+            <div class="section-kicker">@Localizer["Tổng đơn hàng"]</div>
+            <h2 class="h4 fw-bold mb-4">@Localizer["Tóm tắt thanh toán"]</h2>
+            <div class="summary-lines">
+                <div>
+                    <span>@Localizer["Tạm tính"]</span>
+                    <strong>@Model.Total.ToString("N0") VND</strong>
+                </div>
+                <div>
+                    <span>@Localizer["Phí vận chuyển"]</span>
+                    <strong>0 VND</strong>
+                </div>
+                <div>
+                    <span>@Localizer["Hỗ trợ AI"]</span>
+                    <strong>@Localizer["Miễn phí"]</strong>
+                </div>
+            </div>
+            <div class="summary-total">
+                <span>@Localizer["Tổng tiền"]</span>
+                <strong>@Model.Total.ToString("N0") VND</strong>
+            </div>
+            <div class="button-row">
+                <a class="btn btn-primary flex-grow-1" asp-controller="Orders" asp-action="Checkout">@Localizer["Thanh toán"]</a>
+                <a class="btn btn-outline-secondary" asp-controller="Products" asp-action="Index">@Localizer["Mua thêm"]</a>
+            </div>
+            <div class="service-list mt-4">
+                <div>
+                    <span class="material-symbols-outlined">verified_user</span>
+                    <span>@Localizer["Thông tin đơn hàng được bảo vệ"]</span>
+                </div>
+                <div>
+                    <span class="material-symbols-outlined">local_shipping</span>
+                    <span>@Localizer["Giao hàng toàn quốc"]</span>
+                </div>
+            </div>
+        </aside>
     </div>
 }

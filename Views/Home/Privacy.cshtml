@@ -1,6 +1,50 @@
-﻿@{
-    ViewData["Title"] = "Privacy Policy";
-}
-<h1>@ViewData["Title"]</h1>
+@using Microsoft.AspNetCore.Mvc.Localization
+@using Webpcvaphukienkethopchatbot.Resources
+@inject IHtmlLocalizer<SharedResource> Localizer
 
-<p>Use this page to detail your site's privacy policy.</p>
+@{
+    ViewData["Title"] = Localizer["Chính sách & bảo hành"].Value;
+}
+
+<section class="page-heading">
+    <div>
+        <nav class="breadcrumb-line" aria-label="breadcrumb">
+            <a asp-controller="Home" asp-action="Index">@Localizer["Trang chủ"]</a>
+            <span class="material-symbols-outlined">chevron_right</span>
+            <span>@Localizer["Chính sách & bảo hành"]</span>
+        </nav>
+        <div class="section-kicker">@Localizer["Support policy"]</div>
+        <h1 class="hero-title hero-title--page">@Localizer["Mua hàng rõ ràng, hỗ trợ minh bạch"]</h1>
+        <p class="hero-copy">@Localizer["Các thông tin dưới đây tóm tắt cách hệ thống xử lý đơn hàng, bảo hành và dữ liệu người dùng trong phạm vi đồ án."]</p>
+    </div>
+</section>
+
+<section class="feature-band mb-4">
+    <div>
+        <div class="section-kicker">@Localizer["Cam kết"]</div>
+        <h2 class="h3 fw-bold mb-2">@Localizer["Tư vấn đúng nhu cầu, sản phẩm từ dữ liệu thật"]</h2>
+        <p class="muted-text mb-0">@Localizer["Chatbot gợi ý dựa trên ngân sách và mục đích sử dụng, còn quyết định mua hàng luôn hiển thị giá, tồn kho và cấu hình rõ ràng."]</p>
+    </div>
+    <a class="btn btn-primary" asp-controller="Chatbot" asp-action="Index">
+        <span class="material-symbols-outlined align-middle me-1">psychology</span>
+        @Localizer["Hỏi tư vấn"]
+    </a>
+</section>
+
+<section class="order-summary-grid">
+    <article class="data-panel">
+        <span class="material-symbols-outlined empty-icon">verified_user</span>
+        <h2 class="h4 fw-bold mt-3">@Localizer["Bảo hành"]</h2>
+        <p class="muted-text mb-0">@Localizer["Sản phẩm được hiển thị cùng thông tin cấu hình và trạng thái tồn kho. Chính sách bảo hành có thể được cập nhật theo từng nhà cung cấp khi triển khai thực tế."]</p>
+    </article>
+    <article class="data-panel">
+        <span class="material-symbols-outlined empty-icon">local_shipping</span>
+        <h2 class="h4 fw-bold mt-3">@Localizer["Giao hàng"]</h2>
+        <p class="muted-text mb-0">@Localizer["Checkout lưu địa chỉ nhận hàng, số điện thoại và phương thức thanh toán để tạo đơn hàng trong hệ thống."]</p>
+    </article>
+    <article class="data-panel">
+        <span class="material-symbols-outlined empty-icon">lock</span>
+        <h2 class="h4 fw-bold mt-3">@Localizer["Dữ liệu"]</h2>
+        <p class="muted-text mb-0">@Localizer["Tài khoản dùng ASP.NET Identity. Thông tin hồ sơ, giỏ hàng và đơn hàng chỉ dùng cho các luồng mua hàng của ứng dụng."]</p>
+    </article>
+</section>
