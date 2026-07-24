@@ -1,0 +1,94 @@
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@model Webpcvaphukienkethopchatbot.ViewModels.CouponAdminViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Thêm mã giảm giá" : "Sửa mã giảm giá";
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Khuyến mãi</p>
+        <h1 class="page-title">@ViewData["Title"]</h1>
+        <p class="page-subtitle">Thiết lập giá trị, thời gian và giới hạn áp dụng của mã giảm giá.</p>
+    </div>
+</header>
+
+<form method="post" class="surface-card">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1">Thông tin mã giảm giá</h2>
+            <p class="text-muted small mb-0">Kiểm tra kỹ loại giảm giá và thời gian hiệu lực trước khi lưu.</p>
+        </div>
+    </div>
+    <div class="surface-card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="row g-3 form-section">
+            <div class="col-md-4">
+                <label asp-for="Code" class="form-label">Mã</label>
+                <input asp-for="Code" class="form-control text-uppercase" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="DiscountType" class="form-label">Loại</label>
+                <select asp-for="DiscountType"
+                        asp-items="Html.GetEnumSelectList<DiscountType>()"
+                        class="form-select"></select>
+                <span asp-validation-for="DiscountType" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="Value" class="form-label">Giá trị</label>
+                <input asp-for="Value" class="form-control" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="MinimumOrderAmount" class="form-label">Đơn tối thiểu</label>
+                <input asp-for="MinimumOrderAmount" class="form-control" />
+                <span asp-validation-for="MinimumOrderAmount" class="text-danger"></span>
+            </div>
+            <div class="col-md-6">
+                <label asp-for="MaximumDiscountAmount" class="form-label">Giảm tối đa</label>
+                <input asp-for="MaximumDiscountAmount" class="form-control" />
+                <span asp-validation-for="MaximumDiscountAmount" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="UsageLimit" class="form-label">Giới hạn lượt</label>
+                <input asp-for="UsageLimit" class="form-control" />
+                <span asp-validation-for="UsageLimit" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="StartsAt" class="form-label">Bắt đầu</label>
+                <input asp-for="StartsAt" type="datetime-local" class="form-control" />
+                <span asp-validation-for="StartsAt" class="text-danger"></span>
+            </div>
+            <div class="col-md-4">
+                <label asp-for="EndsAt" class="form-label">Kết thúc</label>
+                <input asp-for="EndsAt" type="datetime-local" class="form-control" />
+                <span asp-validation-for="EndsAt" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <label asp-for="Description" class="form-label">Mô tả</label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="col-12">
+                <div class="form-check">
+                    <input asp-for="IsActive" class="form-check-input" />
+                    <label asp-for="IsActive" class="form-check-label">Đang bật</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Lưu mã giảm giá</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

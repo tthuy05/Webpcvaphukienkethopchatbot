@@ -20,18 +20,19 @@ public class DatabaseSeedHostedService : IHostedService
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        if (!_configuration.GetValue("SeedData:Enabled", true))
-        {
-            return;
-        }
-
         using var scope = _serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
         await dbContext.Database.MigrateAsync(cancellationToken);
-        await DataSeeder.SeedAsync(scope.ServiceProvider, cancellationToken);
+        await DataSeeder.EnsureRolesAsync(scope.ServiceProvider);
 
-        _logger.LogInformation("Database migration and seed data completed.");
+        if (_configuration.GetValue("SeedData:Enabled", false))
+        {
+            await DataSeeder.SeedAsync(scope.ServiceProvider, cancellationToken);
+        }
+
+        _logger.LogInformation("Database migration completed. Demo seed enabled: {SeedEnabled}.",
+            _configuration.GetValue("SeedData:Enabled", false));
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

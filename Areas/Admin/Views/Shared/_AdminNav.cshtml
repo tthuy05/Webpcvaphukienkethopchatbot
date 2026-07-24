@@ -1,0 +1,56 @@
+@{
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+}
+
+<nav class="admin-nav" aria-label="Điều hướng quản trị">
+    <a class="admin-nav-link @(currentController == "Orders" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Orders"
+       asp-action="Index"
+       aria-current="@(currentController == "Orders" ? "page" : null)">Đơn hàng</a>
+    <a class="admin-nav-link @(currentController == "Products" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Products"
+       asp-action="Index"
+       aria-current="@(currentController == "Products" ? "page" : null)">Sản phẩm</a>
+    <a class="admin-nav-link @(currentController == "Categories" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Categories"
+       asp-action="Index"
+       aria-current="@(currentController == "Categories" ? "page" : null)">Danh mục</a>
+    <a class="admin-nav-link @(currentController == "Brands" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Brands"
+       asp-action="Index"
+       aria-current="@(currentController == "Brands" ? "page" : null)">Thương hiệu</a>
+    <a class="admin-nav-link @(currentController == "Coupons" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Coupons"
+       asp-action="Index"
+       aria-current="@(currentController == "Coupons" ? "page" : null)">Mã giảm giá</a>
+    <a class="admin-nav-link @(currentController == "Inventory" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Inventory"
+       asp-action="Index"
+       aria-current="@(currentController == "Inventory" ? "page" : null)">Lịch sử kho</a>
+    <a class="admin-nav-link @(currentController == "Users" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Users"
+       asp-action="Index"
+       aria-current="@(currentController == "Users" ? "page" : null)">Người dùng</a>
+    <a class="admin-nav-link @(currentController == "Reviews" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Reviews"
+       asp-action="Index"
+       aria-current="@(currentController == "Reviews" ? "page" : null)">Đánh giá</a>
+    <a class="admin-nav-link @(currentController == "Audit" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="Audit"
+       asp-action="Index"
+       aria-current="@(currentController == "Audit" ? "page" : null)">Audit</a>
+    <a class="admin-nav-link @(currentController == "EmailOutbox" ? "active" : null)"
+       asp-area="Admin"
+       asp-controller="EmailOutbox"
+       asp-action="Index"
+       aria-current="@(currentController == "EmailOutbox" ? "page" : null)">Email demo</a>
+</nav>

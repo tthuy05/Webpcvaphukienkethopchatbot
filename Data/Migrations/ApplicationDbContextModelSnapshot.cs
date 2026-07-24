@@ -239,6 +239,57 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.AuditLog", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Details")
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<string>("EntityId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("EntityType")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)");
+
+                    b.Property<bool>("Succeeded")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserAgent")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("ApplicationUserId", "CreatedAt");
+
+                    b.ToTable("AuditLogs");
+                });
+
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Brand", b =>
                 {
                     b.Property<int>("Id")
@@ -412,6 +463,163 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.ToTable("ChatbotLogs");
                 });
 
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Coupon", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(240)
+                        .HasColumnType("nvarchar(240)");
+
+                    b.Property<string>("DiscountType")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<DateTime?>("EndsAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("MaximumDiscountAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal>("MinimumOrderAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("StartsAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UsageLimit")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsedCount")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Value")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Coupons", t =>
+                        {
+                            t.HasCheckConstraint("CK_Coupons_Counts_NonNegative", "[UsedCount] >= 0 AND ([UsageLimit] IS NULL OR [UsageLimit] >= 0)");
+
+                            t.HasCheckConstraint("CK_Coupons_Percentage_Valid", "[DiscountType] <> 'Percentage' OR [Value] <= 100");
+
+                            t.HasCheckConstraint("CK_Coupons_Value_Positive", "[Value] > 0");
+                        });
+                });
+
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.EmailOutbox", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ActionUrl")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("Body")
+                        .IsRequired()
+                        .HasMaxLength(4000)
+                        .HasColumnType("nvarchar(4000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Recipient")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime?>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Recipient", "CreatedAt");
+
+                    b.ToTable("EmailOutbox");
+                });
+
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.InventoryTransaction", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PerformedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("QuantityDelta")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReferenceId")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("ReferenceType")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<int>("StockAfter")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StockBefore")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId", "CreatedAt");
+
+                    b.ToTable("InventoryTransactions");
+                });
+
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -424,8 +632,19 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("CouponCode")
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
+
+                    b.Property<int?>("CouponId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<decimal>("DiscountAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("OrderNumber")
                         .IsRequired()
@@ -447,14 +666,26 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<decimal>("ShippingFee")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<decimal>("SubtotalAmount")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<decimal>("TotalAmount")
                         .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("TrackingCode")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -463,11 +694,19 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
 
                     b.HasIndex("ApplicationUserId");
 
+                    b.HasIndex("CouponId");
+
                     b.HasIndex("OrderNumber")
                         .IsUnique();
 
                     b.ToTable("Orders", t =>
                         {
+                            t.HasCheckConstraint("CK_Orders_DiscountAmount_NonNegative", "[DiscountAmount] >= 0");
+
+                            t.HasCheckConstraint("CK_Orders_ShippingFee_NonNegative", "[ShippingFee] >= 0");
+
+                            t.HasCheckConstraint("CK_Orders_SubtotalAmount_NonNegative", "[SubtotalAmount] >= 0");
+
                             t.HasCheckConstraint("CK_Orders_TotalAmount_NonNegative", "[TotalAmount] >= 0");
                         });
                 });
@@ -516,6 +755,43 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
 
                             t.HasCheckConstraint("CK_OrderDetails_UnitPrice_NonNegative", "[UnitPrice] >= 0");
                         });
+                });
+
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.OrderStatusHistory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("ChangedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ChangedByUserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FromStatus")
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.Property<string>("Note")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ToStatus")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("nvarchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId", "ChangedAt");
+
+                    b.ToTable("OrderStatusHistories");
                 });
 
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Payment", b =>
@@ -623,6 +899,16 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                         .HasMaxLength(80)
                         .HasColumnType("nvarchar(80)");
 
+                    b.Property<DateTime?>("SaleEndAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("SalePrice")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("SaleStartAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Screen")
                         .HasMaxLength(120)
                         .HasColumnType("nvarchar(120)");
@@ -667,6 +953,8 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                         {
                             t.HasCheckConstraint("CK_Products_Price_NonNegative", "[Price] >= 0");
 
+                            t.HasCheckConstraint("CK_Products_SalePrice_Valid", "[SalePrice] IS NULL OR ([SalePrice] >= 0 AND [SalePrice] < [Price])");
+
                             t.HasCheckConstraint("CK_Products_Sold_NonNegative", "[SoldQuantity] >= 0");
 
                             t.HasCheckConstraint("CK_Products_Stock_NonNegative", "[StockQuantity] >= 0");
@@ -706,6 +994,54 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.ToTable("ProductImages");
                 });
 
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.ProductReview", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("nvarchar(1000)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsVerifiedPurchase")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsVisible")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId", "ProductId")
+                        .IsUnique();
+
+                    b.HasIndex("ProductId", "CreatedAt");
+
+                    b.ToTable("ProductReviews", t =>
+                        {
+                            t.HasCheckConstraint("CK_ProductReviews_Rating", "[Rating] BETWEEN 1 AND 5");
+                        });
+                });
+
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.UserPreference", b =>
                 {
                     b.Property<int>("Id")
@@ -737,6 +1073,34 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("UserPreferences");
+                });
+
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.WishlistItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("ApplicationUserId", "ProductId")
+                        .IsUnique();
+
+                    b.ToTable("WishlistItems");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -830,6 +1194,17 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.InventoryTransaction", b =>
+                {
+                    b.HasOne("Webpcvaphukienkethopchatbot.Models.Product", "Product")
+                        .WithMany("InventoryTransactions")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Order", b =>
                 {
                     b.HasOne("Webpcvaphukienkethopchatbot.Models.ApplicationUser", "ApplicationUser")
@@ -838,7 +1213,14 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Webpcvaphukienkethopchatbot.Models.Coupon", "Coupon")
+                        .WithMany("Orders")
+                        .HasForeignKey("CouponId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.Navigation("ApplicationUser");
+
+                    b.Navigation("Coupon");
                 });
 
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.OrderDetail", b =>
@@ -858,6 +1240,17 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.OrderStatusHistory", b =>
+                {
+                    b.HasOne("Webpcvaphukienkethopchatbot.Models.Order", "Order")
+                        .WithMany("StatusHistory")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Payment", b =>
@@ -901,6 +1294,25 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.ProductReview", b =>
+                {
+                    b.HasOne("Webpcvaphukienkethopchatbot.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("ProductReviews")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Webpcvaphukienkethopchatbot.Models.Product", "Product")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.UserPreference", b =>
                 {
                     b.HasOne("Webpcvaphukienkethopchatbot.Models.ApplicationUser", "ApplicationUser")
@@ -912,6 +1324,25 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.Navigation("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.WishlistItem", b =>
+                {
+                    b.HasOne("Webpcvaphukienkethopchatbot.Models.ApplicationUser", "ApplicationUser")
+                        .WithMany("WishlistItems")
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Webpcvaphukienkethopchatbot.Models.Product", "Product")
+                        .WithMany("WishlistItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.ApplicationUser", b =>
                 {
                     b.Navigation("Cart");
@@ -921,6 +1352,10 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.Navigation("Orders");
 
                     b.Navigation("Preference");
+
+                    b.Navigation("ProductReviews");
+
+                    b.Navigation("WishlistItems");
                 });
 
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Brand", b =>
@@ -938,11 +1373,18 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
                     b.Navigation("Products");
                 });
 
+            modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Coupon", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Order", b =>
                 {
                     b.Navigation("Details");
 
                     b.Navigation("Payment");
+
+                    b.Navigation("StatusHistory");
                 });
 
             modelBuilder.Entity("Webpcvaphukienkethopchatbot.Models.Product", b =>
@@ -951,7 +1393,13 @@ namespace Webpcvaphukienkethopchatbot.Data.Migrations
 
                     b.Navigation("Images");
 
+                    b.Navigation("InventoryTransactions");
+
                     b.Navigation("OrderDetails");
+
+                    b.Navigation("Reviews");
+
+                    b.Navigation("WishlistItems");
                 });
 #pragma warning restore 612, 618
         }

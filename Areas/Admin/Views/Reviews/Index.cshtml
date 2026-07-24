@@ -1,0 +1,79 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.Models.ProductReview>
+
+@{
+    ViewData["Title"] = "Quản lý đánh giá";
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Nội dung khách hàng</p>
+        <h1 class="page-title">Đánh giá sản phẩm</h1>
+        <p class="page-subtitle">Kiểm tra nội dung và điều chỉnh trạng thái hiển thị của đánh giá.</p>
+    </div>
+</header>
+
+<section class="surface-card" aria-labelledby="reviews-table-title">
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1" id="reviews-table-title">Danh sách đánh giá</h2>
+            <p class="text-muted small mb-0">Các đánh giá do người dùng gửi cho sản phẩm.</p>
+        </div>
+    </div>
+    <div class="surface-card-body p-0">
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <h3 class="h6">Chưa có đánh giá</h3>
+                <p class="text-muted mb-0">Đánh giá của khách hàng sẽ xuất hiện tại đây.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle data-table mb-0">
+                    <caption class="visually-hidden">Danh sách đánh giá sản phẩm</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Ngày</th>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Người dùng</th>
+                            <th scope="col">Sao</th>
+                            <th scope="col">Nội dung</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col" class="text-end">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-nowrap">@item.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                            <td class="fw-semibold">@item.Product?.Name</td>
+                            <td class="text-break">@item.ApplicationUser?.Email</td>
+                            <td class="text-nowrap">@item.Rating</td>
+                            <td>@item.Comment</td>
+                            <td>
+                                <span class="status-badge @(item.IsVisible ? "status-success" : "status-muted")">
+                                    @(item.IsVisible ? "Đang hiện" : "Đã ẩn")
+                                </span>
+                            </td>
+                            <td class="text-end">
+                                <form asp-action="Toggle" method="post">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                            type="submit"
+                                            aria-label="@(item.IsVisible ? $"Ẩn đánh giá về {item.Product?.Name}" : $"Hiện đánh giá về {item.Product?.Name}")">
+                                        @(item.IsVisible ? "Ẩn" : "Hiện")
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

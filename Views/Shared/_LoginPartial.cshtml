@@ -1,33 +1,41 @@
 @using Microsoft.AspNetCore.Identity
 @using Webpcvaphukienkethopchatbot.Models
 @inject SignInManager<ApplicationUser> SignInManager
-@inject UserManager<ApplicationUser> UserManager
 
-<ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    @if (User.IsInRole("Admin"))
+@{
+    var displayName = User.Identity?.Name ?? "Tài khoản";
+    var initial = string.IsNullOrWhiteSpace(displayName)
+        ? "U"
+        : displayName.Trim()[0].ToString().ToUpperInvariant();
+}
+
+<div class="app-header-actions">
+    @if (SignInManager.IsSignedIn(User))
     {
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">Admin</a>
-        </li>
-    }
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="" asp-controller="Profile" asp-action="Index" title="Profile">Hello @User.Identity?.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        <a class="user-chip"
+           asp-area=""
+           asp-controller="Profile"
+           asp-action="Index"
+           title="Mở hồ sơ cá nhân">
+            <span class="user-avatar" aria-hidden="true">@initial</span>
+            <span class="user-chip-copy">
+                <small>Tài khoản</small>
+                <strong>@displayName</strong>
+            </span>
+        </a>
+        <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="app-logout-form">
+            <button type="submit" class="btn btn-ghost btn-sm">Đăng xuất</button>
         </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
-</ul>
+    }
+    else
+    {
+        <a class="btn btn-ghost btn-sm d-none d-sm-inline-flex"
+           asp-area=""
+           asp-controller="Account"
+           asp-action="Register">Đăng ký</a>
+        <a class="btn btn-primary btn-sm"
+           asp-area=""
+           asp-controller="Account"
+           asp-action="Login">Đăng nhập</a>
+    }
+</div>

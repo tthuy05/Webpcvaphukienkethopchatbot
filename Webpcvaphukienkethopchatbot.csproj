@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-Webpcvaphukienkethopchatbot-c4ec3d78-3efb-4cb7-9fe5-40e358b4cea7</UserSecretsId>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Webpcvaphukienkethopchatbot.Tests\**;publish-sftp\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

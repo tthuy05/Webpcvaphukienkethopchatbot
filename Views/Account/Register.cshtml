@@ -1,0 +1,114 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Đăng ký";
+}
+
+<div class="auth-shell">
+    <section class="auth-card" aria-labelledby="register-title">
+        <div class="auth-brand-mark" aria-hidden="true">PC</div>
+        <p class="page-kicker">Tạo tài khoản mới</p>
+        <h1 id="register-title" class="page-title">Đăng ký PC Store</h1>
+        <p class="page-subtitle">Điền thông tin bên dưới để tạo tài khoản mua sắm của bạn.</p>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+            <div class="form-section">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="FullName" class="form-label">Họ và tên</label>
+                        <input asp-for="FullName"
+                               class="form-control"
+                               autocomplete="name"
+                               autofocus
+                               placeholder="Nguyễn Văn A" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Địa chỉ email</label>
+                        <input asp-for="Email"
+                               class="form-control"
+                               autocomplete="email"
+                               inputmode="email"
+                               placeholder="email@vidu.vn" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
+                        <input asp-for="PhoneNumber"
+                               class="form-control"
+                               autocomplete="tel"
+                               inputmode="tel"
+                               placeholder="0901234567" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Address" class="form-label">Địa chỉ nhận hàng</label>
+                        <input asp-for="Address"
+                               class="form-control"
+                               autocomplete="street-address"
+                               placeholder="Số nhà, đường, quận/huyện, tỉnh/thành" />
+                        <span asp-validation-for="Address" class="text-danger small"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Password" class="form-label">Mật khẩu</label>
+                        <input asp-for="Password"
+                               class="form-control"
+                               autocomplete="new-password"
+                               placeholder="Nhập mật khẩu" />
+                        <span asp-validation-for="Password" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="ConfirmPassword" class="form-label">Xác nhận mật khẩu</label>
+                        <input asp-for="ConfirmPassword"
+                               class="form-control"
+                               autocomplete="new-password"
+                               placeholder="Nhập lại mật khẩu" />
+                        <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+                    </div>
+                </div>
+                <p class="form-text mb-0">
+                    Mật khẩu tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, chữ số và ký tự đặc biệt.
+                </p>
+            </div>
+
+            <div class="surface-card mt-4">
+                <div class="surface-card-body">
+                    <label asp-for="CaptchaAnswer" class="form-label">Xác minh bảo mật: @Model.CaptchaQuestion</label>
+                    <input asp-for="CaptchaAnswer"
+                           class="form-control"
+                           inputmode="numeric"
+                           autocomplete="off"
+                           placeholder="Nhập kết quả phép tính" />
+                    <span asp-validation-for="CaptchaAnswer" class="text-danger small"></span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary w-100">Đăng ký tài khoản</button>
+            </div>
+        </form>
+
+        <p class="mt-4 mb-0 text-center text-muted">
+            Đã có tài khoản? <a asp-action="Login" class="btn-link fw-semibold">Đăng nhập</a>
+        </p>
+    </section>
+
+    <aside class="auth-aside" aria-label="Lợi ích đăng ký tài khoản">
+        <p class="page-kicker">Mua sắm thuận tiện</p>
+        <h2>Lưu thông tin và theo dõi hành trình đơn hàng</h2>
+        <p>
+            Tài khoản giúp bạn quản lý giỏ hàng, danh sách yêu thích, đánh giá và lịch sử mua sắm.
+        </p>
+    </aside>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,121 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.Models.Product>
+
+@{
+    ViewData["Title"] = "Quản lý sản phẩm";
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Danh mục sản phẩm</p>
+        <h1 class="page-title">Sản phẩm</h1>
+        <p class="page-subtitle">Quản lý thông tin bán hàng, trạng thái và tồn kho của sản phẩm.</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-primary" asp-action="Create">Thêm sản phẩm</a>
+    </div>
+</header>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="status">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<form method="get" class="toolbar-card" role="search">
+    <div class="row g-3 align-items-end">
+        <div class="col-md-8 col-lg-6">
+            <label class="form-label" for="product-search">Tìm sản phẩm</label>
+            <input id="product-search"
+                   name="search"
+                   class="form-control"
+                   placeholder="Nhập tên sản phẩm" />
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-outline-primary" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+<section class="surface-card" aria-labelledby="products-table-title">
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1" id="products-table-title">Danh sách sản phẩm</h2>
+            <p class="text-muted small mb-0">Thông tin danh mục, giá bán, tồn kho và trạng thái hiện tại.</p>
+        </div>
+    </div>
+    <div class="surface-card-body p-0">
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <h3 class="h6">Không có sản phẩm phù hợp</h3>
+                <p class="text-muted mb-0">Sản phẩm mới hoặc kết quả tìm kiếm sẽ xuất hiện tại đây.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle data-table mb-0">
+                    <caption class="visually-hidden">Danh sách sản phẩm</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Danh mục / Hãng</th>
+                            <th scope="col" class="text-end">Giá</th>
+                            <th scope="col" class="text-center">Kho / Đã bán</th>
+                            <th scope="col">Trạng thái</th>
+                            <th scope="col" style="min-width: 260px;">Thao tác kho</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                <a class="fw-semibold"
+                                   asp-action="Edit"
+                                   asp-route-id="@item.Id"
+                                   aria-label="Sửa sản phẩm @item.Name">@item.Name</a>
+                                <div class="small text-muted">@item.Slug</div>
+                            </td>
+                            <td>@item.Category?.Name / @item.Brand?.Name</td>
+                            <td class="text-end text-nowrap">@item.Price.ToString("N0")</td>
+                            <td class="text-center text-nowrap">@item.StockQuantity / @item.SoldQuantity</td>
+                            <td>
+                                <span class="status-badge @(item.IsActive ? "status-success" : "status-muted")">
+                                    @(item.IsActive ? "Đang bán" : "Đã ẩn")
+                                </span>
+                            </td>
+                            <td>
+                                <form asp-action="AdjustStock"
+                                      method="post"
+                                      class="d-flex gap-1"
+                                      aria-label="Điều chỉnh tồn kho cho @item.Name">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <input name="quantityDelta"
+                                           type="number"
+                                           class="form-control form-control-sm"
+                                           placeholder="+ nhập / - xuất"
+                                           aria-label="Số lượng điều chỉnh cho @item.Name"
+                                           required />
+                                    <input name="note"
+                                           class="form-control form-control-sm"
+                                           placeholder="Lý do"
+                                           aria-label="Lý do điều chỉnh cho @item.Name" />
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            type="submit"
+                                            aria-label="Lưu điều chỉnh tồn kho cho @item.Name">Lưu</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

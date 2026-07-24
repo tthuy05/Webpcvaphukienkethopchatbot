@@ -10,3 +10,5 @@ obj/
 appsettings.Local.json
 secrets.json
 wwwroot/uploads/
+App_Data/
+publish-sftp/

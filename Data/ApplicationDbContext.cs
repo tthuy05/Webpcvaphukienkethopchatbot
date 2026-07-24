@@ -33,6 +33,20 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
 
     public DbSet<UserPreference> UserPreferences => Set<UserPreference>();
 
+    public DbSet<InventoryTransaction> InventoryTransactions => Set<InventoryTransaction>();
+
+    public DbSet<OrderStatusHistory> OrderStatusHistories => Set<OrderStatusHistory>();
+
+    public DbSet<Coupon> Coupons => Set<Coupon>();
+
+    public DbSet<ProductReview> ProductReviews => Set<ProductReview>();
+
+    public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
+
+    public DbSet<AuditLog> AuditLogs => Set<AuditLog>();
+
+    public DbSet<EmailOutbox> EmailOutbox => Set<EmailOutbox>();
+
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
@@ -61,6 +75,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.HasIndex(product => product.Slug).IsUnique();
             entity.Property(product => product.Price).HasPrecision(18, 2);
+            entity.Property(product => product.SalePrice).HasPrecision(18, 2);
             entity.Property(product => product.Name).HasMaxLength(220).IsRequired();
             entity.Property(product => product.Slug).HasMaxLength(240).IsRequired();
             entity.Property(product => product.MainImageUrl).HasMaxLength(500).IsRequired();
@@ -71,6 +86,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 table.HasCheckConstraint("CK_Products_Price_NonNegative", "[Price] >= 0");
                 table.HasCheckConstraint("CK_Products_Stock_NonNegative", "[StockQuantity] >= 0");
                 table.HasCheckConstraint("CK_Products_Sold_NonNegative", "[SoldQuantity] >= 0");
+                table.HasCheckConstraint("CK_Products_SalePrice_Valid", "[SalePrice] IS NULL OR ([SalePrice] >= 0 AND [SalePrice] < [Price])");
             });
 
             entity.HasOne(product => product.Category)
@@ -127,13 +143,27 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
         {
             entity.HasIndex(order => order.OrderNumber).IsUnique();
             entity.Property(order => order.TotalAmount).HasPrecision(18, 2);
+            entity.Property(order => order.SubtotalAmount).HasPrecision(18, 2);
+            entity.Property(order => order.DiscountAmount).HasPrecision(18, 2);
+            entity.Property(order => order.ShippingFee).HasPrecision(18, 2);
             entity.Property(order => order.Status).HasConversion<string>().HasMaxLength(30);
-            entity.ToTable(table => table.HasCheckConstraint("CK_Orders_TotalAmount_NonNegative", "[TotalAmount] >= 0"));
+            entity.ToTable(table =>
+            {
+                table.HasCheckConstraint("CK_Orders_TotalAmount_NonNegative", "[TotalAmount] >= 0");
+                table.HasCheckConstraint("CK_Orders_SubtotalAmount_NonNegative", "[SubtotalAmount] >= 0");
+                table.HasCheckConstraint("CK_Orders_DiscountAmount_NonNegative", "[DiscountAmount] >= 0");
+                table.HasCheckConstraint("CK_Orders_ShippingFee_NonNegative", "[ShippingFee] >= 0");
+            });
 
             entity.HasOne(order => order.ApplicationUser)
                 .WithMany(user => user.Orders)
                 .HasForeignKey(order => order.ApplicationUserId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(order => order.Coupon)
+                .WithMany(coupon => coupon.Orders)
+                .HasForeignKey(order => order.CouponId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         builder.Entity<OrderDetail>(entity =>
@@ -191,6 +221,81 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
                 .WithOne(user => user.Preference)
                 .HasForeignKey<UserPreference>(preference => preference.ApplicationUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<InventoryTransaction>(entity =>
+        {
+            entity.HasIndex(transaction => new { transaction.ProductId, transaction.CreatedAt });
+            entity.Property(transaction => transaction.Type).HasConversion<string>().HasMaxLength(40);
+            entity.HasOne(transaction => transaction.Product)
+                .WithMany(product => product.InventoryTransactions)
+                .HasForeignKey(transaction => transaction.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        builder.Entity<OrderStatusHistory>(entity =>
+        {
+            entity.HasIndex(history => new { history.OrderId, history.ChangedAt });
+            entity.Property(history => history.FromStatus).HasConversion<string>().HasMaxLength(30);
+            entity.Property(history => history.ToStatus).HasConversion<string>().HasMaxLength(30);
+            entity.HasOne(history => history.Order)
+                .WithMany(order => order.StatusHistory)
+                .HasForeignKey(history => history.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<Coupon>(entity =>
+        {
+            entity.HasIndex(coupon => coupon.Code).IsUnique();
+            entity.Property(coupon => coupon.DiscountType).HasConversion<string>().HasMaxLength(30);
+            entity.Property(coupon => coupon.Value).HasPrecision(18, 2);
+            entity.Property(coupon => coupon.MinimumOrderAmount).HasPrecision(18, 2);
+            entity.Property(coupon => coupon.MaximumDiscountAmount).HasPrecision(18, 2);
+            entity.ToTable(table =>
+            {
+                table.HasCheckConstraint("CK_Coupons_Value_Positive", "[Value] > 0");
+                table.HasCheckConstraint("CK_Coupons_Counts_NonNegative", "[UsedCount] >= 0 AND ([UsageLimit] IS NULL OR [UsageLimit] >= 0)");
+                table.HasCheckConstraint("CK_Coupons_Percentage_Valid", "[DiscountType] <> 'Percentage' OR [Value] <= 100");
+            });
+        });
+
+        builder.Entity<ProductReview>(entity =>
+        {
+            entity.HasIndex(review => new { review.ApplicationUserId, review.ProductId }).IsUnique();
+            entity.HasIndex(review => new { review.ProductId, review.CreatedAt });
+            entity.ToTable(table => table.HasCheckConstraint("CK_ProductReviews_Rating", "[Rating] BETWEEN 1 AND 5"));
+            entity.HasOne(review => review.Product)
+                .WithMany(product => product.Reviews)
+                .HasForeignKey(review => review.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(review => review.ApplicationUser)
+                .WithMany(user => user.ProductReviews)
+                .HasForeignKey(review => review.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<WishlistItem>(entity =>
+        {
+            entity.HasIndex(item => new { item.ApplicationUserId, item.ProductId }).IsUnique();
+            entity.HasOne(item => item.Product)
+                .WithMany(product => product.WishlistItems)
+                .HasForeignKey(item => item.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(item => item.ApplicationUser)
+                .WithMany(user => user.WishlistItems)
+                .HasForeignKey(item => item.ApplicationUserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<AuditLog>(entity =>
+        {
+            entity.HasIndex(log => log.CreatedAt);
+            entity.HasIndex(log => new { log.ApplicationUserId, log.CreatedAt });
+        });
+
+        builder.Entity<EmailOutbox>(entity =>
+        {
+            entity.HasIndex(email => new { email.Recipient, email.CreatedAt });
         });
     }
 }

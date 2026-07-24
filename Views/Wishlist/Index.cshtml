@@ -1,0 +1,68 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.Models.WishlistItem>
+@{
+    ViewData["Title"] = "Sản phẩm yêu thích";
+}
+
+<header class="page-header">
+    <div>
+        <div class="page-kicker">Danh sách đã lưu</div>
+        <h1 class="page-title">Sản phẩm yêu thích</h1>
+        <p class="page-subtitle">Danh sách các sản phẩm bạn đã lưu để theo dõi hoặc mua sau.</p>
+    </div>
+</header>
+
+@if (Model.Count == 0)
+{
+    <div class="empty-state pc-card mb-5">
+        <div class="mb-3 text-muted">
+            <svg aria-hidden="true" focusable="false" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="mx-auto"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+        </div>
+        <h2 class="h4 fw-semibold text-dark">Danh sách yêu thích trống</h2>
+        <p class="text-muted mb-4 small">Bạn chưa lưu sản phẩm nào vào danh sách yêu thích của mình.</p>
+        <a class="btn btn-primary px-4" asp-controller="Home" asp-action="Index">Khám phá sản phẩm</a>
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 mb-5">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <article class="product-card card h-100 pc-card d-flex flex-column border-0">
+                <a asp-controller="Products" asp-action="Details" asp-route-slug="@item.Product!.Slug" class="product-media pc-image-wrapper">
+                    <img src="@item.Product!.MainImageUrl"
+                         alt="@item.Product.Name"
+                         loading="lazy"
+                         onerror="this.onerror=null;this.src='/images/products/placeholder.svg';" />
+                </a>
+                <div class="product-card-body card-body d-flex flex-column p-4">
+                    <h2 class="h5 mb-2 pc-clamp-2">
+                        <a class="text-decoration-none text-dark" style="font-weight: 600;" asp-controller="Products" asp-action="Details" asp-route-slug="@item.Product.Slug">@item.Product.Name</a>
+                    </h2>
+                    
+                    <div class="mb-4">
+                        <span class="price pc-price-tag">@item.Product.GetCurrentPrice(DateTime.UtcNow).ToString("N0") ₫</span>
+                    </div>
+                    
+                    <div class="d-flex gap-2 mt-auto">
+                        <form asp-controller="Cart" asp-action="Add" method="post" class="flex-grow-1">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <input type="hidden" name="quantity" value="1" />
+                            <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-1" type="submit" disabled="@(item.Product.StockQuantity == 0)">
+                                <svg aria-hidden="true" focusable="false" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                Thêm giỏ
+                            </button>
+                        </form>
+                        <form asp-action="Toggle" method="post" class="d-inline">
+                            <input type="hidden" name="productId" value="@item.ProductId" />
+                            <button class="btn btn-outline-danger d-flex align-items-center justify-content-center" type="submit" style="padding: 0.6rem 0.8rem;" title="Bỏ lưu" aria-label="Bỏ lưu @item.Product.Name">
+                                <svg aria-hidden="true" focusable="false" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </article>
+        </div>
+    }
+    </div>
+}

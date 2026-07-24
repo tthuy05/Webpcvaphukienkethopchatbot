@@ -1,0 +1,73 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.Models.InventoryTransaction>
+
+@{
+    ViewData["Title"] = "Lịch sử kho";
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Kho hàng</p>
+        <h1 class="page-title">Lịch sử kho</h1>
+        <p class="page-subtitle">Theo dõi biến động tồn kho và thông tin tham chiếu của từng giao dịch.</p>
+    </div>
+</header>
+
+<section class="surface-card" aria-labelledby="inventory-table-title">
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1" id="inventory-table-title">Biến động tồn kho</h2>
+            <p class="text-muted small mb-0">Tối đa 500 giao dịch gần nhất theo thời gian phát sinh.</p>
+        </div>
+    </div>
+    <div class="surface-card-body p-0">
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <h3 class="h6">Chưa có giao dịch kho</h3>
+                <p class="text-muted mb-0">Các thay đổi tồn kho sẽ xuất hiện tại đây.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm table-hover align-middle data-table mb-0">
+                    <caption class="visually-hidden">Danh sách giao dịch tồn kho</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Thời gian</th>
+                            <th scope="col">Sản phẩm</th>
+                            <th scope="col">Loại</th>
+                            <th scope="col" class="text-end">Thay đổi</th>
+                            <th scope="col" class="text-end">Trước → Sau</th>
+                            <th scope="col">Tham chiếu / Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-nowrap">@item.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                            <td class="fw-semibold">@item.Product?.Name</td>
+                            <td>
+                                <span class="status-badge @(item.QuantityDelta > 0 ? "status-success" : item.QuantityDelta < 0 ? "status-warning" : "status-muted")">
+                                    @item.Type
+                                </span>
+                            </td>
+                            <td class="text-end fw-semibold @(item.QuantityDelta > 0 ? "text-success" : "text-danger")">
+                                @(item.QuantityDelta > 0 ? "+" : null)@item.QuantityDelta
+                            </td>
+                            <td class="text-end text-nowrap">@item.StockBefore → @item.StockAfter</td>
+                            <td>
+                                @item.ReferenceType #@item.ReferenceId
+                                <div class="small text-muted">@item.Note</div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

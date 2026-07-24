@@ -1,0 +1,99 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.TwoFactorSetupViewModel
+@{
+    ViewData["Title"] = "Xác thực hai bước";
+}
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Bảo mật tài khoản</p>
+        <h1 class="page-title">Xác thực hai bước</h1>
+        <p class="page-subtitle">Bổ sung mã xác thực từ ứng dụng TOTP khi đăng nhập.</p>
+    </div>
+</header>
+
+<nav class="account-nav" aria-label="Điều hướng tài khoản">
+    <a class="account-nav-link" asp-action="Index">Thông tin cá nhân</a>
+    <a class="account-nav-link" asp-action="ChangePassword">Đổi mật khẩu</a>
+    <a class="account-nav-link active" aria-current="page" asp-action="TwoFactor">Xác thực hai bước</a>
+    <a class="account-nav-link" asp-action="VerifyPhone">Xác nhận số điện thoại</a>
+</nav>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="status" aria-live="polite">@successMessage</div>
+}
+
+@if (Model.IsEnabled)
+{
+    <section class="surface-card" aria-labelledby="two-factor-enabled-title">
+        <div class="surface-card-header">
+            <div>
+                <span class="status-badge status-success mb-2">Đang bật</span>
+                <h2 id="two-factor-enabled-title" class="h5 mb-1">Tài khoản đang được bảo vệ bằng xác thực hai bước</h2>
+                <p class="text-muted mb-0">Bạn sẽ cần mã từ ứng dụng xác thực trong lần đăng nhập tiếp theo.</p>
+            </div>
+        </div>
+        <div class="surface-card-body">
+            <form asp-action="DisableTwoFactor" method="post">
+                <div class="form-actions">
+                    <button class="btn btn-outline-danger" type="submit">Tắt xác thực hai bước</button>
+                </div>
+            </form>
+        </div>
+    </section>
+}
+else
+{
+    <section class="surface-card" aria-labelledby="two-factor-setup-title">
+        <div class="surface-card-header">
+            <div>
+                <span class="status-badge status-muted mb-2">Chưa bật</span>
+                <h2 id="two-factor-setup-title" class="h5 mb-1">Thiết lập ứng dụng xác thực</h2>
+                <p class="text-muted mb-0">Hoàn thành các bước theo thứ tự để kích hoạt bảo vệ hai lớp.</p>
+            </div>
+        </div>
+        <div class="surface-card-body">
+            <ol class="mb-4">
+                <li class="mb-2">Mở Google Authenticator, Microsoft Authenticator hoặc ứng dụng TOTP tương thích.</li>
+                <li class="mb-2">Nhập khóa: <code>@Model.SharedKey</code></li>
+                <li class="mb-2">Hoặc dùng URI cấu hình: <code class="text-break">@Model.AuthenticatorUri</code></li>
+                <li>Nhập mã 6 chữ số để hoàn tất.</li>
+            </ol>
+
+            <form asp-action="EnableTwoFactor" method="post">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <div class="form-section">
+                    <div>
+                        <label asp-for="Code" class="form-label">Mã từ ứng dụng xác thực</label>
+                        <input asp-for="Code"
+                               class="form-control"
+                               inputmode="numeric"
+                               autocomplete="one-time-code"
+                               autofocus
+                               placeholder="Nhập mã 6 chữ số" />
+                        <span asp-validation-for="Code" class="text-danger small"></span>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Bật xác thực hai bước</button>
+                </div>
+            </form>
+        </div>
+    </section>
+}
+
+@if (Model.RecoveryCodes.Count > 0)
+{
+    <div class="alert alert-warning mt-4" role="alert">
+        <div class="d-flex flex-column gap-2">
+            <strong>Lưu các mã khôi phục này ở nơi an toàn</strong>
+            <span>Mỗi mã chỉ sử dụng được một lần và giúp bạn đăng nhập khi không thể dùng ứng dụng xác thực.</span>
+            <code class="text-break">@string.Join(" · ", Model.RecoveryCodes)</code>
+        </div>
+    </div>
+}
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -25,6 +25,14 @@ public class Product
     [Range(0, 999999999)]
     public decimal Price { get; set; }
 
+    [Column(TypeName = "decimal(18,2)")]
+    [Range(0, 999999999)]
+    public decimal? SalePrice { get; set; }
+
+    public DateTime? SaleStartAt { get; set; }
+
+    public DateTime? SaleEndAt { get; set; }
+
     [Required, StringLength(500)]
     public string MainImageUrl { get; set; } = "/images/products/placeholder.svg";
 
@@ -75,4 +83,18 @@ public class Product
     public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
 
     public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
+
+    public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
+
+    public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
+
+    public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new List<InventoryTransaction>();
+
+    public decimal GetCurrentPrice(DateTime utcNow) =>
+        SalePrice.HasValue &&
+        SalePrice.Value < Price &&
+        (!SaleStartAt.HasValue || SaleStartAt.Value <= utcNow) &&
+        (!SaleEndAt.HasValue || SaleEndAt.Value >= utcNow)
+            ? SalePrice.Value
+            : Price;
 }

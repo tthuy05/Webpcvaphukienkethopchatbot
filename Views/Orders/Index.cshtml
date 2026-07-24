@@ -1,0 +1,74 @@
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.Models.Order>
+
+@{
+    ViewData["Title"] = "Đơn hàng";
+}
+
+<header class="page-header">
+    <div>
+        <div class="page-kicker">Lịch sử mua sắm</div>
+        <h1 class="page-title">Đơn hàng của tôi</h1>
+        <p class="page-subtitle">Theo dõi trạng thái và xem lại thông tin các đơn hàng đã đặt.</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Tiếp tục mua</a>
+    </div>
+</header>
+
+@if (Model.Count == 0)
+{
+    <div class="empty-state">
+        <p class="text-muted">Bạn chưa có đơn hàng nào.</p>
+        <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Mua sắm ngay</a>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="data-table table table-hover align-middle">
+            <caption class="visually-hidden">Danh sách đơn hàng của tôi</caption>
+            <thead>
+                <tr>
+                    <th scope="col">Mã đơn</th>
+                    <th scope="col">Ngày đặt</th>
+                    <th scope="col">Trạng thái</th>
+                    <th scope="col" class="text-end">Tổng tiền</th>
+                    <th scope="col"><span class="visually-hidden">Thao tác</span></th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var order in Model)
+            {
+                var statusLabel = order.Status switch
+                {
+                    OrderStatus.Pending => "Chờ xác nhận",
+                    OrderStatus.Confirmed => "Đã xác nhận",
+                    OrderStatus.Shipping => "Đang giao hàng",
+                    OrderStatus.Completed => "Hoàn thành",
+                    OrderStatus.Cancelled => "Đã hủy",
+                    _ => order.Status.ToString()
+                };
+                var statusClass = order.Status switch
+                {
+                    OrderStatus.Pending => "status-warning",
+                    OrderStatus.Confirmed => "status-info",
+                    OrderStatus.Shipping => "status-info",
+                    OrderStatus.Completed => "status-success",
+                    OrderStatus.Cancelled => "status-danger",
+                    _ => "status-muted"
+                };
+                <tr>
+                    <td class="fw-semibold">@order.OrderNumber</td>
+                    <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                    <td><span class="status-badge @statusClass">@statusLabel</span></td>
+                    <td class="text-end">@order.TotalAmount.ToString("N0") ₫</td>
+                    <td class="text-end">
+                        <a class="btn btn-sm btn-outline-primary" aria-label="Xem chi tiết đơn hàng @order.OrderNumber" asp-action="Details" asp-route-id="@order.Id">Chi tiết</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

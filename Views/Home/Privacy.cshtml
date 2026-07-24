@@ -1,6 +1,67 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Chính sách quyền riêng tư";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Thông tin và quyền riêng tư</p>
+        <h1 class="page-title">@ViewData["Title"]</h1>
+        <p class="page-subtitle">
+            Tổng quan về những dữ liệu hệ thống xử lý khi bạn sử dụng tài khoản và mua sắm tại PC Store.
+        </p>
+    </div>
+</header>
+
+<div class="row g-4">
+    <div class="col-lg-6">
+        <section class="surface-card h-100" aria-labelledby="privacy-account-title">
+            <div class="surface-card-header">
+                <h2 id="privacy-account-title" class="h5 mb-0">Thông tin tài khoản và giao dịch</h2>
+            </div>
+            <div class="surface-card-body">
+                <p>
+                    Hệ thống xử lý thông tin bạn cung cấp như họ tên, email, số điện thoại và địa chỉ để
+                    xác thực tài khoản, hoàn tất đơn hàng và hỗ trợ giao nhận.
+                </p>
+                <p class="mb-0">
+                    Dữ liệu giỏ hàng, đơn hàng, phương thức thanh toán mô phỏng, mã giảm giá và lịch sử trạng thái
+                    được lưu để duy trì đúng quy trình mua sắm hiện có.
+                </p>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-6">
+        <section class="surface-card h-100" aria-labelledby="privacy-usage-title">
+            <div class="surface-card-header">
+                <h2 id="privacy-usage-title" class="h5 mb-0">Dữ liệu sử dụng dịch vụ</h2>
+            </div>
+            <div class="surface-card-body">
+                <p>
+                    Danh sách yêu thích, đánh giá sản phẩm và câu hỏi gửi đến công cụ tư vấn được xử lý để hiển thị
+                    lại đúng nội dung và đề xuất sản phẩm phù hợp.
+                </p>
+                <p class="mb-0">
+                    Hệ thống cũng ghi nhận một số thông tin kỹ thuật và nhật ký thao tác phục vụ bảo mật,
+                    kiểm tra truy cập và vận hành.
+                </p>
+            </div>
+        </section>
+    </div>
+    <div class="col-12">
+        <section class="surface-card" aria-labelledby="privacy-security-title">
+            <div class="surface-card-header">
+                <h2 id="privacy-security-title" class="h5 mb-0">Bảo vệ tài khoản</h2>
+            </div>
+            <div class="surface-card-body">
+                <p>
+                    Không chia sẻ mật khẩu, mã xác thực hai bước, mã khôi phục hoặc liên kết đặt lại mật khẩu
+                    với người khác. Hãy đăng xuất sau khi sử dụng thiết bị dùng chung.
+                </p>
+                <div class="alert alert-info mb-0" role="note">
+                    Trong chế độ demo, một số liên kết email hoặc mã xác nhận có thể được hiển thị trực tiếp
+                    để phục vụ việc kiểm thử luồng chức năng.
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

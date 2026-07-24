@@ -1,0 +1,59 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.CatalogEntityViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Thêm danh mục" : "Sửa danh mục";
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Danh mục sản phẩm</p>
+        <h1 class="page-title">@ViewData["Title"]</h1>
+        <p class="page-subtitle">Cập nhật thông tin hiển thị và trạng thái của danh mục.</p>
+    </div>
+</header>
+
+<form method="post" class="surface-card">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1">Thông tin danh mục</h2>
+            <p class="text-muted small mb-0">Các trường có đánh dấu bắt buộc cần được nhập đầy đủ.</p>
+        </div>
+    </div>
+    <div class="surface-card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <div class="form-section">
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Slug" class="form-label"></label>
+                <input asp-for="Slug" class="form-control" />
+                <span asp-validation-for="Slug" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Description" class="form-label"></label>
+                <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-check">
+                <input asp-for="IsActive" class="form-check-input" />
+                <label asp-for="IsActive" class="form-check-label">Hoạt động</label>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Lưu danh mục</button>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,72 +1,142 @@
 @model Webpcvaphukienkethopchatbot.ViewModels.ProfileViewModel
+@using Webpcvaphukienkethopchatbot.Models.Enums
 
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Thông tin cá nhân";
 }
 
-<h1 class="h3 mb-3">Thong tin ca nhan</h1>
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Tài khoản của tôi</p>
+        <h1 class="page-title">Thông tin cá nhân</h1>
+        <p class="page-subtitle">Quản lý thông tin liên hệ và xem nhanh các đơn hàng gần đây.</p>
+    </div>
+</header>
+
+<nav class="account-nav" aria-label="Điều hướng tài khoản">
+    <a class="account-nav-link active" aria-current="page" asp-action="Index">Thông tin cá nhân</a>
+    <a class="account-nav-link" asp-action="ChangePassword">Đổi mật khẩu</a>
+    <a class="account-nav-link" asp-action="TwoFactor">Xác thực hai bước</a>
+    <a class="account-nav-link" asp-action="VerifyPhone">Xác nhận số điện thoại</a>
+</nav>
 
 @if (TempData["SuccessMessage"] is string successMessage)
 {
-    <div class="alert alert-success">@successMessage</div>
+    <div class="alert alert-success" role="status" aria-live="polite">
+        @(successMessage == "Da cap nhat thong tin ca nhan."
+            ? "Đã cập nhật thông tin cá nhân."
+            : successMessage)
+    </div>
 }
 
 <div class="row g-4">
     <div class="col-lg-5">
-        <form asp-action="Index" method="post" class="border rounded p-3">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="mb-3">
-                <label asp-for="FullName" class="form-label">Ho ten</label>
-                <input asp-for="FullName" class="form-control" />
-                <span asp-validation-for="FullName" class="text-danger"></span>
+        <section class="surface-card h-100" aria-labelledby="profile-form-title">
+            <div class="surface-card-header">
+                <div>
+                    <h2 id="profile-form-title" class="h5 mb-1">Thông tin liên hệ</h2>
+                    <p class="text-muted mb-0">Thông tin này được dùng khi xử lý và giao đơn hàng.</p>
+                </div>
             </div>
-            <div class="mb-3">
-                <label asp-for="PhoneNumber" class="form-label">So dien thoai</label>
-                <input asp-for="PhoneNumber" class="form-control" />
-                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            <div class="surface-card-body">
+                <form asp-action="Index" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                    <div class="form-section">
+                        <div>
+                            <label asp-for="FullName" class="form-label">Họ và tên</label>
+                            <input asp-for="FullName" class="form-control" autocomplete="name" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+                        <div>
+                            <label asp-for="PhoneNumber" class="form-label">Số điện thoại</label>
+                            <input asp-for="PhoneNumber"
+                                   class="form-control"
+                                   autocomplete="tel"
+                                   inputmode="tel" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                        <div>
+                            <label asp-for="Address" class="form-label">Địa chỉ</label>
+                            <textarea asp-for="Address"
+                                      class="form-control"
+                                      rows="4"
+                                      autocomplete="street-address"></textarea>
+                            <span asp-validation-for="Address" class="text-danger small"></span>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Cập nhật thông tin</button>
+                    </div>
+                </form>
             </div>
-            <div class="mb-3">
-                <label asp-for="Address" class="form-label">Dia chi</label>
-                <textarea asp-for="Address" class="form-control" rows="3"></textarea>
-                <span asp-validation-for="Address" class="text-danger"></span>
-            </div>
-            <button type="submit" class="btn btn-primary">Cap nhat</button>
-        </form>
+        </section>
     </div>
     <div class="col-lg-7">
-        <div class="border rounded p-3">
-            <h2 class="h5">Don hang gan day</h2>
-            @if (!Model.RecentOrders.Any())
-            {
-                <p class="text-muted mb-0">Chua co don hang.</p>
-            }
-            else
-            {
-                <div class="table-responsive">
-                    <table class="table table-sm align-middle">
-                        <thead>
-                            <tr>
-                                <th>Ma don</th>
-                                <th>Ngay tao</th>
-                                <th>Trang thai</th>
-                                <th class="text-end">Tong tien</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @foreach (var order in Model.RecentOrders)
-                        {
-                            <tr>
-                                <td>@order.OrderNumber</td>
-                                <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
-                                <td>@order.Status</td>
-                                <td class="text-end">@order.TotalAmount.ToString("N0")</td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
+        <section class="surface-card h-100" aria-labelledby="recent-orders-title">
+            <div class="surface-card-header">
+                <div>
+                    <h2 id="recent-orders-title" class="h5 mb-1">Đơn hàng gần đây</h2>
+                    <p class="text-muted mb-0">Năm đơn hàng mới nhất của tài khoản.</p>
                 </div>
-            }
-        </div>
+            </div>
+            <div class="surface-card-body">
+                @if (!Model.RecentOrders.Any())
+                {
+                    <div class="empty-state">
+                        <h3 class="h6">Chưa có đơn hàng</h3>
+                        <p class="text-muted mb-0">Các đơn hàng gần đây sẽ xuất hiện tại đây.</p>
+                    </div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table data-table align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th scope="col">Mã đơn</th>
+                                <th scope="col">Ngày tạo</th>
+                                <th scope="col">Trạng thái</th>
+                                <th scope="col" class="text-end">Tổng tiền</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                var statusLabel = order.Status switch
+                                {
+                                    OrderStatus.Pending => "Chờ xác nhận",
+                                    OrderStatus.Confirmed => "Đã xác nhận",
+                                    OrderStatus.Shipping => "Đang giao hàng",
+                                    OrderStatus.Completed => "Hoàn thành",
+                                    OrderStatus.Cancelled => "Đã hủy",
+                                    _ => order.Status.ToString()
+                                };
+                                var statusClass = order.Status switch
+                                {
+                                    OrderStatus.Pending => "status-warning",
+                                    OrderStatus.Confirmed => "status-info",
+                                    OrderStatus.Shipping => "status-info",
+                                    OrderStatus.Completed => "status-success",
+                                    OrderStatus.Cancelled => "status-danger",
+                                    _ => "status-muted"
+                                };
+                                <tr>
+                                    <td>
+                                        <a asp-controller="Orders"
+                                           asp-action="Details"
+                                           asp-route-id="@order.Id">@order.OrderNumber</a>
+                                    </td>
+                                    <td>@order.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</td>
+                                    <td><span class="status-badge @statusClass">@statusLabel</span></td>
+                                    <td class="text-end fw-semibold">@order.TotalAmount.ToString("N0") ₫</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </section>
     </div>
 </div>
 

@@ -1,0 +1,169 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.ProductDetailsViewModel
+@{
+    ViewData["Title"] = Model.Product.Name;
+}
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center gap-2" role="status">
+        <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+        <span>@successMessage</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center gap-2" role="alert">
+        <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+        <span>@errorMessage</span>
+    </div>
+}
+
+<div class="row g-5 mb-5 align-items-start">
+    <div class="col-lg-6">
+        <div class="surface-card product-detail-img-wrapper shadow-sm border-0">
+            <img src="@Model.Product.MainImageUrl"
+                 alt="@Model.Product.Name"
+                 class="img-fluid rounded"
+                 onerror="this.onerror=null;this.src='/images/products/placeholder.svg';" />
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="page-kicker d-flex align-items-center gap-2">
+            <span>@Model.Product.Category?.Name</span>
+            <span class="text-muted">&middot;</span>
+            <span>@Model.Product.Brand?.Name</span>
+        </div>
+        <h1 class="page-title mb-3">@Model.Product.Name</h1>
+        
+        <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="pc-rating text-warning" aria-label="@(Model.AverageRating is null ? "Chưa có đánh giá" : $"{Model.AverageRating:0.0} trên 5 sao")">
+                <span aria-hidden="true" style="font-size: 1.1rem;">★</span> @(Model.AverageRating?.ToString("0.0") ?? "Chưa có đánh giá")
+            </div>
+            <span class="text-muted small">|</span>
+            <span class="text-muted small">@Model.Reviews.Count đánh giá từ khách hàng</span>
+        </div>
+
+        <div class="p-4 rounded-3 mb-4" style="background-color: var(--secondary-color);">
+            <div class="d-flex align-items-baseline gap-3 flex-wrap">
+                <span class="price h3 fw-bold mb-0 text-danger">@Model.CurrentPrice.ToString("N0") ₫</span>
+                @if (Model.CurrentPrice < Model.Product.Price)
+                {
+                    <span class="price-old text-muted text-decoration-line-through">@Model.Product.Price.ToString("N0") ₫</span>
+                }
+            </div>
+        </div>
+
+        <p class="mb-4 text-secondary leading-relaxed">@Model.Product.Description</p>
+
+        @if (Model.Product.Cpu is not null || Model.Product.Ram is not null || Model.Product.Ssd is not null || Model.Product.Gpu is not null || Model.Product.Screen is not null)
+        {
+            <section class="surface-card pc-card p-4 border-0 mb-4 bg-white shadow-sm" aria-labelledby="specifications-heading">
+                <h2 id="specifications-heading" class="section-heading h6 fw-bold mb-3 border-bottom pb-2">Thông số kỹ thuật</h2>
+                <dl class="row mb-0 small">
+                    @if (Model.Product.Cpu is not null) { <dt class="col-4 text-muted fw-normal py-1">CPU</dt><dd class="col-8 fw-semibold py-1">@Model.Product.Cpu</dd> }
+                    @if (Model.Product.Ram is not null) { <dt class="col-4 text-muted fw-normal py-1">RAM</dt><dd class="col-8 fw-semibold py-1">@Model.Product.Ram</dd> }
+                    @if (Model.Product.Ssd is not null) { <dt class="col-4 text-muted fw-normal py-1">SSD</dt><dd class="col-8 fw-semibold py-1">@Model.Product.Ssd</dd> }
+                    @if (Model.Product.Gpu is not null) { <dt class="col-4 text-muted fw-normal py-1">GPU</dt><dd class="col-8 fw-semibold py-1">@Model.Product.Gpu</dd> }
+                    @if (Model.Product.Screen is not null) { <dt class="col-4 text-muted fw-normal py-1">Màn hình</dt><dd class="col-8 fw-semibold py-1">@Model.Product.Screen</dd> }
+                </dl>
+            </section>
+        }
+
+        <div class="mb-4 d-flex align-items-center gap-2">
+            <span class="text-secondary small">Trạng thái:</span>
+            <span class="status-badge @(Model.Product.StockQuantity > 0 ? "status-success" : "status-muted") pc-badge @(Model.Product.StockQuantity > 0 ? "pc-badge-success" : "pc-badge-secondary")">
+                @(Model.Product.StockQuantity > 0 ? $"Còn lại {Model.Product.StockQuantity} sản phẩm" : "Tạm hết hàng")
+            </span>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap align-items-center">
+            <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex gap-2 align-items-center">
+                <input type="hidden" name="productId" value="@Model.Product.Id" />
+                <label class="visually-hidden" for="product-quantity">Số lượng</label>
+                <input id="product-quantity" type="number" name="quantity" value="1" min="1" max="@(Math.Max(1, Math.Min(99, Model.Product.StockQuantity)))" class="form-control" style="width: 80px; height: 46px; text-align: center;" />
+                <button class="btn btn-primary d-flex align-items-center gap-2" type="submit" style="height: 46px; min-width: 160px;" disabled="@(Model.Product.StockQuantity == 0)">
+                    <svg aria-hidden="true" focusable="false" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Thêm vào giỏ
+                </button>
+            </form>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-controller="Wishlist" asp-action="Toggle" method="post">
+                    <input type="hidden" name="productId" value="@Model.Product.Id" />
+                    <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                    <button class="btn @(Model.IsWishlisted ? "btn-danger text-white" : "btn-outline-danger") d-flex align-items-center gap-2" type="submit" style="height: 46px;">
+                        <svg aria-hidden="true" focusable="false" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                        @(Model.IsWishlisted ? "Đã yêu thích" : "Yêu thích")
+                    </button>
+                </form>
+            }
+        </div>
+    </div>
+</div>
+
+<section class="mt-5 border-top pt-5" aria-labelledby="reviews-heading">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 id="reviews-heading" class="section-heading h4 fw-bold">Đánh giá từ khách hàng (@Model.Reviews.Count)</h2>
+    </div>
+
+    @if (Model.CanReview)
+    {
+        <form asp-action="Review" method="post" class="surface-card pc-filter-panel border-0 mb-5 shadow-sm p-4">
+            <input type="hidden" name="productId" value="@Model.Product.Id" />
+            <h3 class="h6 fw-bold mb-3">Chia sẻ nhận xét của bạn</h3>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label" for="review-rating">Đánh giá sao</label>
+                    <select id="review-rating" name="rating" class="form-select">
+                        @for (var i = 5; i >= 1; i--)
+                        {
+                            <option value="@i" selected="@(Model.Rating == i)">@i sao</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-9">
+                    <label class="form-label" for="review-comment">Nội dung nhận xét</label>
+                    <div class="input-group">
+                        <input id="review-comment" name="comment" value="@Model.Comment" class="form-control" maxlength="1000" placeholder="Chia sẻ trải nghiệm sử dụng sản phẩm..." required />
+                        <button class="btn btn-primary" type="submit">Gửi đánh giá</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    }
+
+    @if (Model.Reviews.Count == 0)
+    {
+        <div class="empty-state bg-white rounded-3 border-0 shadow-sm p-4">
+            <p class="text-muted mb-0 small">Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên nhận xét!</p>
+        </div>
+    }
+    else
+    {
+        <div class="d-flex flex-column gap-3 mb-5">
+            @foreach (var review in Model.Reviews)
+            {
+                <article class="surface-card pc-card bg-white p-4 border-0 shadow-sm d-flex flex-column gap-2" style="transform: none; box-shadow: var(--shadow-subtle);">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                        <div class="d-flex align-items-center gap-2">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold text-white small" style="width: 32px; height: 32px; background-color: var(--primary-color);">
+                                @(review.ApplicationUser?.FullName?.Substring(0, 1).ToUpper() ?? "U")
+                            </div>
+                            <div>
+                                <strong class="small text-dark">@review.ApplicationUser?.FullName</strong>
+                                <div class="text-muted" style="font-size: 0.75rem;">Mua hàng xác thực &middot; @review.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="text-warning small d-flex gap-1" aria-label="@review.Rating trên 5 sao">
+                            @for (var star = 1; star <= 5; star++)
+                            {
+                                <span aria-hidden="true">@(star <= review.Rating ? "★" : "☆")</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="text-secondary small mt-2">@review.Comment</div>
+                </article>
+            }
+        </div>
+    }
+</section>

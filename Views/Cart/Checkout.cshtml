@@ -1,0 +1,84 @@
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@model Webpcvaphukienkethopchatbot.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Thanh toán";
+}
+
+<header class="page-header">
+    <div>
+        <div class="page-kicker">Thanh toán an toàn</div>
+        <h1 class="page-title">Xác nhận đơn hàng</h1>
+        <p class="page-subtitle">Kiểm tra thông tin giao nhận và chọn phương thức thanh toán.</p>
+    </div>
+</header>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <form asp-action="Checkout" method="post" class="surface-card">
+            <div class="surface-card-body p-4">
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <div class="form-section">
+                <div class="mb-3">
+                    <label asp-for="ReceiverName" class="form-label"></label>
+                    <input asp-for="ReceiverName" class="form-control" autocomplete="name" />
+                    <span asp-validation-for="ReceiverName" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" autocomplete="tel" inputmode="tel" />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <label asp-for="ShippingAddress" class="form-label"></label>
+                    <textarea asp-for="ShippingAddress" class="form-control" rows="3" autocomplete="street-address"></textarea>
+                    <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                </div>
+                </div>
+                <div class="form-section">
+                <fieldset class="mb-4">
+                    <legend class="form-label">Phương thức thanh toán</legend>
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="PaymentMethod" type="radio" value="@PaymentMethod.CashOnDelivery" id="payment-cod" />
+                        <label class="form-check-label" for="payment-cod">Thanh toán khi nhận hàng</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="PaymentMethod" type="radio" value="@PaymentMethod.SimulatedBankTransfer" id="payment-transfer" />
+                        <label class="form-check-label" for="payment-transfer">Chuyển khoản mô phỏng</label>
+                    </div>
+                </fieldset>
+                <div class="mb-3">
+                    <label asp-for="CouponCode" class="form-label"></label>
+                    <input asp-for="CouponCode" class="form-control text-uppercase" placeholder="Ví dụ: DEMO10" />
+                    <span asp-validation-for="CouponCode" class="text-danger"></span>
+                </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary w-100">Đặt hàng và cập nhật tồn kho</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-lg-5">
+        <aside class="summary-card" aria-labelledby="checkout-summary-title">
+            <div id="checkout-summary-title" class="surface-card-header fw-semibold">Đơn hàng</div>
+            <ul class="list-group list-group-flush">
+                @foreach (var item in Model.Cart.Items)
+                {
+                    <li class="list-group-item d-flex justify-content-between gap-3">
+                        <span>@item.ProductName × @item.Quantity</span>
+                        <strong class="text-nowrap">@item.LineTotal.ToString("N0") ₫</strong>
+                    </li>
+                }
+                <li class="list-group-item d-flex justify-content-between">
+                    <strong>Tổng cộng</strong>
+                    <strong class="text-danger">@Model.Cart.TotalAmount.ToString("N0") ₫</strong>
+                </li>
+            </ul>
+        </aside>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

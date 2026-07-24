@@ -29,7 +29,29 @@ public class Order
 
     [Column(TypeName = "decimal(18,2)")]
     [Range(0, 999999999)]
+    public decimal SubtotalAmount { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    [Range(0, 999999999)]
+    public decimal DiscountAmount { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    [Range(0, 999999999)]
+    public decimal ShippingFee { get; set; }
+
+    [Column(TypeName = "decimal(18,2)")]
+    [Range(0, 999999999)]
     public decimal TotalAmount { get; set; }
+
+    public int? CouponId { get; set; }
+
+    public Coupon? Coupon { get; set; }
+
+    [StringLength(40)]
+    public string? CouponCode { get; set; }
+
+    [StringLength(100)]
+    public string? TrackingCode { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -38,4 +60,6 @@ public class Order
     public ICollection<OrderDetail> Details { get; set; } = new List<OrderDetail>();
 
     public Payment? Payment { get; set; }
+
+    public ICollection<OrderStatusHistory> StatusHistory { get; set; } = new List<OrderStatusHistory>();
 }

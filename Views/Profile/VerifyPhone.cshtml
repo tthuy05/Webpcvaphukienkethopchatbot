@@ -1,0 +1,90 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.PhoneVerificationViewModel
+@{
+    ViewData["Title"] = "Xác nhận số điện thoại";
+}
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Bảo mật tài khoản</p>
+        <h1 class="page-title">Xác nhận số điện thoại</h1>
+        <p class="page-subtitle">Kiểm tra trạng thái và xác nhận số điện thoại đang lưu trong hồ sơ.</p>
+    </div>
+</header>
+
+<nav class="account-nav" aria-label="Điều hướng tài khoản">
+    <a class="account-nav-link" asp-action="Index">Thông tin cá nhân</a>
+    <a class="account-nav-link" asp-action="ChangePassword">Đổi mật khẩu</a>
+    <a class="account-nav-link" asp-action="TwoFactor">Xác thực hai bước</a>
+    <a class="account-nav-link active" aria-current="page" asp-action="VerifyPhone">Xác nhận số điện thoại</a>
+</nav>
+
+@if (TempData["SuccessMessage"] is string s)
+{
+    <div class="alert alert-success" role="status" aria-live="polite">@s</div>
+}
+@if (TempData["ErrorMessage"] is string e)
+{
+    <div class="alert alert-danger" role="alert">@e</div>
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <section class="surface-card" aria-labelledby="phone-verification-title">
+            <div class="surface-card-header">
+                <div>
+                    <h2 id="phone-verification-title" class="h5 mb-1">Số điện thoại tài khoản</h2>
+                    <p class="text-muted mb-0">
+                        <strong>@Model.PhoneNumber</strong>
+                    </p>
+                </div>
+                <span class="status-badge @(Model.IsConfirmed ? "status-success" : "status-warning")">
+                    @(Model.IsConfirmed ? "Đã xác nhận" : "Chưa xác nhận")
+                </span>
+            </div>
+            <div class="surface-card-body">
+                @if (!Model.IsConfirmed)
+                {
+                    <p class="text-muted">
+                        Tạo mã OTP demo, sau đó nhập mã được hiển thị để hoàn tất xác nhận.
+                    </p>
+
+                    <form asp-action="SendPhoneCode" method="post">
+                        <div class="form-actions">
+                            <button class="btn btn-outline-primary" type="submit">Tạo mã OTP demo</button>
+                        </div>
+                    </form>
+
+                    @if (TempData["DemoPhoneCode"] is string code)
+                    {
+                        <div class="alert alert-info mt-4" role="status" aria-live="polite">
+                            Mã OTP demo: <strong>@code</strong>
+                        </div>
+                    }
+
+                    <form asp-action="VerifyPhone" method="post" class="mt-4">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                        <div class="form-section">
+                            <div>
+                                <label asp-for="Code" class="form-label">Mã xác nhận</label>
+                                <input asp-for="Code"
+                                       class="form-control"
+                                       inputmode="numeric"
+                                       autocomplete="one-time-code"
+                                       placeholder="Nhập mã OTP demo" />
+                                <span asp-validation-for="Code" class="text-danger small"></span>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-primary" type="submit">Xác nhận số điện thoại</button>
+                        </div>
+                    </form>
+                }
+            </div>
+        </section>
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,119 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Giỏ hàng";
+}
+
+<header class="page-header">
+    <div>
+        <div class="page-kicker">Đơn hàng của bạn</div>
+        <h1 class="page-title">Giỏ hàng</h1>
+        <p class="page-subtitle">Kiểm tra lại sản phẩm và số lượng trước khi thanh toán.</p>
+    </div>
+</header>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center gap-2" role="status">
+        <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+        <span>@successMessage</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center gap-2" role="alert">
+        <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+        <span>@errorMessage</span>
+    </div>
+}
+
+@if (Model.Items.Count == 0)
+{
+    <div class="empty-state pc-card mb-5">
+        <div class="mb-3 text-muted">
+            <svg aria-hidden="true" focusable="false" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="mx-auto"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+        </div>
+        <h2 class="h4 fw-semibold text-dark">Giỏ hàng của bạn đang trống</h2>
+        <p class="text-muted mb-4 small">Hãy quay lại cửa hàng để chọn những sản phẩm ưng ý nhất.</p>
+        <a class="btn btn-primary px-4" asp-controller="Home" asp-action="Index">Tiếp tục mua sắm</a>
+    </div>
+}
+else
+{
+    <div class="surface-card pc-card border-0 shadow-sm bg-white p-4 mb-4">
+        <div class="table-responsive">
+            <table class="data-table cart-table table align-middle mb-0">
+                <caption class="visually-hidden">Các sản phẩm trong giỏ hàng</caption>
+                <thead>
+                    <tr>
+                        <th scope="col" class="border-0">Sản phẩm</th>
+                        <th scope="col" class="text-end border-0">Đơn giá</th>
+                        <th scope="col" style="width: 220px" class="border-0">Số lượng</th>
+                        <th scope="col" class="text-end border-0">Thành tiền</th>
+                        <th scope="col" class="border-0"><span class="visually-hidden">Thao tác</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr class="@(!item.IsAvailable ? "table-warning" : null)">
+                        <td>
+                            <div class="d-flex align-items-center gap-3 py-1">
+                                <img src="@item.ImageUrl"
+                                     alt="@item.ProductName"
+                                     width="60"
+                                     height="60"
+                                     class="rounded object-fit-contain border bg-light"
+                                     onerror="this.onerror=null;this.src='/images/products/placeholder.svg';" />
+                                <div>
+                                    <strong class="text-dark d-block">@item.ProductName</strong>
+                                    <span class="text-muted small">Tồn kho: @item.StockQuantity</span>
+                                    @if (!item.IsAvailable)
+                                    {
+                                        <div class="status-badge status-warning mt-1">Sản phẩm không còn đủ số lượng.</div>
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-end fw-medium">@item.UnitPrice.ToString("N0") ₫</td>
+                        <td>
+                            <form asp-action="Update" method="post" class="d-flex gap-2 align-items-center">
+                                <input type="hidden" name="itemId" value="@item.Id" />
+                                <label class="visually-hidden" for="cart-quantity-@item.Id">Số lượng của @item.ProductName</label>
+                                <input id="cart-quantity-@item.Id" type="number" name="quantity" value="@item.Quantity" min="0" max="99" class="form-control form-control-sm text-center" style="width: 70px; height: 36px;" />
+                                <button type="submit" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center" style="height: 36px; padding: 0 0.75rem;">Lưu</button>
+                            </form>
+                        </td>
+                        <td class="text-end fw-bold text-dark">@item.LineTotal.ToString("N0") ₫</td>
+                        <td class="text-end">
+                            <form asp-action="Remove" method="post" class="d-inline">
+                                <input type="hidden" name="itemId" value="@item.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center" style="padding: 0.4rem 0.6rem;" title="Xóa khỏi giỏ" aria-label="Xóa @item.ProductName khỏi giỏ hàng">
+                                    <svg aria-hidden="true" focusable="false" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-end border-0 pt-4 fw-semibold text-secondary">Tổng cộng</td>
+                        <td class="text-end border-0 pt-4 text-danger fw-bold h4 mb-0">@Model.TotalAmount.ToString("N0") ₫</td>
+                        <td class="border-0 pt-4"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="page-actions d-flex justify-content-between align-items-center flex-wrap gap-2 mb-5">
+        <a class="btn btn-outline-secondary px-4 py-2" asp-controller="Home" asp-action="Index">Tiếp tục mua sắm</a>
+        <a class="btn btn-primary px-4 py-2 @(Model.Items.Any(item => !item.IsAvailable) ? "disabled" : null)"
+           aria-disabled="@(Model.Items.Any(item => !item.IsAvailable) ? "true" : null)"
+           tabindex="@(Model.Items.Any(item => !item.IsAvailable) ? "-1" : null)"
+           asp-action="Checkout">
+            @(User.Identity?.IsAuthenticated == true ? "Thanh toán ngay" : "Đăng nhập để thanh toán")
+        </a>
+    </div>
+}

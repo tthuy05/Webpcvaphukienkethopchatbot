@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Đăng ký thành công";
+}
+
+<div class="auth-shell">
+    <section class="auth-card" aria-labelledby="registration-complete-title">
+        <div class="auth-brand-mark" aria-hidden="true">PC</div>
+        <p class="page-kicker">Đăng ký hoàn tất</p>
+        <span class="status-badge status-success mb-3">Tài khoản đã được tạo</span>
+        <h1 id="registration-complete-title" class="page-title">Kiểm tra email để xác nhận tài khoản</h1>
+        <p class="page-subtitle">
+            Chúng tôi đã tạo tài khoản cho <strong>@ViewBag.Email</strong>. Hãy xác nhận email trước khi đăng nhập.
+        </p>
+
+        @if (ViewBag.ActionUrl is string actionUrl)
+        {
+            <div class="alert alert-info" role="status">
+                <strong>Chế độ demo đang bật:</strong> liên kết xác nhận được hiển thị thay cho email thật.
+            </div>
+            <div class="form-actions">
+                <a class="btn btn-success" href="@actionUrl">Xác nhận email demo</a>
+                <a class="btn btn-outline-primary" asp-action="Login">Đến trang đăng nhập</a>
+            </div>
+        }
+        else
+        {
+            <div class="form-actions">
+                <a class="btn btn-outline-primary" asp-action="Login">Đến trang đăng nhập</a>
+            </div>
+        }
+    </section>
+
+    <aside class="auth-aside" aria-label="Hướng dẫn xác nhận tài khoản">
+        <p class="page-kicker">Bước cuối cùng</p>
+        <h2>Xác nhận email để bắt đầu sử dụng tài khoản</h2>
+        <p>
+            Sau khi xác nhận thành công, bạn có thể quay lại trang đăng nhập bằng email vừa đăng ký.
+        </p>
+    </aside>
+</div>

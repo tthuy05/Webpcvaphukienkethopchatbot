@@ -1,0 +1,26 @@
+@{
+    ViewData["Title"] = "Không có quyền truy cập";
+}
+
+<div class="auth-shell">
+    <section class="auth-card" aria-labelledby="access-denied-title">
+        <div class="auth-brand-mark" aria-hidden="true">PC</div>
+        <p class="page-kicker">Bảo mật tài khoản</p>
+        <span class="status-badge status-danger mb-3">Truy cập bị từ chối</span>
+        <h1 id="access-denied-title" class="page-title">Bạn không có quyền truy cập trang này</h1>
+        <p class="page-subtitle">
+            Vui lòng đăng nhập bằng tài khoản có quyền phù hợp hoặc quay lại trang chủ để tiếp tục.
+        </p>
+        <div class="form-actions">
+            <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Về trang chủ</a>
+        </div>
+    </section>
+
+    <aside class="auth-aside" aria-label="Thông tin phân quyền">
+        <p class="page-kicker">Truy cập an toàn</p>
+        <h2>Quyền truy cập được kiểm soát theo từng vai trò</h2>
+        <p>
+            Một số khu vực chỉ dành cho tài khoản quản trị hoặc người dùng đã đăng nhập.
+        </p>
+    </aside>
+</div>

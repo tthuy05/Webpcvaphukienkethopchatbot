@@ -1,0 +1,69 @@
+@model IReadOnlyList<Webpcvaphukienkethopchatbot.Models.EmailOutbox>
+
+@{
+    ViewData["Title"] = "Email demo";
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Công cụ hệ thống</p>
+        <h1 class="page-title">Hộp thư email demo</h1>
+        <p class="page-subtitle">Kiểm tra các email xác nhận và khôi phục được tạo trong môi trường demo.</p>
+    </div>
+</header>
+
+<div class="alert alert-info" role="status">
+    Các email xác nhận và đặt lại mật khẩu được lưu tại đây thay cho SMTP thật.
+</div>
+
+<section class="surface-card" aria-labelledby="email-table-title">
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1" id="email-table-title">Email đã tạo</h2>
+            <p class="text-muted small mb-0">Danh sách nội dung gửi gần nhất trong hộp thư demo.</p>
+        </div>
+    </div>
+    <div class="surface-card-body p-0">
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <h3 class="h6">Chưa có email demo</h3>
+                <p class="text-muted mb-0">Email xác nhận hoặc khôi phục sẽ xuất hiện tại đây.</p>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-hover align-middle data-table mb-0">
+                    <caption class="visually-hidden">Danh sách email demo</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Thời gian</th>
+                            <th scope="col">Người nhận</th>
+                            <th scope="col">Tiêu đề</th>
+                            <th scope="col">Liên kết</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-nowrap">@item.CreatedAt.ToLocalTime().ToString("dd/MM HH:mm")</td>
+                            <td class="text-break">@item.Recipient</td>
+                            <td>@item.Subject</td>
+                            <td>
+                                @if (item.ActionUrl is not null)
+                                {
+                                    <a href="@item.ActionUrl" aria-label="Mở tác vụ cho email gửi đến @item.Recipient">Mở tác vụ</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</section>

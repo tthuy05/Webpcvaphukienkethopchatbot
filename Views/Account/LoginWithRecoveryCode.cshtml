@@ -1,0 +1,48 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.RecoveryCodeLoginViewModel
+@{
+    ViewData["Title"] = "Đăng nhập bằng mã khôi phục";
+}
+
+<div class="auth-shell">
+    <section class="auth-card" aria-labelledby="recovery-code-title">
+        <div class="auth-brand-mark" aria-hidden="true">PC</div>
+        <p class="page-kicker">Phương thức dự phòng</p>
+        <h1 id="recovery-code-title" class="page-title">Đăng nhập bằng mã khôi phục</h1>
+        <p class="page-subtitle">Sử dụng một mã khôi phục đã lưu khi bạn không thể dùng ứng dụng xác thực.</p>
+
+        <form method="post">
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="form-section">
+                <div>
+                    <label asp-for="RecoveryCode" class="form-label">Mã khôi phục</label>
+                    <input asp-for="RecoveryCode"
+                           class="form-control"
+                           autocomplete="one-time-code"
+                           autocapitalize="none"
+                           spellcheck="false"
+                           autofocus
+                           placeholder="Nhập mã khôi phục" />
+                    <span asp-validation-for="RecoveryCode" class="text-danger small"></span>
+                    <p class="form-text mb-0">Mỗi mã khôi phục chỉ sử dụng được một lần.</p>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary w-100" type="submit">Đăng nhập</button>
+            </div>
+        </form>
+    </section>
+
+    <aside class="auth-aside" aria-label="Thông tin mã khôi phục">
+        <p class="page-kicker">Bảo mật hai lớp</p>
+        <h2>Mã khôi phục là phương án đăng nhập dự phòng</h2>
+        <p>
+            Sau khi sử dụng thành công, mã hiện tại sẽ không thể được dùng lại.
+        </p>
+    </aside>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}

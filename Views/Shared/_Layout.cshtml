@@ -1,47 +1,204 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+@{
+    var currentArea = ViewContext.RouteData.Values["area"]?.ToString() ?? string.Empty;
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? string.Empty;
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? string.Empty;
+    var isAuthenticated = User.Identity?.IsAuthenticated == true;
+    var isAdminArea = string.Equals(currentArea, "Admin", StringComparison.OrdinalIgnoreCase);
+    var pageTitle = ViewData["Title"]?.ToString() ?? "PC Store";
+
+    bool IsActive(string controller, string area = "")
+    {
+        return string.Equals(currentController, controller, StringComparison.OrdinalIgnoreCase)
+            && string.Equals(currentArea, area, StringComparison.OrdinalIgnoreCase);
+    }
+}
+<!DOCTYPE html>
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Webpcvaphukienkethopchatbot</title>
+    <meta name="description" content="PC Store - máy tính, phụ kiện và trợ lý tư vấn sản phẩm thông minh." />
+    <meta name="theme-color" content="#0f172a" />
+    <title>@pageTitle - PC Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Webpcvaphukienkethopchatbot.styles.css" asp-append-version="true" />
 </head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Webpcvaphukienkethopchatbot</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                    <partial name="_LoginPartial" />
+<body class="app-shell @(isAdminArea ? "admin-mode" : null)">
+    <a class="skip-link" href="#main-content">Bỏ qua điều hướng</a>
+
+    <aside class="offcanvas offcanvas-start app-sidebar"
+           tabindex="-1"
+           id="appSidebar"
+           aria-labelledby="appSidebarTitle">
+        <div class="offcanvas-header app-sidebar-header">
+            <a class="app-brand" asp-area="" asp-controller="Home" asp-action="Index" id="appSidebarTitle">
+                <span class="app-brand-mark" aria-hidden="true">PC</span>
+                <span class="app-brand-copy">
+                    <strong>PC Store</strong>
+                    <small>Thiết bị &amp; phụ kiện</small>
+                </span>
+            </a>
+            <button type="button"
+                    class="btn-close btn-close-white d-lg-none"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Đóng menu"></button>
+        </div>
+
+        <div class="offcanvas-body app-sidebar-body">
+            <nav class="app-navigation" aria-label="Điều hướng chính">
+                <div class="app-nav-section">
+                    <div class="app-nav-label">Khám phá</div>
+                    <a class="app-nav-link @(IsActive("Home") || IsActive("Products") ? "active" : null)"
+                       asp-area=""
+                       asp-controller="Home"
+                       asp-action="Index"
+                       aria-current="@(IsActive("Home") || IsActive("Products") ? "page" : null)">
+                        <span class="app-nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 0 0-8 0v4M5 9h14l1 12H4L5 9Z" />
+                            </svg>
+                        </span>
+                        <span>Sản phẩm</span>
+                    </a>
+                    <a class="app-nav-link @(IsActive("Chatbot") ? "active" : null)"
+                       asp-area=""
+                       asp-controller="Chatbot"
+                       asp-action="Index"
+                       aria-current="@(IsActive("Chatbot") ? "page" : null)">
+                        <span class="app-nav-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.42-4.03 8-9 8a9.86 9.86 0 0 1-4.26-.95L3 20l1.4-3.72A7.4 7.4 0 0 1 3 12c0-4.42 4.03-8 9-8s9 3.58 9 8Z" />
+                            </svg>
+                        </span>
+                        <span>Tư vấn AI</span>
+                    </a>
+                </div>
+
+                @if (isAuthenticated)
+                {
+                    <div class="app-nav-section">
+                        <div class="app-nav-label">Mua sắm</div>
+                        <a class="app-nav-link @(IsActive("Cart") ? "active" : null)"
+                           asp-area=""
+                           asp-controller="Cart"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Cart") ? "page" : null)">
+                            <span class="app-nav-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4L7 13Zm0 0-2.3 2.3A1 1 0 0 0 5.4 17H17m0 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4Zm-8 2a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
+                                </svg>
+                            </span>
+                            <span>Giỏ hàng</span>
+                        </a>
+                        <a class="app-nav-link @(IsActive("Orders") && !isAdminArea ? "active" : null)"
+                           asp-area=""
+                           asp-controller="Orders"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Orders") && !isAdminArea ? "page" : null)">
+                            <span class="app-nav-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6M9 8h2m-4-5h10a2 2 0 0 1 2 2v16l-3-2-4 2-4-2-3 2V5a2 2 0 0 1 2-2Z" />
+                                </svg>
+                            </span>
+                            <span>Đơn hàng</span>
+                        </a>
+                        <a class="app-nav-link @(IsActive("Wishlist") ? "active" : null)"
+                           asp-area=""
+                           asp-controller="Wishlist"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Wishlist") ? "page" : null)">
+                            <span class="app-nav-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.3 6.3a4.5 4.5 0 0 0 0 6.4L12 20.4l7.7-7.7a4.5 4.5 0 0 0-6.4-6.4L12 7.6l-1.3-1.3a4.5 4.5 0 0 0-6.4 0Z" />
+                                </svg>
+                            </span>
+                            <span>Yêu thích</span>
+                        </a>
+                    </div>
+
+                    <div class="app-nav-section">
+                        <div class="app-nav-label">Tài khoản</div>
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <a class="app-nav-link @(isAdminArea ? "active" : null)"
+                               asp-area="Admin"
+                               asp-controller="Users"
+                               asp-action="Index"
+                               aria-current="@(isAdminArea ? "page" : null)">
+                                <span class="app-nav-icon" aria-hidden="true">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 4.5 6v5.5c0 4.8 3.1 8.2 7.5 9.5 4.4-1.3 7.5-4.7 7.5-9.5V6L12 3Zm0 5v8m-4-4h8" />
+                                    </svg>
+                                </span>
+                                <span>Quản trị</span>
+                            </a>
+                        }
+                        <a class="app-nav-link @(IsActive("Profile") ? "active" : null)"
+                           asp-area=""
+                           asp-controller="Profile"
+                           asp-action="Index"
+                           aria-current="@(IsActive("Profile") ? "page" : null)">
+                            <span class="app-nav-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.8 7.8a3.8 3.8 0 1 1-7.6 0 3.8 3.8 0 0 1 7.6 0ZM4.5 20a7.5 7.5 0 0 1 15 0" />
+                                </svg>
+                            </span>
+                            <span>Hồ sơ cá nhân</span>
+                        </a>
+                    </div>
+                }
+            </nav>
+
+            <div class="app-sidebar-note">
+                <span class="app-sidebar-note-mark" aria-hidden="true">AI</span>
+                <div>
+                    <strong>Tìm đúng cấu hình</strong>
+                    <span>Nhận gợi ý theo nhu cầu và ngân sách của bạn.</span>
                 </div>
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
+        </div>
+    </aside>
+
+    <div class="app-stage">
+        <header class="app-header">
+            <button class="app-menu-button d-lg-none"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#appSidebar"
+                    aria-controls="appSidebar"
+                    aria-label="Mở menu điều hướng">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </button>
+
+            <div class="app-header-context">
+                <span>@(isAdminArea ? "Trung tâm quản trị" : "PC Store")</span>
+                <strong title="@pageTitle">@pageTitle</strong>
+            </div>
+
+            <partial name="_LoginPartial" />
+        </header>
+
+        <main id="main-content" class="app-content" tabindex="-1">
+            <div class="app-content-frame">
+                @RenderBody()
+            </div>
         </main>
+
+        <footer class="app-footer">
+            <div>
+                <strong>PC Store</strong>
+                <span>&copy; 2026. Tất cả quyền được bảo lưu.</span>
+            </div>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Chính sách riêng tư</a>
+        </footer>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - Webpcvaphukienkethopchatbot - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

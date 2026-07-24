@@ -1,0 +1,34 @@
+@model bool
+@{
+    ViewData["Title"] = "Xác nhận email";
+}
+
+<div class="auth-shell">
+    <section class="auth-card" aria-labelledby="email-confirmation-title">
+        <div class="auth-brand-mark" aria-hidden="true">PC</div>
+        <p class="page-kicker">Xác minh tài khoản</p>
+        @if (Model)
+        {
+            <span class="status-badge status-success mb-3">Xác nhận thành công</span>
+            <h1 id="email-confirmation-title" class="page-title">Email của bạn đã được xác nhận</h1>
+            <p class="page-subtitle">Tài khoản đã sẵn sàng. Bạn có thể đăng nhập để tiếp tục mua sắm.</p>
+            <div class="form-actions">
+                <a class="btn btn-primary" asp-action="Login">Đăng nhập</a>
+            </div>
+        }
+        else
+        {
+            <span class="status-badge status-danger mb-3">Xác nhận không thành công</span>
+            <h1 id="email-confirmation-title" class="page-title">Không thể xác nhận email</h1>
+            <p class="page-subtitle">Liên kết xác nhận không hợp lệ hoặc đã hết hạn.</p>
+        }
+    </section>
+
+    <aside class="auth-aside" aria-label="Thông tin xác nhận email">
+        <p class="page-kicker">Bảo vệ tài khoản</p>
+        <h2>Xác nhận email trước khi đăng nhập</h2>
+        <p>
+            Bước xác minh này giúp bảo đảm địa chỉ email thuộc về đúng chủ tài khoản.
+        </p>
+    </aside>
+</div>

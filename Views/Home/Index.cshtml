@@ -1,8 +1,189 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model Webpcvaphukienkethopchatbot.ViewModels.ProductCatalogViewModel
+
+@{
+    ViewData["Title"] = "Sản phẩm";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<header class="page-header">
+    <div>
+        <div class="page-kicker">Danh mục trực tuyến</div>
+        <h1 class="page-title">Máy tính & Phụ kiện</h1>
+        <p class="page-subtitle">Danh mục sản phẩm chính hãng với dữ liệu thời gian thực.</p>
+    </div>
+    @if (Model.Products.Count > 0)
+    {
+        <div class="text-muted small">Tìm thấy <strong>@Model.Products.Count</strong> sản phẩm</div>
+    }
+</header>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center gap-2" role="status">
+        <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+        <span>@successMessage</span>
+    </div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center gap-2" role="alert">
+        <svg aria-hidden="true" focusable="false" width="20" height="20" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+        <span>@errorMessage</span>
+    </div>
+}
+
+<form method="get" class="toolbar-card pc-filter-panel mb-5" aria-label="Bộ lọc sản phẩm">
+    <div class="row g-3">
+        <!-- Keyword Search -->
+        <div class="col-lg-4 col-md-6 col-12">
+            <label class="form-label text-secondary fw-semibold" for="catalog-search">Từ khóa tìm kiếm</label>
+            <input id="catalog-search" name="search" value="@Model.Search" class="form-control" placeholder="Tìm tên, nhu cầu, mô tả..." />
+        </div>
+
+        <!-- Category Selector -->
+        <div class="col-lg-2 col-md-3 col-sm-6">
+            <label class="form-label text-secondary fw-semibold" for="catalog-category">Danh mục</label>
+            <select id="catalog-category" name="categoryId" class="form-select">
+                <option value="">Tất cả danh mục</option>
+                @foreach (var item in Model.Categories)
+                {
+                    <option value="@item.Id" selected="@(Model.CategoryId == item.Id)">@item.Name</option>
+                }
+            </select>
+        </div>
+
+        <!-- Brand Selector -->
+        <div class="col-lg-2 col-md-3 col-sm-6">
+            <label class="form-label text-secondary fw-semibold" for="catalog-brand">Thương hiệu</label>
+            <select id="catalog-brand" name="brandId" class="form-select">
+                <option value="">Tất cả thương hiệu</option>
+                @foreach (var item in Model.Brands)
+                {
+                    <option value="@item.Id" selected="@(Model.BrandId == item.Id)">@item.Name</option>
+                }
+            </select>
+        </div>
+
+        <!-- Sort Selector -->
+        <div class="col-lg-4 col-md-6 col-12">
+            <label class="form-label text-secondary fw-semibold" for="catalog-sort">Sắp xếp theo</label>
+            <select id="catalog-sort" name="sort" class="form-select">
+                <option value="newest" selected="@(Model.Sort == "newest")">Mới nhất</option>
+                <option value="popular" selected="@(Model.Sort == "popular")">Bán chạy</option>
+                <option value="price_asc" selected="@(Model.Sort == "price_asc")">Giá tăng dần</option>
+                <option value="price_desc" selected="@(Model.Sort == "price_desc")">Giá giảm dần</option>
+                <option value="name" selected="@(Model.Sort == "name")">Tên A–Z</option>
+            </select>
+        </div>
+
+        <!-- Price Range inputs -->
+        <div class="col-lg-6 col-md-6 col-12">
+            <div class="form-label text-secondary fw-semibold">Khoảng giá (₫)</div>
+            <div class="input-group">
+                <label class="visually-hidden" for="catalog-min-price">Giá tối thiểu</label>
+                <input id="catalog-min-price" name="minPrice" value="@Model.MinPrice" type="number" min="0" inputmode="numeric" class="form-control" placeholder="Giá từ" />
+                <span class="input-group-text bg-white border-start-0 border-end-0 text-muted" aria-hidden="true">&rarr;</span>
+                <label class="visually-hidden" for="catalog-max-price">Giá tối đa</label>
+                <input id="catalog-max-price" name="maxPrice" value="@Model.MaxPrice" type="number" min="0" inputmode="numeric" class="form-control" placeholder="Giá đến" />
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col-lg-6 col-md-6 col-12 d-flex align-items-end justify-content-lg-end gap-2 mt-3 mt-lg-0">
+            <a class="btn btn-outline-secondary px-4 w-100 w-sm-auto" asp-action="Index">Xóa lọc</a>
+            <button class="btn btn-primary px-4 w-100 w-sm-auto" type="submit">Tìm kiếm</button>
+        </div>
+    </div>
+</form>
+
+@if (Model.Products.Count == 0)
+{
+    <div class="empty-state pc-card mb-5">
+        <div class="mb-3 text-muted">
+            <svg aria-hidden="true" focusable="false" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="mx-auto"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </div>
+        <h2 class="h4 fw-semibold text-dark">Không tìm thấy sản phẩm phù hợp</h2>
+        <p class="text-muted mb-4 small">Hãy thử điều chỉnh lại bộ lọc hoặc từ khóa tìm kiếm của bạn.</p>
+        <a class="btn btn-primary px-4" asp-action="Index">Xóa bộ lọc</a>
+    </div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 mb-5">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col">
+                <article class="product-card card h-100 pc-card d-flex flex-column border-0">
+                    <a asp-controller="Products" asp-action="Details" asp-route-slug="@product.Slug" class="product-media pc-image-wrapper">
+                        <img src="@product.ImageUrl"
+                             alt="@product.Name"
+                             loading="lazy"
+                             onerror="this.onerror=null;this.src='/images/products/placeholder.svg';" />
+                    </a>
+                    <div class="product-card-body card-body d-flex flex-column p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="pc-rating" aria-label="@(product.AverageRating is null ? "Chưa có đánh giá" : $"{product.AverageRating:0.0} trên 5 sao")">
+                                <span class="small" aria-hidden="true">★</span> @(product.AverageRating?.ToString("0.0") ?? "Chưa có đánh giá")
+                            </div>
+                            <span class="status-badge @(product.StockQuantity > 0 ? "status-success" : "status-muted") pc-badge @(product.StockQuantity > 0 ? "pc-badge-success" : "pc-badge-secondary")">
+                                @(product.StockQuantity > 0 ? $"Còn {product.StockQuantity}" : "Hết hàng")
+                            </span>
+                        </div>
+
+                        <h2 class="h5 mb-2 pc-clamp-2">
+                            <a class="text-decoration-none text-dark" style="font-weight: 600;" asp-controller="Products" asp-action="Details" asp-route-slug="@product.Slug">@product.Name</a>
+                        </h2>
+
+                        <p class="text-muted small pc-clamp-3 mb-3 flex-grow-1">@product.Description</p>
+
+                        <div class="mb-4">
+                            <div class="d-flex align-items-baseline gap-2 flex-wrap">
+                                <span class="price pc-price-tag">@product.CurrentPrice.ToString("N0") ₫</span>
+                                @if (product.CurrentPrice < product.OriginalPrice)
+                                {
+                                    <span class="price-old pc-price-original">@product.OriginalPrice.ToString("N0") ₫</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex gap-2 flex-grow-1">
+                                <input type="hidden" name="productId" value="@product.Id" />
+                                <input type="hidden" name="quantity" value="1" />
+                                <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" disabled="@(product.StockQuantity == 0)">
+                                    <svg aria-hidden="true" focusable="false" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                    Thêm vào giỏ
+                                </button>
+                            </form>
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <form asp-controller="Wishlist" asp-action="Toggle" method="post" class="d-inline">
+                                    <input type="hidden" name="productId" value="@product.Id" />
+                                    <input type="hidden" name="returnUrl" value="@Context.Request.Path@Context.Request.QueryString" />
+                                    <button class="btn btn-outline-danger d-flex align-items-center justify-content-center" type="submit" title="Yêu thích" aria-label="Thêm @product.Name vào danh sách yêu thích" style="padding: 0.6rem 0.8rem;">
+                                        <svg aria-hidden="true" focusable="false" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                </article>
+            </div>
+        }
+    </div>
+}
+
+@if (Model.TotalPages > 1)
+{
+    <nav class="mt-5" aria-label="Phân trang">
+        <ul class="pagination justify-content-center">
+            @for (var current = 1; current <= Model.TotalPages; current++)
+            {
+                <li class="page-item @(current == Model.Page ? "active" : null)">
+                    <a class="page-link shadow-sm" aria-current="@(current == Model.Page ? "page" : null)" aria-label="Trang @current" asp-action="Index" asp-route-page="@current" asp-route-search="@Model.Search"
+                       asp-route-categoryId="@Model.CategoryId" asp-route-brandId="@Model.BrandId"
+                       asp-route-minPrice="@Model.MinPrice" asp-route-maxPrice="@Model.MaxPrice" asp-route-sort="@Model.Sort">@current</a>
+                </li>
+            }
+        </ul>
+    </nav>
+}

@@ -1,0 +1,160 @@
+@using Webpcvaphukienkethopchatbot.Models
+@model Webpcvaphukienkethopchatbot.ViewModels.ProductAdminViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Thêm sản phẩm" : "Sửa sản phẩm";
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Danh mục sản phẩm</p>
+        <h1 class="page-title">@ViewData["Title"]</h1>
+        <p class="page-subtitle">Cập nhật thông tin hiển thị, giá bán, thông số và trạng thái sản phẩm.</p>
+    </div>
+</header>
+
+<form method="post" class="surface-card">
+    <input asp-for="Id" type="hidden" />
+
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1">Thông tin sản phẩm</h2>
+            <p class="text-muted small mb-0">Giữ thông tin sản phẩm rõ ràng và nhất quán trên cửa hàng.</p>
+        </div>
+    </div>
+    <div class="surface-card-body">
+        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+        <section class="form-section" aria-labelledby="product-general-title">
+            <h3 class="h6 mb-3" id="product-general-title">Thông tin chung</h3>
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <label asp-for="Name" class="form-label"></label>
+                    <input asp-for="Name" class="form-control" />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Slug" class="form-label"></label>
+                    <input asp-for="Slug" class="form-control" placeholder="Tự tạo nếu để trống" />
+                    <span asp-validation-for="Slug" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CategoryId" class="form-label"></label>
+                    <select asp-for="CategoryId" class="form-select">
+                        <option value="">-- chọn --</option>
+                        @foreach (Category item in ViewBag.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="BrandId" class="form-label"></label>
+                    <select asp-for="BrandId" class="form-select">
+                        <option value="">-- chọn --</option>
+                        @foreach (Brand item in ViewBag.Brands)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="BrandId" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="MainImageUrl" class="form-label"></label>
+                    <input asp-for="MainImageUrl" class="form-control" />
+                    <span asp-validation-for="MainImageUrl" class="text-danger"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="product-price-title">
+            <h3 class="h6 mb-3" id="product-price-title">Giá và khuyến mãi</h3>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="Price" class="form-label"></label>
+                    <input asp-for="Price" class="form-control" />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="SalePrice" class="form-label"></label>
+                    <input asp-for="SalePrice" class="form-control" />
+                    <span asp-validation-for="SalePrice" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="SaleStartAt" class="form-label"></label>
+                    <input asp-for="SaleStartAt" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="SaleStartAt" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label asp-for="SaleEndAt" class="form-label"></label>
+                    <input asp-for="SaleEndAt" type="datetime-local" class="form-control" />
+                    <span asp-validation-for="SaleEndAt" class="text-danger"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="product-specs-title">
+            <h3 class="h6 mb-3" id="product-specs-title">Thông số kỹ thuật</h3>
+            <div class="row g-3">
+                @foreach (var field in new[] { "Cpu", "Ram", "Ssd", "Gpu", "Screen", "Battery", "Weight", "OperatingSystem" })
+                {
+                    <div class="col-md-3">
+                        <label class="form-label" for="@field">@field</label>
+                        <input class="form-control"
+                               id="@field"
+                               name="@field"
+                               value="@ViewData.Eval(field)" />
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="product-content-title">
+            <h3 class="h6 mb-3" id="product-content-title">Nội dung sản phẩm</h3>
+            <div class="row g-3">
+                <div class="col-12">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="col-12">
+                    <label asp-for="SuitableNeeds" class="form-label"></label>
+                    <input asp-for="SuitableNeeds" class="form-control" />
+                    <span asp-validation-for="SuitableNeeds" class="text-danger"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="form-section" aria-labelledby="product-state-title">
+            <h3 class="h6 mb-3" id="product-state-title">Kho và trạng thái</h3>
+            <div class="row g-3">
+                @if (Model.Id == 0)
+                {
+                    <div class="col-md-4">
+                        <label asp-for="InitialStock" class="form-label"></label>
+                        <input asp-for="InitialStock" class="form-control" />
+                        <span asp-validation-for="InitialStock" class="text-danger"></span>
+                    </div>
+                }
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="form-check">
+                        <input asp-for="IsActive" class="form-check-input" />
+                        <label asp-for="IsActive" class="form-check-label"></label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="form-actions">
+            <button class="btn btn-primary" type="submit">Lưu sản phẩm</button>
+            <a class="btn btn-outline-secondary" asp-action="Index">Quay lại</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

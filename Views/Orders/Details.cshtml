@@ -1,0 +1,160 @@
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@model Webpcvaphukienkethopchatbot.Models.Order
+
+@{
+    ViewData["Title"] = $"Đơn hàng {Model.OrderNumber}";
+    var canCancel = Model.Status is OrderStatus.Pending or OrderStatus.Confirmed;
+    var statusLabel = Model.Status switch
+    {
+        OrderStatus.Pending => "Chờ xác nhận",
+        OrderStatus.Confirmed => "Đã xác nhận",
+        OrderStatus.Shipping => "Đang giao hàng",
+        OrderStatus.Completed => "Hoàn thành",
+        OrderStatus.Cancelled => "Đã hủy",
+        _ => Model.Status.ToString()
+    };
+    var statusClass = Model.Status switch
+    {
+        OrderStatus.Pending => "status-warning",
+        OrderStatus.Confirmed => "status-info",
+        OrderStatus.Shipping => "status-info",
+        OrderStatus.Completed => "status-success",
+        OrderStatus.Cancelled => "status-danger",
+        _ => "status-muted"
+    };
+    var paymentMethodLabel = Model.Payment?.Method switch
+    {
+        PaymentMethod.CashOnDelivery => "Thanh toán khi nhận hàng",
+        PaymentMethod.SimulatedBankTransfer => "Chuyển khoản mô phỏng",
+        _ => Model.Payment?.Method.ToString()
+    };
+    var paymentStatusLabel = Model.Payment?.Status switch
+    {
+        PaymentStatus.Pending => "Đang xử lý",
+        PaymentStatus.Unpaid => "Chưa thanh toán",
+        PaymentStatus.Simulated => "Đã mô phỏng",
+        PaymentStatus.Paid => "Đã thanh toán",
+        PaymentStatus.Failed => "Thất bại",
+        PaymentStatus.Cancelled => "Đã hủy",
+        _ => Model.Payment?.Status.ToString()
+    };
+    var paymentStatusClass = Model.Payment?.Status switch
+    {
+        PaymentStatus.Paid => "status-success",
+        PaymentStatus.Simulated => "status-info",
+        PaymentStatus.Failed or PaymentStatus.Cancelled => "status-danger",
+        PaymentStatus.Pending or PaymentStatus.Unpaid => "status-warning",
+        _ => "status-muted"
+    };
+}
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="status">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<header class="page-header">
+    <div>
+        <a asp-action="Index" class="page-kicker text-decoration-none">← Danh sách đơn hàng</a>
+        <h1 class="page-title mt-2">@Model.OrderNumber</h1>
+        <p class="page-subtitle">Đặt lúc @Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</p>
+    </div>
+    <div class="page-actions">
+        <span class="status-badge @statusClass">@statusLabel</span>
+        <a class="btn btn-sm btn-outline-secondary" asp-action="Invoice" asp-route-id="@Model.Id">Xem và in hóa đơn</a>
+    </div>
+</header>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <section class="surface-card" aria-labelledby="order-items-heading">
+            <div id="order-items-heading" class="surface-card-header fw-semibold">Sản phẩm</div>
+            <div class="table-responsive">
+                <table class="data-table table mb-0 align-middle">
+                    <caption class="visually-hidden">Chi tiết sản phẩm trong đơn hàng @Model.OrderNumber</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Tên sản phẩm</th>
+                            <th scope="col" class="text-end">Đơn giá</th>
+                            <th scope="col" class="text-center">Số lượng</th>
+                            <th scope="col" class="text-end">Thành tiền</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var detail in Model.Details)
+                    {
+                        <tr>
+                            <td>@detail.ProductName</td>
+                            <td class="text-end">@detail.UnitPrice.ToString("N0") ₫</td>
+                            <td class="text-center">@detail.Quantity</td>
+                            <td class="text-end">@detail.LineTotal.ToString("N0") ₫</td>
+                        </tr>
+                    }
+                    </tbody>
+                    <tfoot>
+                        <tr><td colspan="3" class="text-end">Tạm tính</td><td class="text-end">@Model.SubtotalAmount.ToString("N0") ₫</td></tr>
+                        <tr><td colspan="3" class="text-end">Giảm giá @Model.CouponCode</td><td class="text-end">-@Model.DiscountAmount.ToString("N0") ₫</td></tr>
+                        <tr><td colspan="3" class="text-end">Phí vận chuyển</td><td class="text-end">@Model.ShippingFee.ToString("N0") ₫</td></tr>
+                        <tr>
+                            <th scope="row" colspan="3" class="text-end">Tổng cộng</th>
+                            <td class="text-end text-danger fw-bold">@Model.TotalAmount.ToString("N0") ₫</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </section>
+    </div>
+    <div class="col-lg-4">
+        <section class="summary-card mb-3" aria-labelledby="shipping-heading">
+            <div id="shipping-heading" class="surface-card-header fw-semibold">Giao hàng</div>
+            <div class="surface-card-body">
+                <div class="fw-semibold">@Model.ReceiverName</div>
+                <div>@Model.PhoneNumber</div>
+                <div>@Model.ShippingAddress</div>
+            </div>
+        </section>
+        <section class="summary-card mb-3" aria-labelledby="payment-heading">
+            <div id="payment-heading" class="surface-card-header fw-semibold">Thanh toán</div>
+            <div class="surface-card-body">
+                <div>Phương thức: @paymentMethodLabel</div>
+                <div>Trạng thái: <span class="status-badge @paymentStatusClass">@paymentStatusLabel</span></div>
+                @if (Model.TrackingCode is not null) { <div>Mã vận đơn: <code>@Model.TrackingCode</code></div> }
+            </div>
+        </section>
+        @if (canCancel)
+        {
+            <form asp-action="Cancel" method="post" onsubmit="return confirm('Hủy đơn và hoàn lại tồn kho?');">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <button type="submit" class="btn btn-outline-danger w-100">Hủy đơn và hoàn kho</button>
+            </form>
+        }
+    </div>
+</div>
+
+@if (Model.StatusHistory.Count > 0)
+{
+    <h2 class="section-heading h5 mt-4">Theo dõi đơn hàng</h2>
+    <div class="timeline order-timeline">
+        @foreach (var history in Model.StatusHistory)
+        {
+            var historyStatusLabel = history.ToStatus switch
+            {
+                OrderStatus.Pending => "Chờ xác nhận",
+                OrderStatus.Confirmed => "Đã xác nhận",
+                OrderStatus.Shipping => "Đang giao hàng",
+                OrderStatus.Completed => "Hoàn thành",
+                OrderStatus.Cancelled => "Đã hủy",
+                _ => history.ToStatus.ToString()
+            };
+            <div class="border-start border-primary ps-3 pb-3">
+                <strong>@historyStatusLabel</strong>
+                <div class="small text-muted">@history.ChangedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+                <div>@history.Note</div>
+            </div>
+        }
+    </div>
+}

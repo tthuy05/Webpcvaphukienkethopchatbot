@@ -1,0 +1,194 @@
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@model Webpcvaphukienkethopchatbot.Models.Order
+
+@{
+    ViewData["Title"] = Model.OrderNumber;
+    var transitions = Model.Status switch
+    {
+        OrderStatus.Pending => new[] { OrderStatus.Confirmed, OrderStatus.Cancelled },
+        OrderStatus.Confirmed => new[] { OrderStatus.Shipping, OrderStatus.Cancelled },
+        OrderStatus.Shipping => new[] { OrderStatus.Completed },
+        _ => Array.Empty<OrderStatus>()
+    };
+    var orderStatusClass = Model.Status switch
+    {
+        OrderStatus.Pending => "status-warning",
+        OrderStatus.Confirmed => "status-info",
+        OrderStatus.Shipping => "status-info",
+        OrderStatus.Completed => "status-success",
+        OrderStatus.Cancelled => "status-danger",
+        _ => "status-muted"
+    };
+}
+
+<partial name="_AdminNav" />
+
+<header class="page-header">
+    <div>
+        <p class="page-kicker">Chi tiết đơn hàng</p>
+        <h1 class="page-title">@Model.OrderNumber</h1>
+        <p class="page-subtitle">@Model.ApplicationUser?.Email · @Model.ReceiverName</p>
+    </div>
+    <div class="page-actions">
+        <span class="status-badge @orderStatusClass">@Model.Status</span>
+    </div>
+</header>
+
+@if (TempData["SuccessMessage"] is string successMessage)
+{
+    <div class="alert alert-success" role="status">@successMessage</div>
+}
+@if (TempData["ErrorMessage"] is string errorMessage)
+{
+    <div class="alert alert-danger" role="alert">@errorMessage</div>
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <section class="surface-card" aria-labelledby="order-items-title">
+            <div class="surface-card-header">
+                <div>
+                    <h2 class="h5 mb-1" id="order-items-title">Sản phẩm trong đơn</h2>
+                    <p class="text-muted small mb-0">Số lượng và thành tiền đã ghi nhận khi đặt hàng.</p>
+                </div>
+            </div>
+            <div class="surface-card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle data-table mb-0">
+                        <caption class="visually-hidden">Danh sách sản phẩm trong đơn @Model.OrderNumber</caption>
+                        <thead>
+                            <tr>
+                                <th scope="col">Sản phẩm</th>
+                                <th scope="col">Số lượng</th>
+                                <th scope="col" class="text-end">Thành tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.Details)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@item.ProductName</td>
+                                <td>@item.Quantity</td>
+                                <td class="text-end text-nowrap">@item.LineTotal.ToString("N0")</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-4 border-top">
+                    <dl class="row mb-0">
+                        <dt class="col-8 text-end fw-normal text-muted">Tạm tính</dt>
+                        <dd class="col-4 text-end">@Model.SubtotalAmount.ToString("N0")</dd>
+                        <dt class="col-8 text-end fw-normal text-muted">Giảm giá</dt>
+                        <dd class="col-4 text-end">-@Model.DiscountAmount.ToString("N0")</dd>
+                        <dt class="col-8 text-end fw-normal text-muted">Vận chuyển</dt>
+                        <dd class="col-4 text-end">@Model.ShippingFee.ToString("N0")</dd>
+                        <dt class="col-8 text-end">Tổng</dt>
+                        <dd class="col-4 text-end fw-bold">@Model.TotalAmount.ToString("N0")</dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-lg-4">
+        @if (transitions.Length > 0)
+        {
+            <form asp-action="ChangeStatus" method="post" class="surface-card mb-4">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="surface-card-header">
+                    <h2 class="h5 mb-0">Cập nhật trạng thái</h2>
+                </div>
+                <div class="surface-card-body">
+                    <div class="form-section">
+                        <div class="mb-3">
+                            <label class="form-label" for="order-status">Chuyển trạng thái</label>
+                            <select id="order-status" name="status" class="form-select">
+                                @foreach (var value in transitions)
+                                {
+                                    <option value="@value">@value</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="order-status-note">Ghi chú</label>
+                            <textarea id="order-status-note"
+                                      name="note"
+                                      class="form-control"
+                                      rows="3"
+                                      placeholder="Ghi chú"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-primary" type="submit">Cập nhật</button>
+                    </div>
+                </div>
+            </form>
+        }
+
+        <section class="surface-card" aria-labelledby="shipping-title">
+            <div class="surface-card-header">
+                <h2 class="h5 mb-0" id="shipping-title">Thông tin giao nhận</h2>
+            </div>
+            <div class="surface-card-body">
+                <dl class="mb-0">
+                    <dt class="small text-muted">Người nhận</dt>
+                    <dd class="fw-semibold">@Model.ReceiverName</dd>
+                    <dt class="small text-muted">Số điện thoại</dt>
+                    <dd>@Model.PhoneNumber</dd>
+                    <dt class="small text-muted">Địa chỉ</dt>
+                    <dd>@Model.ShippingAddress</dd>
+                    @if (Model.TrackingCode is not null)
+                    {
+                        <dt class="small text-muted">Mã vận đơn</dt>
+                        <dd class="mb-0"><code>@Model.TrackingCode</code></dd>
+                    }
+                </dl>
+            </div>
+        </section>
+    </div>
+</div>
+
+<section class="surface-card mt-4" aria-labelledby="status-history-title">
+    <div class="surface-card-header">
+        <div>
+            <h2 class="h5 mb-1" id="status-history-title">Lịch sử trạng thái</h2>
+            <p class="text-muted small mb-0">Các lần chuyển trạng thái đã được ghi nhận cho đơn hàng.</p>
+        </div>
+    </div>
+    <div class="surface-card-body">
+        @if (Model.StatusHistory.Count == 0)
+        {
+            <div class="empty-state">
+                <h3 class="h6">Chưa có lịch sử trạng thái</h3>
+                <p class="text-muted mb-0">Các thay đổi trạng thái sẽ xuất hiện tại đây.</p>
+            </div>
+        }
+        else
+        {
+            <ol class="timeline list-unstyled mb-0">
+            @foreach (var item in Model.StatusHistory)
+            {
+                var historyStatusClass = item.ToStatus switch
+                {
+                    OrderStatus.Pending => "status-warning",
+                    OrderStatus.Confirmed => "status-info",
+                    OrderStatus.Shipping => "status-info",
+                    OrderStatus.Completed => "status-success",
+                    OrderStatus.Cancelled => "status-danger",
+                    _ => "status-muted"
+                };
+
+                <li class="pb-3 mb-3 border-bottom">
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
+                        <span class="status-badge @historyStatusClass">@item.ToStatus</span>
+                        <time class="small text-muted">@item.ChangedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</time>
+                    </div>
+                    <div class="small text-muted">@item.Note</div>
+                </li>
+            }
+            </ol>
+        }
+    </div>
+</section>

@@ -1,0 +1,102 @@
+@using Webpcvaphukienkethopchatbot.Models.Enums
+@model Webpcvaphukienkethopchatbot.Models.Order
+@{
+    ViewData["Title"] = $"Hóa đơn {Model.OrderNumber}";
+    var paymentMethodLabel = Model.Payment?.Method switch
+    {
+        PaymentMethod.CashOnDelivery => "Thanh toán khi nhận hàng",
+        PaymentMethod.SimulatedBankTransfer => "Chuyển khoản mô phỏng",
+        _ => Model.Payment?.Method.ToString()
+    };
+    var paymentStatusLabel = Model.Payment?.Status switch
+    {
+        PaymentStatus.Pending => "Đang xử lý",
+        PaymentStatus.Unpaid => "Chưa thanh toán",
+        PaymentStatus.Simulated => "Đã mô phỏng",
+        PaymentStatus.Paid => "Đã thanh toán",
+        PaymentStatus.Failed => "Thất bại",
+        PaymentStatus.Cancelled => "Đã hủy",
+        _ => Model.Payment?.Status.ToString()
+    };
+    var paymentStatusClass = Model.Payment?.Status switch
+    {
+        PaymentStatus.Paid => "status-success",
+        PaymentStatus.Simulated => "status-info",
+        PaymentStatus.Failed or PaymentStatus.Cancelled => "status-danger",
+        PaymentStatus.Pending or PaymentStatus.Unpaid => "status-warning",
+        _ => "status-muted"
+    };
+}
+
+<header class="page-header print-hide">
+    <div>
+        <div class="page-kicker">Chứng từ đơn hàng</div>
+        <h1 class="page-title">Hóa đơn @Model.OrderNumber</h1>
+        <p class="page-subtitle">Bản hóa đơn bán hàng demo của PC Store.</p>
+    </div>
+    <div class="page-actions">
+        <a class="btn btn-outline-secondary" asp-action="Details" asp-route-id="@Model.Id">← Quay lại đơn hàng</a>
+        <button type="button" class="btn btn-primary" onclick="window.print()">In hóa đơn</button>
+    </div>
+</header>
+
+<article class="surface-card invoice mx-auto mt-4" aria-labelledby="invoice-title">
+    <div class="surface-card-body">
+        <div class="d-flex justify-content-between gap-4">
+            <div>
+                <h2 id="invoice-title" class="section-heading h3">PC Store</h2>
+                <div>Hóa đơn bán hàng demo</div>
+            </div>
+            <div class="text-end">
+                <strong>@Model.OrderNumber</strong>
+                <div>@Model.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</div>
+            </div>
+        </div>
+        <hr />
+
+        <div class="row">
+            <section class="col-6" aria-labelledby="invoice-recipient-heading">
+                <h3 id="invoice-recipient-heading" class="h6">Người nhận</h3>
+                <div>@Model.ReceiverName</div>
+                <div>@Model.PhoneNumber</div>
+                <div>@Model.ShippingAddress</div>
+            </section>
+            <section class="col-6 text-end" aria-labelledby="invoice-payment-heading">
+                <h3 id="invoice-payment-heading" class="h6">Thanh toán</h3>
+                <div>@paymentMethodLabel</div>
+                <div><span class="status-badge @paymentStatusClass">@paymentStatusLabel</span></div>
+            </section>
+        </div>
+
+        <div class="table-responsive">
+            <table class="data-table table mt-4">
+                <caption class="visually-hidden">Chi tiết hóa đơn @Model.OrderNumber</caption>
+                <thead>
+                    <tr>
+                        <th scope="col">Sản phẩm</th>
+                        <th scope="col" class="text-end">Đơn giá</th>
+                        <th scope="col" class="text-center">SL</th>
+                        <th scope="col" class="text-end">Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model.Details)
+                {
+                    <tr>
+                        <td>@item.ProductName</td>
+                        <td class="text-end">@item.UnitPrice.ToString("N0")</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-end">@item.LineTotal.ToString("N0")</td>
+                    </tr>
+                }
+                </tbody>
+                <tfoot>
+                    <tr><td colspan="3" class="text-end">Tạm tính</td><td class="text-end">@Model.SubtotalAmount.ToString("N0")</td></tr>
+                    <tr><td colspan="3" class="text-end">Giảm giá</td><td class="text-end">-@Model.DiscountAmount.ToString("N0")</td></tr>
+                    <tr><td colspan="3" class="text-end">Vận chuyển</td><td class="text-end">@Model.ShippingFee.ToString("N0")</td></tr>
+                    <tr><th scope="row" colspan="3" class="text-end">Tổng cộng</th><td class="text-end fw-bold">@Model.TotalAmount.ToString("N0") ₫</td></tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</article>

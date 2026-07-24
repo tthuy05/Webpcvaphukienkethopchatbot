@@ -6,5 +6,6 @@ public enum PaymentStatus
     Unpaid = 1,
     Simulated = 2,
     Paid = 3,
-    Failed = 4
+    Failed = 4,
+    Cancelled = 5
 }

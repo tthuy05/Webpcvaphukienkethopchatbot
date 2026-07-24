@@ -1,0 +1,57 @@
+@model Webpcvaphukienkethopchatbot.ViewModels.TwoFactorLoginViewModel
+@{
+    ViewData["Title"] = "Xác thực hai bước";
+}
+
+<div class="auth-shell">
+    <section class="auth-card" aria-labelledby="two-factor-login-title">
+        <div class="auth-brand-mark" aria-hidden="true">PC</div>
+        <p class="page-kicker">Xác minh đăng nhập</p>
+        <h1 id="two-factor-login-title" class="page-title">Xác thực hai bước</h1>
+        <p class="page-subtitle">Nhập mã 6 chữ số đang hiển thị trong ứng dụng xác thực của bạn.</p>
+
+        <form method="post">
+            <input asp-for="RememberMe" type="hidden" />
+            <input asp-for="ReturnUrl" type="hidden" />
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+            <div class="form-section">
+                <div>
+                    <label asp-for="Code" class="form-label">Mã xác thực</label>
+                    <input asp-for="Code"
+                           class="form-control"
+                           inputmode="numeric"
+                           autocomplete="one-time-code"
+                           autofocus
+                           placeholder="Nhập mã 6 chữ số" />
+                    <span asp-validation-for="Code" class="text-danger small"></span>
+                </div>
+                <div class="form-check">
+                    <input asp-for="RememberMachine" class="form-check-input" />
+                    <label asp-for="RememberMachine" class="form-check-label">Ghi nhớ thiết bị này</label>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn btn-primary w-100" type="submit">Xác nhận và đăng nhập</button>
+            </div>
+        </form>
+
+        <p class="mt-4 mb-0 text-center">
+            <a asp-action="LoginWithRecoveryCode"
+               asp-route-returnUrl="@Model.ReturnUrl"
+               class="btn-link">Dùng mã khôi phục</a>
+        </p>
+    </section>
+
+    <aside class="auth-aside" aria-label="Thông tin xác thực hai bước">
+        <p class="page-kicker">Lớp bảo vệ bổ sung</p>
+        <h2>Một bước ngắn để bảo vệ tài khoản tốt hơn</h2>
+        <p>
+            Mã xác thực thay đổi theo thời gian và chỉ có hiệu lực trong thời gian ngắn.
+        </p>
+    </aside>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+}
