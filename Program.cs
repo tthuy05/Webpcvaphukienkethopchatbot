@@ -89,6 +89,7 @@ builder.Services.AddScoped<IAuditService, AuditService>();
 builder.Services.AddScoped<IDemoEmailService, DemoEmailService>();
 builder.Services.AddScoped<ICaptchaService, CaptchaService>();
 builder.Services.AddScoped<IGuestCartService, GuestCartService>();
+builder.Services.AddHttpClient();
 builder.Services.AddScoped<IChatbotService, ChatbotService>();
 builder.Services.AddHostedService<DatabaseSeedHostedService>();
 builder.Services.AddHostedService<ExpiredOrderCancellationService>();
